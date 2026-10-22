@@ -13,13 +13,13 @@ const els = {
   langs: $('langs'),
   cancel: $('cancel'),
   mute: $('mute'),
-  muteIcon: $('mute-icon'),
   progress: $('progress'),
   progressFill: $('progress-fill'),
   hero: $('hero'),
   heroTitle: $('hero-title'),
   heroSub: $('hero-sub'),
   stage: $('stage'),
+  glow: document.querySelector('.glow'),
   orb: $('orb'),
   phase: $('phase'),
   hint: $('hint'),
@@ -119,6 +119,8 @@ function patternText() {
 function render() {
   const copy = t();
   const isPanic = settings.mode === 'panic';
+  els.app.dataset.mode = settings.mode;
+  els.app.classList.toggle('is-idle', idle && !completed);
   document.documentElement.lang = copy.htmlLang;
   els.skip.textContent = copy.skip;
   els.langs.setAttribute('aria-label', copy.language);
@@ -165,7 +167,8 @@ function render() {
 
   els.mute.setAttribute('aria-pressed', settings.muted ? 'true' : 'false');
   els.mute.setAttribute('aria-label', settings.muted ? copy.unmute : copy.mute);
-  els.muteIcon.textContent = settings.muted ? '🔇' : '🔊';
+  els.mute.querySelector('.icon-on').hidden = settings.muted;
+  els.mute.querySelector('.icon-off').hidden = !settings.muted;
 
   const showSetup = idle && !completed;
   const showCheckin = completed && !feedbackGiven;
@@ -218,6 +221,12 @@ function render() {
   paintMotion();
 }
 
+/** Visual only. 0 and 1 stay put, so the orb still finishes exactly when the phase does. */
+function easeVisual(progress) {
+  const p = Math.min(1, Math.max(0, Number(progress) || 0));
+  return p < 0.5 ? 4 * p * p * p : 1 - ((-2 * p + 2) ** 3) / 2;
+}
+
 function paintMotion() {
   const current = tech();
   const dur = phase === 'INHALE' || phase === 'HOLD' || phase === 'EXHALE' || phase === 'HOLD_POST'
@@ -225,7 +234,16 @@ function paintMotion() {
     : 0;
   const progress = dur > 0 ? phaseElapsed / dur : 0;
   els.orb.dataset.phase = active ? phase : 'READY';
-  els.orb.style.transform = reduceMotion || !active ? 'scale(1)' : `scale(${scaleFor(phase, progress)})`;
+  if (reduceMotion || !active) {
+    els.orb.style.transform = '';
+    els.glow.style.transform = '';
+    els.glow.style.opacity = '';
+  } else {
+    const scale = scaleFor(phase, easeVisual(progress));
+    els.orb.style.transform = `scale(${scale})`;
+    els.glow.style.transform = `scale(${scale})`;
+    els.glow.style.opacity = String(0.45 + (scale - 1) * 0.62);
+  }
   if (active && settings.mode !== 'panic') {
     const total = DURATION_SECONDS[settings.duration];
     const pct = Math.max(0, Math.min(100, (sessionElapsed / total) * 100));

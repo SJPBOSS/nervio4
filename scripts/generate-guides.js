@@ -171,7 +171,7 @@ function renderArticle(topic, lang) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#050505" />
+  <meta name="theme-color" content="#10120f" />
   <title>${esc(copy.title)}</title>
   <meta name="description" content="${esc(copy.description)}" />
   <meta name="robots" content="index, follow" />
@@ -257,7 +257,7 @@ function render404() {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#050505" />
+  <meta name="theme-color" content="#10120f" />
   <title>${esc(CHROME.en.notFoundTitle)}</title>
   <meta name="description" content="This page is not on Nervio. Go back to the free breathing app or read a guide." />
   <meta name="robots" content="noindex" />

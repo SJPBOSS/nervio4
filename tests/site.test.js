@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
-import { TECHNIQUES, durationOf, nextPhase, scaleFor, stepSession, withDifficulty } from '../breathing.js';
+import { DURATION_SECONDS, TECHNIQUES, durationOf, nextPhase, scaleFor, stepSession, withDifficulty } from '../breathing.js';
 import { TRANSLATIONS } from '../i18n.js';
 import { publicMode, resolveSettings } from '../settings.js';
 import { LANGS, TOPICS, pagePath } from '../scripts/content.js';
@@ -20,6 +20,14 @@ function advance(tech, seconds, { length = 120, openEnded = false } = {}) {
   }
   return state;
 }
+
+test('base timings are unchanged', () => {
+  assert.deepEqual(TECHNIQUES.relax, { inhale: 4, hold: 0, exhale: 6, holdPost: 0 });
+  assert.deepEqual(TECHNIQUES.box, { inhale: 4, hold: 4, exhale: 4, holdPost: 4 });
+  assert.deepEqual(TECHNIQUES.sleep, { inhale: 4, hold: 7, exhale: 8, holdPost: 0 });
+  assert.deepEqual(TECHNIQUES.panic, { inhale: 3, hold: 0, exhale: 5, holdPost: 0 });
+  assert.deepEqual(DURATION_SECONDS, { '30s': 30, '1m': 60, '2m': 120 });
+});
 
 test('box breathing changes phase on the count, not a second late', () => {
   const tech = TECHNIQUES.box;
@@ -191,6 +199,13 @@ test('guides are linked, translated, and careful', () => {
       if (lang === 'es') {
         assert.match(html, /no sustituye la atención profesional/);
         assert.match(html, /tel:024/);
+        assert.match(html, /tel:8009112000/);
+        assert.match(html, /https:\/\/www\.gob\.mx\/lineadelavida/);
+        assert.match(html, /tel:106/);
+        assert.match(html, /tel:113/);
+        assert.match(html, /opción 5/);
+        assert.match(html, /tel:135/);
+        assert.match(html, /tel:\*4141/);
       }
       if (lang === 'pt') {
         assert.match(html, /não substitui o acompanhamento profissional/);
