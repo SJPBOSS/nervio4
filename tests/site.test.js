@@ -6,6 +6,7 @@ import { DURATION_SECONDS, TECHNIQUES, durationOf, nextPhase, scaleFor, stepSess
 import { TRANSLATIONS } from '../i18n.js';
 import { publicMode, resolveSettings } from '../settings.js';
 import { LANGS, TOPICS, pagePath } from '../scripts/content.js';
+import { CHECKED, legalPath } from '../scripts/legal.js';
 
 const root = path.resolve(import.meta.dirname, '..');
 
@@ -143,6 +144,13 @@ test('every language has the same strings', () => {
   assert.notEqual(TRANSLATIONS.pt.modes.panic.name, 'Reset');
   assert.notEqual(TRANSLATIONS.pt.doneShort, 'Done');
   assert.match(TRANSLATIONS.pt.howFeel, /você/);
+  assert.equal(TRANSLATIONS.en.modes.calm.sub, 'Help you feel calmer');
+  assert.equal(TRANSLATIONS.fr.modes.calm.sub, 'Vous sentir plus calme');
+  assert.equal(TRANSLATIONS.es.modes.calm.sub, 'Sentirte más en calma');
+  assert.equal(TRANSLATIONS.pt.modes.calm.sub, 'Sentir mais calma');
+  assert.match(TRANSLATIONS.fr.liability, /vous/i);
+  assert.match(TRANSLATIONS.es.liability, /estás/);
+  assert.match(TRANSLATIONS.pt.liabilityStop, /você/);
 });
 
 test('the static site keeps its domain and does not lock zoom', () => {
@@ -173,6 +181,17 @@ test('guides are linked, translated, and careful', () => {
   assert.match(index, /rel="canonical" href="https:\/\/www\.panicpause\.com\/"/);
   assert.match(index, /og:image/);
   assert.match(index, /Quiet the noise/);
+  assert.match(index, /breathing timer for general wellness/);
+  assert.match(index, /Help you feel calmer/);
+  assert.doesNotMatch(index, /Ease anxiety/);
+  assert.match(index, /href="\/en\/terms\/"/);
+  assert.match(index, /href="\/en\/privacy\/"/);
+  assert.match(index, /href="\/fr\/conditions\/"/);
+  assert.match(index, /href="\/fr\/confidentialite\/"/);
+  assert.match(index, /href="\/es\/aviso\/"/);
+  assert.match(index, /href="\/es\/privacidad\/"/);
+  assert.match(index, /href="\/pt\/aviso\/"/);
+  assert.match(index, /href="\/pt\/privacidade\/"/);
   const banned = /studies show|research shows|clinically proven|peer-reviewed|des études|cliniquement prouvé|los estudios demuestran|clínicamente probado|estudos mostram|clinicamente comprovado|guaranteed/i;
   for (const topic of TOPICS) {
     for (const lang of LANGS) {
@@ -187,14 +206,40 @@ test('guides are linked, translated, and careful', () => {
       assert.match(html, /hreflang="pt" href=/);
       assert.match(html, /hreflang="x-default"/);
       assert.match(html, /988/);
+      assert.match(html, new RegExp(legalPath('terms', lang).replaceAll('/', '\\/')));
+      assert.ok(html.includes(CHECKED[lang]), `${rel} missing ${CHECKED[lang]}`);
+      assert.match(html, /class="checked"/);
+      assert.match(html, /class="other-countries"/);
+      assert.match(html, /class="liability"/);
+      if (lang === 'en') assert.match(html, /breathing timer for general wellness/);
+      if (lang === 'fr') assert.match(html, /minuteur de respiration/);
+      if (lang === 'es') assert.match(html, /temporizador de respiración/);
+      if (lang === 'pt') assert.match(html, /cronômetro de respiração/);
+      assert.doesNotMatch(html, /not treatment for|Not a sleep treatment|pas un traitement|n’est pas un traitement|no es un tratamiento|não é tratamento/i);
       assert.match(html, /tel:988/);
       assert.match(html, /sms:988/);
       assert.match(html, /https:\/\/988\.ca\//);
-      if (lang === 'en') assert.match(html, /not a substitute for professional care/);
+      if (lang === 'en') {
+        assert.match(html, /not a substitute for professional care/);
+        assert.match(html, /Other countries/);
+        assert.match(html, /tel:116123/);
+        assert.match(html, /tel:131114/);
+        assert.match(html, /tel:080017371737/);
+        assert.match(html, /sms:1737/);
+        assert.match(html, /https:\/\/findahelpline\.com\//);
+        assert.ok(html.indexOf('https://988.ca/') < html.indexOf('Other countries'));
+        assert.ok(html.indexOf('Other countries') < html.indexOf('findahelpline.com'));
+      }
       if (lang === 'fr') {
         assert.match(html, /pas un substitut à des soins professionnels/);
         assert.match(html, /3114/);
         assert.match(html, /textez/);
+        assert.match(html, /Autres pays/);
+        assert.match(html, /tel:\+18662773553/);
+        assert.match(html, /sms:535353/);
+        assert.match(html, /tel:080032123/);
+        assert.match(html, /1 866 APPELLE/);
+        assert.ok(html.indexOf('1 866 APPELLE') < html.indexOf('tel:3114'));
       }
       if (lang === 'es') {
         assert.match(html, /no sustituye la atención profesional/);
@@ -206,6 +251,15 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /opción 5/);
         assert.match(html, /tel:135/);
         assert.match(html, /tel:\*4141/);
+        assert.match(html, /Otros países/);
+        assert.match(html, /presiona 2/);
+        assert.match(html, /tel:08000767/);
+        assert.match(html, /tel:\*0767/);
+        assert.match(html, /opción 6/);
+        assert.match(html, /tel:8002737869/);
+        assert.match(html, /tel:711/);
+        assert.ok(html.indexOf('tel:024') < html.indexOf('Otros países'));
+        assert.doesNotMatch(html, /tel:1538/);
       }
       if (lang === 'pt') {
         assert.match(html, /não substitui o acompanhamento profissional/);
@@ -213,6 +267,15 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /https:\/\/www\.cvv\.org\.br\//);
         assert.match(html, /lang="pt-BR"/);
         assert.match(html, /\/pt\//);
+        assert.match(html, /Outros países/);
+        assert.match(html, /tel:808242424/);
+        assert.match(html, /tel:\+351213544545/);
+        assert.match(html, /tel:\+351912802669/);
+        assert.match(html, /tel:\+351963524660/);
+        assert.match(html, /tel:\+351930712500/);
+        assert.match(html, /15h30/);
+        assert.ok(html.indexOf('tel:188') < html.indexOf('tel:808242424'));
+        assert.ok(html.indexOf('tel:188') < html.indexOf('Outros países'));
       }
       assert.match(html, new RegExp(`mode=${topic.mode}`));
       assert.doesNotMatch(html, banned);
@@ -221,4 +284,52 @@ test('guides are linked, translated, and careful', () => {
       assert.ok(text.length > 2200, `${rel} looks thin (${text.length})`);
     }
   }
+});
+
+test('terms and privacy pages describe the real storage and the crisis check date', () => {
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const laws = /\b(GDPR|CCPA|HIPAA|PIPEDA|LGPD|COPPA)\b/;
+  const blanket = /does not collect personal data|ne collecte aucune donnée|no recopila datos personales|não coleta dados pessoais/i;
+  const storage = {
+    en: /local storage/i,
+    fr: /stockage local/i,
+    es: /almacenamiento local/i,
+    pt: /armazenamento local/i,
+  };
+  for (const lang of LANGS) {
+    for (const kind of ['terms', 'privacy']) {
+      const rel = legalPath(kind, lang);
+      const html = fs.readFileSync(path.join(root, rel.slice(1), 'index.html'), 'utf8');
+      assert.match(sitemap, new RegExp(rel.replaceAll('/', '\\/')));
+      assert.match(html, new RegExp(`rel="canonical" href="https://www\\.panicpause\\.com${rel.replaceAll('/', '\\/')}"`));
+      assert.match(html, /hreflang="fr-CA"/);
+      assert.match(html, /hreflang="pt-BR"/);
+      assert.match(html, /hreflang="x-default"/);
+      assert.doesNotMatch(html, laws);
+      assert.doesNotMatch(html, blanket);
+      assert.doesNotMatch(html, /Ease anxiety|clinically proven|cliniquement prouvé/i);
+    }
+    const terms = fs.readFileSync(path.join(root, legalPath('terms', lang).slice(1), 'index.html'), 'utf8');
+    const privacy = fs.readFileSync(path.join(root, legalPath('privacy', lang).slice(1), 'index.html'), 'utf8');
+    assert.ok(terms.includes(CHECKED[lang]), `${lang} terms missing ${CHECKED[lang]}`);
+    assert.match(terms, /tel:988/);
+    assert.match(terms, /class="checked"/);
+    assert.match(privacy, storage[lang]);
+    assert.match(privacy, /nervio/);
+    assert.match(privacy, /lang/);
+    assert.match(privacy, /mode/);
+    assert.match(privacy, /dur/);
+    assert.doesNotMatch(privacy, /gtag|analytics\.js|facebook|doubleclick/i);
+  }
+  const enPrivacy = fs.readFileSync(path.join(root, 'en/privacy/index.html'), 'utf8');
+  assert.match(enPrivacy, /do not run analytics/);
+  assert.match(enPrivacy, /do not set cookies/);
+  assert.match(enPrivacy, /GitHub Pages/);
+  assert.match(enPrivacy, /difficulty number/);
+  const enTerms = fs.readFileSync(path.join(root, 'en/terms/index.html'), 'utf8');
+  assert.match(enTerms, /free of charge/);
+  assert.match(enTerms, /at your own risk/);
+  assert.match(enTerms, /as it is/);
+  assert.match(enTerms, /not responsible/);
+  assert.match(enTerms, /not for emergencies/i);
 });

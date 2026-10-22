@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { SITE, PUBLISHED, LANGS, TOPICS, CHROME, DISCLAIMERS, BLURBS, pagePath } from './content.js';
+import { CHECKED, CHECKED_DATE, SHORT, LINK_LABELS, LEGAL_PAGES, legalPath } from './legal.js';
 
 const root = path.resolve(import.meta.dirname, '..');
 
@@ -73,6 +74,19 @@ function guideColumns() {
   }).join('\n    ');
 }
 
+function legalLinksHtml(onlyLang) {
+  const langs = onlyLang ? [onlyLang] : LANGS;
+  const rows = langs.map((lang) => {
+    const labels = LINK_LABELS[lang];
+    const htmlLang = CHROME[lang].htmlLang;
+    return `<p lang="${esc(htmlLang)}"><a href="${esc(legalPath('terms', lang))}" hreflang="${esc(htmlLang)}">${esc(labels.terms)}</a> · <a href="${esc(legalPath('privacy', lang))}" hreflang="${esc(htmlLang)}">${esc(labels.privacy)}</a></p>`;
+  }).join('\n    ');
+  const label = LINK_LABELS[onlyLang || 'en'].legal;
+  return `<nav class="legal-links" aria-label="${esc(label)}">
+    ${rows}
+  </nav>`;
+}
+
 function footerHtml() {
   const blurbs = LANGS.map((lang) => `<p lang="${esc(CHROME[lang].htmlLang)}">${esc(BLURBS[lang])}</p>`).join('\n    ');
   return `<h2>Guides</h2>
@@ -81,16 +95,35 @@ function footerHtml() {
   </div>
   <div class="footer-blurbs">
     ${blurbs}
-  </div>`;
+  </div>
+  ${legalLinksHtml()}`;
 }
 
 function disclaimerHtml(lang) {
   const block = DISCLAIMERS[lang];
   const paragraphs = block.blocks.map((parts) => `<p>${segments(parts)}</p>`).join('\n      ');
+  const checked = `<p class="checked"><time datetime="${CHECKED_DATE}">${esc(CHECKED[lang])}</time></p>`;
+  const others = block.others?.length
+    ? `<details class="other-countries">
+      <summary>${esc(block.othersLabel)}</summary>
+      <ul>
+          ${block.others.map((parts) => `<li>${segments(parts)}</li>`).join('\n          ')}
+      </ul>
+    </details>`
+    : '';
+  const tail = (block.tail || []).map((parts) => `<p>${segments(parts)}</p>`).join('\n      ');
   return `<aside class="disclaimer">
       <h2>${esc(block.heading)}</h2>
       ${paragraphs}
+      ${checked}
+      ${others}
+      ${tail}
     </aside>`;
+}
+
+function shortLineHtml(lang) {
+  const copy = SHORT[lang];
+  return `<p class="liability">${esc(copy.line)} ${esc(copy.stop)} <a href="${esc(legalPath('terms', lang))}">${esc(LINK_LABELS[lang].terms)}</a></p>`;
 }
 
 function renderArticle(topic, lang) {
@@ -222,6 +255,7 @@ ${locales}
       <p class="eyebrow">${esc(chrome.guides)}</p>
       <h1>${esc(copy.h1)}</h1>
       <p class="note">${esc(copy.note)}</p>
+      ${shortLineHtml(lang)}
       ${intro}
       ${sections}
       <p class="cta-row"><a class="go" href="${appUrl(lang, topic.mode, topic.dur)}">${esc(copy.cta)}</a></p>
@@ -237,6 +271,7 @@ ${locales}
   </main>
   <footer class="site-footer">
     <p lang="${esc(chrome.htmlLang)}">${esc(BLURBS[lang])}</p>
+    ${legalLinksHtml(lang)}
     <p><a href="/?lang=${lang}">${esc(chrome.openApp)}</a></p>
   </footer>
 </body>
@@ -283,8 +318,124 @@ function render404() {
 `;
 }
 
+function legalSectionHtml(section, lang) {
+  const before = (section.paragraphs || []).map((paragraph) => `<p>${inline(paragraph)}</p>`).join('\n        ');
+  const steps = section.steps?.length
+    ? `<ul class="plain-list">\n          ${section.steps.map((step) => `<li>${inline(step)}</li>`).join('\n          ')}\n        </ul>`
+    : '';
+  const after = (section.after || []).map((paragraph) => `<p>${inline(paragraph)}</p>`).join('\n        ');
+  const crisis = section.crisis ? disclaimerHtml(lang) : '';
+  return `<section>
+        <h2>${esc(section.h2)}</h2>
+        ${before}
+        ${steps}
+        ${after}
+        ${crisis}
+      </section>`;
+}
+
+function renderLegal(kind, lang) {
+  const page = LEGAL_PAGES[lang][kind];
+  const chrome = CHROME[lang];
+  const canonicalPath = legalPath(kind, lang);
+  const canonical = `${SITE}${canonicalPath}`;
+  const alternates = LANGS.map((code) => {
+    const href = `${SITE}${legalPath(kind, code)}`;
+    return `  <link rel="alternate" hreflang="${CHROME[code].htmlLang}" href="${href}" />`;
+  });
+  alternates.push(`  <link rel="alternate" hreflang="fr" href="${SITE}${legalPath(kind, 'fr')}" />`);
+  alternates.push(`  <link rel="alternate" hreflang="pt" href="${SITE}${legalPath(kind, 'pt')}" />`);
+  alternates.push(`  <link rel="alternate" hreflang="x-default" href="${SITE}${legalPath(kind, 'en')}" />`);
+  const locales = LANGS.filter((code) => code !== lang)
+    .map((code) => `  <meta property="og:locale:alternate" content="${CHROME[code].ogLocale}" />`)
+    .join('\n');
+  const langLinks = LANGS.map((code) => {
+    const href = legalPath(kind, code);
+    const current = code === lang ? ' aria-current="page"' : '';
+    return `<a href="${href}" lang="${CHROME[code].htmlLang}" hreflang="${CHROME[code].htmlLang}"${current}>${code.toUpperCase()}</a>`;
+  }).join('\n          ');
+  const sections = page.sections.map((section) => legalSectionHtml(section, lang)).join('\n      ');
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: page.h1,
+    description: page.description,
+    inLanguage: chrome.htmlLang,
+    dateModified: PUBLISHED,
+    url: canonical,
+    isPartOf: { '@type': 'WebSite', name: 'Nervio', url: `${SITE}/` },
+  }).replaceAll('<', '\\u003c');
+
+  return `<!DOCTYPE html>
+<html lang="${chrome.htmlLang}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#10120f" />
+  <title>${esc(page.title)}</title>
+  <meta name="description" content="${esc(page.description)}" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="${canonical}" />
+${alternates.join('\n')}
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nervio" />
+  <meta property="og:title" content="${esc(page.title)}" />
+  <meta property="og:description" content="${esc(page.description)}" />
+  <meta property="og:url" content="${canonical}" />
+  <meta property="og:image" content="${SITE}/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nervio, a free breathing app on a black background" />
+  <meta property="og:locale" content="${chrome.ogLocale}" />
+${locales}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${esc(page.title)}" />
+  <meta name="twitter:description" content="${esc(page.description)}" />
+  <meta name="twitter:image" content="${SITE}/og.png" />
+  ${iconLinks()}
+  <script type="application/ld+json">
+  ${jsonLd}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">${esc(chrome.skip)}</a>
+  <header class="nav">
+    <a class="brand" href="/?lang=${lang}">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Nervio</span>
+    </a>
+    <div class="nav-actions">
+      <nav class="langs" aria-label="${esc(chrome.language)}">
+          ${langLinks}
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="article">
+    <nav class="crumbs" aria-label="${esc(chrome.breadcrumb)}">
+      <ol>
+        <li><a href="/?lang=${lang}">Nervio</a></li>
+        <li aria-current="page">${esc(page.h1)}</li>
+      </ol>
+    </nav>
+    <article>
+      <h1>${esc(page.h1)}</h1>
+      ${sections}
+    </article>
+  </main>
+  <footer class="site-footer">
+    <p lang="${esc(chrome.htmlLang)}">${esc(BLURBS[lang])}</p>
+    ${legalLinksHtml(lang)}
+    <p><a href="/?lang=${lang}">${esc(chrome.openApp)}</a></p>
+  </footer>
+</body>
+</html>
+`;
+}
+
 function sitemap() {
-  const urls = [`${SITE}/`, ...TOPICS.flatMap((topic) => LANGS.map((lang) => `${SITE}${pagePath(topic, lang)}`))];
+  const legalUrls = LANGS.flatMap((lang) => ['terms', 'privacy'].map((kind) => `${SITE}${legalPath(kind, lang)}`));
+  const urls = [`${SITE}/`, ...legalUrls, ...TOPICS.flatMap((topic) => LANGS.map((lang) => `${SITE}${pagePath(topic, lang)}`))];
   const body = urls.map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${PUBLISHED}</lastmod>\n  </url>`).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
 }
@@ -302,6 +453,13 @@ for (const topic of TOPICS) {
   }
 }
 
+for (const kind of ['terms', 'privacy']) {
+  for (const lang of LANGS) {
+    const rel = legalPath(kind, lang).replace(/^\/|\/$/g, '');
+    write(path.join(rel, 'index.html'), renderLegal(kind, lang));
+  }
+}
+
 write('404.html', render404());
 write('sitemap.xml', sitemap());
 
@@ -316,4 +474,4 @@ const next = index.replace(
 );
 fs.writeFileSync(indexPath, next);
 
-console.log(`Wrote ${TOPICS.length * LANGS.length} guides, 404.html, sitemap.xml, and the home footer.`);
+console.log(`Wrote ${TOPICS.length * LANGS.length} guides, ${LANGS.length * 2} legal pages, 404.html, sitemap.xml, and the home footer.`);
