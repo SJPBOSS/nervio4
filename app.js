@@ -1,5 +1,6 @@
 import { TECHNIQUES, DURATION_SECONDS, withDifficulty, stepSession, scaleFor } from './breathing.js';
 import { TRANSLATIONS, MODE_ORDER, DUR_ORDER } from './i18n.js';
+import { legalPath } from './scripts/legal.js';
 import { resolveSettings, publicMode } from './settings.js';
 
 const STORAGE_KEY = 'nervio';
@@ -31,6 +32,9 @@ const els = {
   durations: $('durations'),
   go: $('go'),
   guidesJump: $('guides-jump'),
+  liabilityLine: $('liability-line'),
+  liabilityStop: $('liability-stop'),
+  liabilityTerms: $('liability-terms'),
 };
 
 let settings = loadSettings();
@@ -130,6 +134,10 @@ function render() {
   els.progressFill.setAttribute('aria-label', copy.progress);
   els.cancel.setAttribute('aria-label', copy.cancel);
   els.guidesJump.textContent = copy.guides;
+  els.liabilityLine.textContent = copy.liability;
+  els.liabilityStop.textContent = copy.liabilityStop;
+  els.liabilityTerms.textContent = copy.terms;
+  els.liabilityTerms.href = legalPath('terms', settings.lang);
   els.howFeel.textContent = copy.howFeel;
   $('label-better').textContent = copy.better;
   $('label-same').textContent = copy.same;

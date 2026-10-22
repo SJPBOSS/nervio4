@@ -42,7 +42,7 @@ export const enTopics = [
       {
         h2: 'What this will not do',
         before: [
-          'This will not switch a panic attack off. It is not treatment for panic disorder, and it does not tell you what the feeling is. It is one thing to do with your breath while you wait.',
+          'This will not switch a panic attack off. It does not take the place of care for panic disorder, and it does not tell you what the feeling is. It is one thing to do with your breath while you wait.',
           'Chest pain, fainting, or trouble breathing that is new or severe needs emergency care, not a breathing app. If you are in crisis or thinking about hurting yourself, use the lines at the bottom of this page, including 988 in Canada, which you can call or text.',
           'If you are shaky but not in the middle of panic, the [calm exercise](/en/breathing-to-calm-anxiety/) is the slower timed version. [Box breathing](/en/box-breathing/) adds breath holds, which a lot of people would rather skip during panic.',
         ],
@@ -94,7 +94,7 @@ export const enTopics = [
       {
         h2: 'What box breathing is not',
         before: [
-          'It is a pacing exercise. It is not treatment for anxiety, trauma, or any other condition, and it will not by itself make you focused or calm. [Breathing for focus](/en/breathing-for-focus/) is the same pattern, used as a one- or two-minute edge before a task. [4-7-8 breathing](/en/4-7-8-breathing-for-sleep/) is a different, slower count for bedtime, with a long exhale.',
+          'It is a pacing exercise. It does not take the place of care for anxiety, trauma, or any other condition, and it will not by itself make you focused or calm. [Breathing for focus](/en/breathing-for-focus/) is the same pattern, used as a one- or two-minute edge before a task. [4-7-8 breathing](/en/4-7-8-breathing-for-sleep/) is a different, slower count for bedtime, with a long exhale.',
         ],
         steps: [],
         after: [],
@@ -107,7 +107,7 @@ export const enTopics = [
     dur: '2m',
     slug: '4-7-8-breathing-for-sleep',
     title: '4-7-8 breathing for sleep | Nervio',
-    description: '4-7-8 breathing for sleep is a slow wind-down: inhale 4, hold 7, exhale 8. Nervio’s Sleep mode starts there. Not a sleep treatment.',
+    description: '4-7-8 breathing for sleep is a slow wind-down: inhale 4, hold 7, exhale 8. Nervio’s Sleep mode starts there. It is not a promise of sleep.',
     h1: '4-7-8 breathing for sleep',
     note: 'General wellness information. Not medical advice, and not a substitute for professional care.',
     cta: 'Start 4-7-8 in Nervio',
@@ -241,7 +241,7 @@ export const enTopics = [
       {
         h2: 'What not to expect',
         before: [
-          'A breathing app will not hand you attention, and it is not treatment for ADHD or any other condition. Sleep, breaks, and the way the work is set up matter more than a perfect count. Use the session as a clean edge, then do one small piece of the task.',
+          'A breathing app will not hand you attention, and it does not take the place of care for ADHD or any other condition. Sleep, breaks, and the way the work is set up matter more than a perfect count. Use the session as a clean edge, then do one small piece of the task.',
           'The same 4-4-4-4 pattern is explained as [box breathing](/en/box-breathing/). For bedtime, [4-7-8](/en/4-7-8-breathing-for-sleep/) is slower on purpose. It is a poor choice right before you need to drive or concentrate.',
         ],
         steps: [],

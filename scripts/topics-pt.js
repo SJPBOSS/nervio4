@@ -42,7 +42,7 @@ export const ptTopics = [
       {
         h2: 'O que isto não faz',
         before: [
-          'Isto não desliga um ataque de pânico. Não é tratamento para transtorno de pânico e não diz o que é a sensação. É uma coisa para fazer com a respiração enquanto você espera.',
+          'Isto não desliga um ataque de pânico. Não toma o lugar do acompanhamento para transtorno de pânico e não diz o que é a sensação. É uma coisa para fazer com a respiração enquanto você espera.',
           'Dor no peito, desmaio ou falta de ar nova ou forte pedem atendimento de emergência, não um aplicativo de respiração. Se você está em crise ou pensando em se machucar, use os contatos no fim desta página, inclusive o CVV pelo 188 no Brasil e o 988 no Canadá, que pode ser ligação ou mensagem de texto.',
           'Se você está agitado, mas não no meio do pânico, o [exercício de calma](/pt/respiracao-para-acalmar-ansiedade/) é a versão mais lenta e com tempo marcado. A [respiração quadrada](/pt/respiracao-quadrada/) inclui segurar o ar, o que muita gente prefere evitar durante o pânico.',
         ],
@@ -94,7 +94,7 @@ export const ptTopics = [
       {
         h2: 'O que a respiração quadrada não é',
         before: [
-          'É um exercício de ritmo. Não é tratamento para ansiedade, trauma ou qualquer outra condição, e sozinha não vai deixar você focado ou calmo. [Respiração para focar](/pt/respiracao-para-focar/) é o mesmo ritmo, usado como uma borda de um ou dois minutos antes de uma tarefa. A [respiração 4-7-8](/pt/respiracao-4-7-8-para-dormir/) é uma contagem diferente e mais lenta para a hora de dormir, com uma expiração longa.',
+          'É um exercício de ritmo. Não toma o lugar do acompanhamento para ansiedade, trauma ou qualquer outra condição, e sozinha não vai deixar você focado ou calmo. [Respiração para focar](/pt/respiracao-para-focar/) é o mesmo ritmo, usado como uma borda de um ou dois minutos antes de uma tarefa. A [respiração 4-7-8](/pt/respiracao-4-7-8-para-dormir/) é uma contagem diferente e mais lenta para a hora de dormir, com uma expiração longa.',
         ],
         steps: [],
         after: [],
@@ -107,7 +107,7 @@ export const ptTopics = [
     dur: '2m',
     slug: 'respiracao-4-7-8-para-dormir',
     title: 'Respiração 4-7-8 para dormir | Nervio',
-    description: 'A respiração 4-7-8 para dormir é um desacelerar: inspire 4, segure 7, expire 8. O modo Sono do Nervio começa aí. Não é tratamento do sono.',
+    description: 'A respiração 4-7-8 para dormir é um desacelerar: inspire 4, segure 7, expire 8. O modo Sono do Nervio começa aí. Não é uma promessa de sono.',
     h1: 'Respiração 4-7-8 para dormir',
     note: 'Informação geral de bem-estar. Não é orientação médica e não substitui o acompanhamento profissional.',
     cta: 'Começar o 4-7-8 no Nervio',
@@ -241,7 +241,7 @@ export const ptTopics = [
       {
         h2: 'O que não esperar',
         before: [
-          'Um aplicativo de respiração não entrega atenção pronta e não é tratamento para TDAH nem para nenhuma outra condição. Sono, pausas e o jeito como o trabalho está organizado importam mais do que uma contagem perfeita. Use a sessão como uma borda limpa e depois faça um pedaço pequeno da tarefa.',
+          'Um aplicativo de respiração não entrega atenção pronta e não toma o lugar do acompanhamento para TDAH nem para nenhuma outra condição. Sono, pausas e o jeito como o trabalho está organizado importam mais do que uma contagem perfeita. Use a sessão como uma borda limpa e depois faça um pedaço pequeno da tarefa.',
           'O mesmo ritmo 4-4-4-4 está explicado como [respiração quadrada](/pt/respiracao-quadrada/). Para a hora de dormir, o [4-7-8](/pt/respiracao-4-7-8-para-dormir/) é mais lento de propósito. É uma escolha ruim logo antes de dirigir ou de precisar se concentrar.',
         ],
         steps: [],

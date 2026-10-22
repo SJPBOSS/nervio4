@@ -42,7 +42,7 @@ export const frTopics = [
       {
         h2: 'Ce que cet exercice ne fait pas',
         before: [
-          'Ça n’arrête pas une crise de panique. Ce n’est pas un traitement du trouble panique, et ça ne vous dit pas ce que vous avez. C’est une chose à faire avec votre souffle en attendant.',
+          'Ça n’arrête pas une crise de panique. Ça ne remplace pas un suivi pour le trouble panique, et ça ne vous dit pas ce que vous avez. C’est une chose à faire avec votre souffle en attendant.',
           'Une douleur à la poitrine, un évanouissement, ou un essoufflement nouveau ou sévère demande des soins d’urgence, pas une application. Si vous êtes en détresse ou si vous pensez à vous faire du mal, utilisez les ressources au bas de cette page, dont le 988 au Canada, à composer ou à texter.',
           'Si vous êtes agité sans être en pleine crise, l’[exercice pour calmer l’anxiété](/fr/respiration-pour-calmer-anxiete/) est la version minutée, un peu plus lente. La [respiration carrée](/fr/respiration-carree/) ajoute des rétentions, que beaucoup de gens préfèrent éviter pendant une crise.',
         ],
@@ -94,7 +94,7 @@ export const frTopics = [
       {
         h2: 'Ce que la respiration carrée n’est pas',
         before: [
-          'C’est un exercice de rythme. Ce n’est pas un traitement de l’anxiété, d’un traumatisme ou d’un autre état, et ça ne vous rendra pas concentré ou calme à lui seul. La page [respiration pour la concentration](/fr/respiration-pour-la-concentration/) utilise le même rythme comme bordure d’une ou deux minutes avant une tâche. La [respiration 4-7-8](/fr/respiration-4-7-8-pour-dormir/) est un autre décompte, plus lent, pour le coucher, avec une longue expiration.',
+          'C’est un exercice de rythme. Ça ne remplace pas un suivi pour l’anxiété, un traumatisme ou un autre état, et ça ne vous rendra pas concentré ou calme à lui seul. La page [respiration pour la concentration](/fr/respiration-pour-la-concentration/) utilise le même rythme comme bordure d’une ou deux minutes avant une tâche. La [respiration 4-7-8](/fr/respiration-4-7-8-pour-dormir/) est un autre décompte, plus lent, pour le coucher, avec une longue expiration.',
         ],
         steps: [],
         after: [],
@@ -107,7 +107,7 @@ export const frTopics = [
     dur: '2m',
     slug: 'respiration-4-7-8-pour-dormir',
     title: 'Respiration 4-7-8 pour dormir | Nervio',
-    description: 'La respiration 4-7-8 pour dormir est un ralenti : inspirez 4, retenez 7, expirez 8. Le mode Sommeil de Nervio commence ainsi. Pas un traitement du sommeil.',
+    description: 'La respiration 4-7-8 pour dormir est un ralenti : inspirez 4, retenez 7, expirez 8. Le mode Sommeil de Nervio commence ainsi. Ce n’est pas une promesse de sommeil.',
     h1: 'Respiration 4-7-8 pour dormir',
     note: 'Information générale sur le bien-être. Pas un avis médical, et pas un substitut à des soins professionnels.',
     cta: 'Commencer le 4-7-8 dans Nervio',
@@ -241,7 +241,7 @@ export const frTopics = [
       {
         h2: 'À ne pas attendre de cet exercice',
         before: [
-          'Une application de respiration ne vous donne pas de l’attention, et ce n’est pas un traitement du TDAH ni d’un autre état. Le sommeil, les pauses, et la façon dont le travail est organisé comptent plus qu’un décompte parfait. Servez-vous de la séance comme d’un bord net, puis faites un petit morceau de la tâche.',
+          'Une application de respiration ne vous donne pas de l’attention, et ça ne remplace pas un suivi pour le TDAH ni pour un autre état. Le sommeil, les pauses, et la façon dont le travail est organisé comptent plus qu’un décompte parfait. Servez-vous de la séance comme d’un bord net, puis faites un petit morceau de la tâche.',
           'Le même rythme 4-4-4-4 est expliqué comme [respiration carrée](/fr/respiration-carree/). Pour le coucher, le [4-7-8](/fr/respiration-4-7-8-pour-dormir/) est plus lent exprès. C’est un mauvais choix juste avant de conduire ou de vous concentrer.',
         ],
         steps: [],

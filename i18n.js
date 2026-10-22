@@ -1,3 +1,5 @@
+import { SHORT, LINK_LABELS } from './scripts/legal.js';
+
 export const TRANSLATIONS = {
   en: {
     htmlLang: 'en',
@@ -24,6 +26,10 @@ export const TRANSLATIONS = {
     unmute: 'Turn sound on',
     progress: 'Session progress',
     guides: 'Guides',
+    liability: SHORT.en.line,
+    liabilityStop: SHORT.en.stop,
+    terms: LINK_LABELS.en.terms,
+    privacy: LINK_LABELS.en.privacy,
     language: 'Language',
     modesLabel: 'Mode',
     durationLabel: 'Duration',
@@ -31,7 +37,7 @@ export const TRANSLATIONS = {
     noTimer: 'No timer — stop when you want',
     sec: (n) => `${n} sec`,
     modes: {
-      calm: { name: 'Calm', sub: 'Ease anxiety' },
+      calm: { name: 'Calm', sub: 'Help you feel calmer' },
       focus: { name: 'Focus', sub: 'Clear the mind' },
       sleep: { name: 'Sleep', sub: 'Prepare for rest' },
       panic: { name: 'Reset', sub: 'Overwhelmed' },
@@ -70,6 +76,10 @@ export const TRANSLATIONS = {
     unmute: 'Activer le son',
     progress: 'Progression de la séance',
     guides: 'Guides',
+    liability: SHORT.fr.line,
+    liabilityStop: SHORT.fr.stop,
+    terms: LINK_LABELS.fr.terms,
+    privacy: LINK_LABELS.fr.privacy,
     language: 'Langue',
     modesLabel: 'Mode',
     durationLabel: 'Durée',
@@ -77,7 +87,7 @@ export const TRANSLATIONS = {
     noTimer: 'Sans minuterie — vous arrêtez quand vous voulez',
     sec: (n) => `${n} s`,
     modes: {
-      calm: { name: 'Calme', sub: 'Apaiser l’anxiété' },
+      calm: { name: 'Calme', sub: 'Vous sentir plus calme' },
       focus: { name: 'Concentration', sub: 'Éclaircir l’esprit' },
       sleep: { name: 'Sommeil', sub: 'Préparer le repos' },
       panic: { name: 'Recentrage', sub: 'Quand ça déborde' },
@@ -116,6 +126,10 @@ export const TRANSLATIONS = {
     unmute: 'Activar el sonido',
     progress: 'Progreso de la sesión',
     guides: 'Guías',
+    liability: SHORT.es.line,
+    liabilityStop: SHORT.es.stop,
+    terms: LINK_LABELS.es.terms,
+    privacy: LINK_LABELS.es.privacy,
     language: 'Idioma',
     modesLabel: 'Modo',
     durationLabel: 'Duración',
@@ -123,7 +137,7 @@ export const TRANSLATIONS = {
     noTimer: 'Sin temporizador — paras cuando quieras',
     sec: (n) => `${n} s`,
     modes: {
-      calm: { name: 'Calma', sub: 'Aliviar ansiedad' },
+      calm: { name: 'Calma', sub: 'Sentirte más en calma' },
       focus: { name: 'Enfoque', sub: 'Despejar la mente' },
       sleep: { name: 'Sueño', sub: 'Preparar el descanso' },
       panic: { name: 'Reinicio', sub: 'Abrumado' },
@@ -162,6 +176,10 @@ export const TRANSLATIONS = {
     unmute: 'Ativar o som',
     progress: 'Progresso da sessão',
     guides: 'Guias',
+    liability: SHORT.pt.line,
+    liabilityStop: SHORT.pt.stop,
+    terms: LINK_LABELS.pt.terms,
+    privacy: LINK_LABELS.pt.privacy,
     language: 'Idioma',
     modesLabel: 'Modo',
     durationLabel: 'Duração',
@@ -169,7 +187,7 @@ export const TRANSLATIONS = {
     noTimer: 'Sem cronômetro — pare quando quiser',
     sec: (n) => `${n} s`,
     modes: {
-      calm: { name: 'Calma', sub: 'Aliviar a ansiedade' },
+      calm: { name: 'Calma', sub: 'Sentir mais calma' },
       focus: { name: 'Foco', sub: 'Clarear a mente' },
       sleep: { name: 'Sono', sub: 'Preparar o descanso' },
       panic: { name: 'Reinício', sub: 'Sobrecarregado' },

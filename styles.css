@@ -597,6 +597,85 @@ a.go {
   align-items: center;
 }
 
+.liability {
+  margin: 0.15rem auto 0;
+  max-width: 38rem;
+  color: var(--quiet);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.liability span,
+.liability a {
+  display: inline;
+}
+
+.liability span + span::before,
+.liability a::before {
+  content: " ";
+}
+
+.liability a {
+  color: inherit;
+  font-weight: 500;
+  text-underline-offset: 0.16em;
+}
+
+.article .liability {
+  max-width: none;
+  margin: 0.85rem 0 0;
+  color: var(--quiet);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.legal-links {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.legal-links p {
+  margin: 0;
+}
+
+.disclaimer .checked {
+  color: var(--quiet);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.other-countries {
+  margin: 0.2rem 0 0.85rem;
+}
+
+.other-countries summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.disclaimer .other-countries ul {
+  margin: 0.1rem 0 0.15rem;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.plain-list {
+  margin: 0.4rem 0 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.28rem;
+}
+
 .noscript {
   width: min(40rem, calc(100% - 2rem));
   margin: 0 auto 1.5rem;
