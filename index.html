@@ -3,8 +3,60 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+(function () {
+  function code(value) {
+    var v = String(value || '').toLowerCase();
+    if (v.indexOf('fr') === 0) return 'fr';
+    if (v.indexOf('es') === 0) return 'es';
+    if (v.indexOf('pt') === 0) return 'pt';
+    if (v.indexOf('en') === 0) return 'en';
+    return '';
+  }
+  function home(lang) { return lang === 'en' ? '/' : '/' + lang + '/'; }
+  var path = location.pathname.replace(/\/index\.html$/, '');
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  var onHome = path === '' || path === '/' || path === '/fr' || path === '/es' || path === '/pt';
+  if (!onHome) return;
+  var params = new URLSearchParams(location.search);
+  var queryLang = code(params.get('lang'));
+  if (queryLang) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('nervio') || '{}') || {};
+      if (!saved || typeof saved !== 'object') saved = {};
+      saved.v = 1;
+      saved.lang = queryLang;
+      localStorage.setItem('nervio', JSON.stringify(saved));
+    } catch (err) {}
+    params.delete('lang');
+    var qs = params.toString();
+    var dest = home(queryLang) + (qs ? '?' + qs : '') + location.hash;
+    var here = (path === '' || path === '/') ? '/' : path + '/';
+    if (here !== home(queryLang)) location.replace(dest);
+    else history.replaceState(null, '', dest);
+    return;
+  }
+  if (path !== '' && path !== '/') return;
+  var preferred = '';
+  try {
+    var note = JSON.parse(localStorage.getItem('nervio') || 'null');
+    preferred = code(note && note.lang);
+  } catch (err) {}
+  if (!preferred) {
+    var list = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < list.length; i += 1) {
+      preferred = code(list[i]);
+      if (preferred) break;
+    }
+  }
+  if (!preferred || preferred === 'en') return;
+  params.delete('lang');
+  var rest = params.toString();
+  location.replace(home(preferred) + (rest ? '?' + rest : '') + location.hash);
+})();
+</script>
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#10120f" />
+  <meta name="theme-color" content="#090c0b" />
   <link rel="preload" href="/fonts/fraunces-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
   <title>Nervio — Free breathing exercises for calm, focus, sleep, and reset</title>
@@ -14,7 +66,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Nervio" />
   <meta property="og:title" content="Nervio — Free breathing exercises for calm, focus, sleep, and reset" />
-  <meta property="og:description" content="A free breathing app with Calm, Focus, Sleep, and Reset modes. English, French, Spanish, and Portuguese. No account." />
+  <meta property="og:description" content="Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account." />
   <meta property="og:url" content="https://www.panicpause.com/" />
   <meta property="og:image" content="https://www.panicpause.com/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -24,51 +76,25 @@
   <meta property="og:locale:alternate" content="fr_CA" />
   <meta property="og:locale:alternate" content="es_ES" />
   <meta property="og:locale:alternate" content="pt_BR" />
-  <link rel="alternate" hreflang="en" href="https://www.panicpause.com/?lang=en" />
-  <link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/?lang=fr" />
-  <link rel="alternate" hreflang="fr" href="https://www.panicpause.com/?lang=fr" />
-  <link rel="alternate" hreflang="es" href="https://www.panicpause.com/?lang=es" />
-  <link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/?lang=pt" />
-  <link rel="alternate" hreflang="pt" href="https://www.panicpause.com/?lang=pt" />
+  <link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+  <link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+  <link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
   <link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Nervio — Free breathing exercises for calm, focus, sleep, and reset" />
-  <meta name="twitter:description" content="A free breathing app with Calm, Focus, Sleep, and Reset modes. English, French, Spanish, and Portuguese. No account." />
+  <meta name="twitter:description" content="Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account." />
   <meta name="twitter:image" content="https://www.panicpause.com/og.png" />
+  
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="stylesheet" href="/styles.css" />
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "name": "Nervio",
-        "url": "https://www.panicpause.com/",
-        "inLanguage": ["en", "fr-CA", "es", "pt-BR"],
-        "description": "Free breathing exercises for calm, focus, sleep, and moments of panic."
-      },
-      {
-        "@type": "WebApplication",
-        "name": "Nervio",
-        "url": "https://www.panicpause.com/",
-        "applicationCategory": "LifestyleApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript",
-        "isAccessibleForFree": true,
-        "inLanguage": ["en", "fr-CA", "es", "pt-BR"],
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "CAD"
-        },
-        "description": "Free breathing exercises with Calm, Focus, Sleep, and Reset modes."
-      }
-    ]
-  }
+  {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Nervio","url":"https://www.panicpause.com/","inLanguage":["en","fr-CA","es","pt-BR"],"description":"Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account."},{"@type":"WebApplication","name":"Nervio","url":"https://www.panicpause.com/","applicationCategory":"LifestyleApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"inLanguage":["en","fr-CA","es","pt-BR"],"offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account."}]}
   </script>
 </head>
 <body>
@@ -84,10 +110,10 @@
       </a>
       <div class="nav-actions">
         <nav class="langs" id="langs" aria-label="Language">
-          <a href="/?lang=en" data-set-lang="en" lang="en" hreflang="en">EN</a>
-          <a href="/?lang=fr" data-set-lang="fr" lang="fr-CA" hreflang="fr-CA">FR</a>
-          <a href="/?lang=es" data-set-lang="es" lang="es" hreflang="es">ES</a>
-          <a href="/?lang=pt" data-set-lang="pt" lang="pt-BR" hreflang="pt-BR">PT</a>
+          <a href="/" data-set-lang="en" lang="en" hreflang="en" aria-current="page">EN</a>
+          <a href="/fr/" data-set-lang="fr" lang="fr-CA" hreflang="fr-CA">FR</a>
+          <a href="/es/" data-set-lang="es" lang="es" hreflang="es">ES</a>
+          <a href="/pt/" data-set-lang="pt" lang="pt-BR" hreflang="pt-BR">PT</a>
         </nav>
         <button type="button" class="icon-btn" id="cancel" hidden aria-label="Cancel session"><span aria-hidden="true">✕</span></button>
         <button type="button" class="icon-btn" id="mute" aria-pressed="false" aria-label="Mute sound">
@@ -102,8 +128,11 @@
         <p class="hero-sub" id="hero-sub">Just breathe.</p>
       </div>
       <div class="stage" id="stage" aria-hidden="true">
-        <div class="glow"></div>
-        <div class="orb" id="orb"></div>
+        <div class="breath" id="breath">
+          <div class="glow"></div>
+          <div class="orb" id="orb"></div>
+          <div class="ring"></div>
+        </div>
       </div>
       <p class="phase" id="phase" aria-live="polite"></p>
       <p class="hint" id="hint"></p>
@@ -120,19 +149,19 @@
       </div>
       <div class="modes" id="modes" role="group" aria-label="Mode">
         <button type="button" class="mode-btn" data-mode="calm" aria-pressed="true">
-          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 14c2.2-3.6 3.8-3.6 6 0s3.8 3.6 6 0 3.8-3.6 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
           <span class="mode-copy"><span class="mode-name">Calm</span><span class="mode-sub">Help you feel calmer</span></span>
         </button>
         <button type="button" class="mode-btn" data-mode="focus" aria-pressed="false">
-          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>
           <span class="mode-copy"><span class="mode-name">Focus</span><span class="mode-sub">Clear the mind</span></span>
         </button>
         <button type="button" class="mode-btn" data-mode="sleep" aria-pressed="false">
-          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15.2 5.2a6.8 6.8 0 1 0 5.2 11.2A7.2 7.2 0 0 1 15.2 5.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
           <span class="mode-copy"><span class="mode-name">Sleep</span><span class="mode-sub">Prepare for rest</span></span>
         </button>
         <button type="button" class="mode-btn" data-mode="panic" aria-pressed="false">
-          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/></svg></span>
           <span class="mode-copy"><span class="mode-name">Reset</span><span class="mode-sub">Overwhelmed</span></span>
         </button>
       </div>

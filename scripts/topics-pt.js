@@ -11,7 +11,7 @@ export const ptTopics = [
     cta: 'Começar o Reinício no Nervio',
     paragraphs: [
       'Um ataque de pânico costuma deixar a respiração rápida e curta. Você não precisa forçá-la a voltar ao normal. Um ritmo pequeno, com a saída do ar um pouco mais longa que a entrada, dá algo simples para acompanhar enquanto a onda passa.',
-      'Dá para fazer isso sozinho ou [começar o Reinício no Nervio](/?lang=pt&mode=reset). O Reinício não tem cronômetro. Você toca em Terminar quando estiver pronto. O texto na tela é direto: tudo bem se a sua respiração for curta.',
+      'Dá para fazer isso sozinho ou [começar o Reinício no Nervio](/pt/?mode=reset). O Reinício não tem cronômetro. Você toca em Terminar quando estiver pronto. O texto na tela é direto: tudo bem se a sua respiração for curta.',
     ],
     sections: [
       {
@@ -63,7 +63,7 @@ export const ptTopics = [
     cta: 'Começar a respiração quadrada no Nervio',
     paragraphs: [
       'A respiração quadrada, também chamada de respiração em caixa, é um ritmo contado com quatro lados iguais: inspire, segure, expire, segure. Uma contagem comum é 4 segundos em cada lado. As pessoas usam isso quando querem um ritmo estável, em vez de uma expiração longa e sonolenta.',
-      'No Nervio isso fica no modo Foco, começando em 4-4-4-4. [Este link abre uma sessão de Foco de 2 minutos](/?lang=pt&mode=focus&dur=2m). Na tela inicial você também pode escolher Rápido (cerca de 30 segundos) ou 1 minuto.',
+      'No Nervio isso fica no modo Foco, começando em 4-4-4-4. [Este link abre uma sessão de Foco de 2 minutos](/pt/?mode=focus&dur=2m). Na tela inicial você também pode escolher Rápido (cerca de 30 segundos) ou 1 minuto.',
     ],
     sections: [
       {
@@ -113,7 +113,7 @@ export const ptTopics = [
     cta: 'Começar o 4-7-8 no Nervio',
     paragraphs: [
       'A respiração 4-7-8 é uma contagem lenta que as pessoas usam para desacelerar antes de dormir: inspire por 4, segure por 7, expire por 8. A expiração longa é a ideia principal. A pausa só serve se for confortável.',
-      'O modo Sono do Nervio começa nessa contagem. [Este link abre uma sessão de Sono de 2 minutos](/?lang=pt&mode=sleep&dur=2m). São alguns minutos quietos, não uma promessa de que você vai pegar no sono.',
+      'O modo Sono do Nervio começa nessa contagem. [Este link abre uma sessão de Sono de 2 minutos](/pt/?mode=sleep&dur=2m). São alguns minutos quietos, não uma promessa de que você vai pegar no sono.',
     ],
     sections: [
       {
@@ -163,7 +163,7 @@ export const ptTopics = [
     cta: 'Começar a Calma no Nervio',
     paragraphs: [
       'Rápido, aqui, quer dizer que o exercício em si é curto. Não quer dizer que a ansiedade some num horário marcado. O ritmo é uma expiração mais longa que a inspiração, sem segurar o ar: 4 segundos para entrar, 6 para sair. Alguns minutos são a coisa toda.',
-      'O [modo Calma no Nervio](/?lang=pt&mode=calm&dur=2m) começa nessa contagem. Você pode escolher 30 segundos, 1 minuto ou 2 minutos. Olhos abertos está bem. Acompanhar o guia de um jeito solto também está bem.',
+      'O [modo Calma no Nervio](/pt/?mode=calm&dur=2m) começa nessa contagem. Você pode escolher 30 segundos, 1 minuto ou 2 minutos. Olhos abertos está bem. Acompanhar o guia de um jeito solto também está bem.',
     ],
     sections: [
       {
@@ -213,7 +213,7 @@ export const ptTopics = [
     cta: 'Começar uma sessão de foco',
     paragraphs: [
       'Foco, aqui, quer dizer um ritmo de respiração curto e igual antes de uma tarefa. Não é um truque que faz a tarefa por você. O modo Foco do Nervio usa a respiração quadrada: quatro partes iguais, 4 segundos cada. Um ou dois minutos bastam para marcar um começo.',
-      '[Este link abre o Foco por 2 minutos](/?lang=pt&mode=focus&dur=2m). Os passos do ritmo estão na página de [respiração quadrada](/pt/respiracao-quadrada/). O que vem a seguir é como usar esse minuto.',
+      '[Este link abre o Foco por 2 minutos](/pt/?mode=focus&dur=2m). Os passos do ritmo estão na página de [respiração quadrada](/pt/respiracao-quadrada/). O que vem a seguir é como usar esse minuto.',
     ],
     sections: [
       {

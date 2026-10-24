@@ -3,7 +3,8 @@ import { SHORT, LINK_LABELS } from './scripts/legal.js';
 export const TRANSLATIONS = {
   en: {
     htmlLang: 'en',
-    title: 'Nervio — Free breathing exercises',
+    title: 'Nervio — Free breathing exercises for calm, focus, sleep, and reset',
+    description: 'Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account.',
     skip: 'Skip to content',
     welcome: 'Quiet the noise.',
     subWelcome: 'Just breathe.',
@@ -53,7 +54,8 @@ export const TRANSLATIONS = {
   },
   fr: {
     htmlLang: 'fr-CA',
-    title: 'Nervio — Exercices de respiration gratuits',
+    title: 'Nervio — Exercices de respiration gratuits pour le calme, la concentration, le sommeil et le recentrage',
+    description: 'Nervio est une application gratuite de respiration, avec les modes Calme, Concentration, Sommeil et Recentrage. En français, anglais, espagnol et portugais. Sans compte.',
     skip: 'Aller au contenu',
     welcome: 'Apaisez le bruit.',
     subWelcome: 'Respirez simplement.',
@@ -103,7 +105,8 @@ export const TRANSLATIONS = {
   },
   es: {
     htmlLang: 'es',
-    title: 'Nervio — Ejercicios de respiración gratis',
+    title: 'Nervio — Ejercicios de respiración gratis para la calma, el enfoque, el sueño y el reinicio',
+    description: 'Nervio es una aplicación gratuita de respiración, con los modos Calma, Enfoque, Sueño y Reinicio. En español, inglés, francés y portugués. Sin cuenta.',
     skip: 'Saltar al contenido',
     welcome: 'Silencia el ruido.',
     subWelcome: 'Solo respira.',
@@ -153,7 +156,8 @@ export const TRANSLATIONS = {
   },
   pt: {
     htmlLang: 'pt-BR',
-    title: 'Nervio — Exercícios de respiração grátis',
+    title: 'Nervio — Exercícios de respiração grátis para calma, foco, sono e reinício',
+    description: 'O Nervio é um aplicativo grátis de respiração, com os modos Calma, Foco, Sono e Reinício. Em português, inglês, francês e espanhol. Sem conta.',
     skip: 'Pular para o conteúdo',
     welcome: 'Acalme o ruído.',
     subWelcome: 'Apenas respire.',

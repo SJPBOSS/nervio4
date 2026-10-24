@@ -4,7 +4,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { DURATION_SECONDS, TECHNIQUES, durationOf, nextPhase, scaleFor, stepSession, withDifficulty } from '../breathing.js';
 import { TRANSLATIONS } from '../i18n.js';
-import { publicMode, resolveSettings } from '../settings.js';
+import { homePath, languageTarget, publicMode, resolveSettings } from '../settings.js';
 import { LANGS, TOPICS, pagePath } from '../scripts/content.js';
 import { CHECKED, legalPath } from '../scripts/legal.js';
 
@@ -91,6 +91,63 @@ test('shared links win over a saved language and mode', () => {
   assert.equal(publicMode('panic'), 'reset');
 });
 
+test('language homes are the crawlable addresses and old lang queries still redirect', () => {
+  assert.equal(homePath('en'), '/');
+  assert.equal(homePath('fr'), '/fr/');
+  assert.equal(homePath('pt-BR'), '/pt/');
+  assert.deepEqual(languageTarget({ pathname: '/', search: '?lang=fr&mode=sleep&dur=1m' }), {
+    url: '/fr/?mode=sleep&dur=1m',
+    method: 'replace',
+  });
+  assert.deepEqual(languageTarget({ pathname: '/fr/', search: '?lang=fr&mode=sleep' }), {
+    url: '/fr/?mode=sleep',
+    method: 'replaceState',
+  });
+  assert.deepEqual(languageTarget({ pathname: '/', search: '?lang=en&dur=30s' }), {
+    url: '/?dur=30s',
+    method: 'replaceState',
+  });
+  assert.deepEqual(languageTarget({ pathname: '/es/', search: '?lang=pt', hash: '#guides' }), {
+    url: '/pt/#guides',
+    method: 'replace',
+  });
+  assert.deepEqual(languageTarget({ pathname: '/fr', search: '?lang=en&mode=focus' }), {
+    url: '/?mode=focus',
+    method: 'replace',
+  });
+  assert.equal(languageTarget({ pathname: '/fr/', search: '?mode=focus' }), null);
+  assert.equal(languageTarget({ pathname: '/fr/conditions/', search: '?lang=es' }), null);
+  assert.deepEqual(
+    languageTarget({ pathname: '/', search: '?mode=calm', stored: { lang: 'es' }, languages: ['en'] }),
+    { url: '/es/?mode=calm', method: 'replace' },
+  );
+  assert.deepEqual(
+    languageTarget({ pathname: '/', search: '', stored: null, languages: ['pt-BR', 'en'] }),
+    { url: '/pt/', method: 'replace' },
+  );
+  assert.equal(languageTarget({ pathname: '/', search: '', stored: { lang: 'en' }, languages: ['fr-CA'] }), null);
+
+  const onFrenchHome = resolveSettings({
+    pathname: '/fr/',
+    search: '',
+    stored: { lang: 'en', mode: 'sleep', duration: '1m' },
+    languages: ['en'],
+  });
+  assert.equal(onFrenchHome.lang, 'fr');
+  assert.equal(onFrenchHome.mode, 'sleep');
+  assert.equal(onFrenchHome.duration, '1m');
+
+  const oldShare = resolveSettings({
+    pathname: '/',
+    search: '?lang=es&mode=reset&dur=30s',
+    stored: { lang: 'fr', mode: 'calm', duration: '2m' },
+    languages: ['en'],
+  });
+  assert.equal(oldShare.lang, 'es');
+  assert.equal(oldShare.mode, 'panic');
+  assert.equal(oldShare.duration, '30s');
+});
+
 test('browser language is used only when nothing else is set', () => {
   const settings = resolveSettings({ search: '', stored: null, languages: ['fr-CA', 'en'] });
   assert.equal(settings.lang, 'fr');
@@ -151,6 +208,41 @@ test('every language has the same strings', () => {
   assert.match(TRANSLATIONS.fr.liability, /vous/i);
   assert.match(TRANSLATIONS.es.liability, /estás/);
   assert.match(TRANSLATIONS.pt.liabilityStop, /você/);
+});
+
+test('each language home is crawlable on its own path', () => {
+  const homes = {
+    en: ['index.html', 'https://www.panicpause.com/', 'lang="en"', 'Quiet the noise.'],
+    fr: ['fr/index.html', 'https://www.panicpause.com/fr/', 'lang="fr-CA"', 'Apaisez le bruit.'],
+    es: ['es/index.html', 'https://www.panicpause.com/es/', 'lang="es"', 'Silencia el ruido.'],
+    pt: ['pt/index.html', 'https://www.panicpause.com/pt/', 'lang="pt-BR"', 'Acalme o ruído.'],
+  };
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  assert.match(sitemap, /xmlns:xhtml="http:\/\/www\.w3\.org\/1999\/xhtml"/);
+  for (const [lang, [file, canonical, htmlLang, h1]] of Object.entries(homes)) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    const h1Pattern = h1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.match(html, new RegExp(`<html ${htmlLang}>`));
+    assert.match(html, new RegExp(`rel="canonical" href="${canonical.replaceAll('/', '\\/')}"`));
+    assert.match(html, new RegExp(`<h1 id="hero-title">${h1Pattern}</h1>`));
+    assert.match(html, /hreflang="en" href="https:\/\/www\.panicpause\.com\/"/);
+    assert.match(html, /hreflang="fr-CA" href="https:\/\/www\.panicpause\.com\/fr\/"/);
+    assert.match(html, /hreflang="fr" href="https:\/\/www\.panicpause\.com\/fr\/"/);
+    assert.match(html, /hreflang="es" href="https:\/\/www\.panicpause\.com\/es\/"/);
+    assert.match(html, /hreflang="pt-BR" href="https:\/\/www\.panicpause\.com\/pt\/"/);
+    assert.match(html, /hreflang="pt" href="https:\/\/www\.panicpause\.com\/pt\/"/);
+    assert.match(html, /hreflang="x-default" href="https:\/\/www\.panicpause\.com\/"/);
+    assert.doesNotMatch(html, /hreflang="[^"]+" href="https:\/\/www\.panicpause\.com\/\?lang=/);
+    assert.match(html, /id="breath"/);
+    assert.match(sitemap, new RegExp(`<loc>${canonical.replaceAll('/', '\\/')}<\\/loc>`));
+    assert.match(html, /name="description"/);
+    assert.ok(html.includes(TRANSLATIONS[lang].description), `${lang} meta description`);
+    assert.ok(html.includes(TRANSLATIONS[lang].title), `${lang} title`);
+  }
+  const fr = fs.readFileSync(path.join(root, 'fr/index.html'), 'utf8');
+  assert.match(fr, /Respirer/);
+  assert.match(fr, /Vous sentir plus calme/);
+  assert.doesNotMatch(fr, /Help you feel calmer/);
 });
 
 test('the static site keeps its domain and does not lock zoom', () => {
@@ -278,6 +370,7 @@ test('guides are linked, translated, and careful', () => {
         assert.ok(html.indexOf('tel:188') < html.indexOf('Outros países'));
       }
       assert.match(html, new RegExp(`mode=${topic.mode}`));
+      assert.doesNotMatch(html, /\?lang=/);
       assert.doesNotMatch(html, banned);
       assert.doesNotMatch(html, /%/);
       const text = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');

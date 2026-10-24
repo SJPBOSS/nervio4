@@ -1,8 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.panicpause.com/</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
+  </url>
+  <url>
+    <loc>https://www.panicpause.com/fr/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
+  </url>
+  <url>
+    <loc>https://www.panicpause.com/es/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
+  </url>
+  <url>
+    <loc>https://www.panicpause.com/pt/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
   </url>
   <url>
     <loc>https://www.panicpause.com/en/terms/</loc>

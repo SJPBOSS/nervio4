@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+(function () {
+  function code(value) {
+    var v = String(value || '').toLowerCase();
+    if (v.indexOf('fr') === 0) return 'fr';
+    if (v.indexOf('es') === 0) return 'es';
+    if (v.indexOf('pt') === 0) return 'pt';
+    if (v.indexOf('en') === 0) return 'en';
+    return '';
+  }
+  function home(lang) { return lang === 'en' ? '/' : '/' + lang + '/'; }
+  var path = location.pathname.replace(/\/index\.html$/, '');
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  var onHome = path === '' || path === '/' || path === '/fr' || path === '/es' || path === '/pt';
+  if (!onHome) return;
+  var params = new URLSearchParams(location.search);
+  var queryLang = code(params.get('lang'));
+  if (queryLang) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('nervio') || '{}') || {};
+      if (!saved || typeof saved !== 'object') saved = {};
+      saved.v = 1;
+      saved.lang = queryLang;
+      localStorage.setItem('nervio', JSON.stringify(saved));
+    } catch (err) {}
+    params.delete('lang');
+    var qs = params.toString();
+    var dest = home(queryLang) + (qs ? '?' + qs : '') + location.hash;
+    var here = (path === '' || path === '/') ? '/' : path + '/';
+    if (here !== home(queryLang)) location.replace(dest);
+    else history.replaceState(null, '', dest);
+    return;
+  }
+  if (path !== '' && path !== '/') return;
+  var preferred = '';
+  try {
+    var note = JSON.parse(localStorage.getItem('nervio') || 'null');
+    preferred = code(note && note.lang);
+  } catch (err) {}
+  if (!preferred) {
+    var list = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < list.length; i += 1) {
+      preferred = code(list[i]);
+      if (preferred) break;
+    }
+  }
+  if (!preferred || preferred === 'en') return;
+  params.delete('lang');
+  var rest = params.toString();
+  location.replace(home(preferred) + (rest ? '?' + rest : '') + location.hash);
+})();
+</script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#090c0b" />
+  <link rel="preload" href="/fonts/fraunces-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <title>Nervio — Exercícios de respiração grátis para calma, foco, sono e reinício</title>
+  <meta name="description" content="O Nervio é um aplicativo grátis de respiração, com os modos Calma, Foco, Sono e Reinício. Em português, inglês, francês e espanhol. Sem conta." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.panicpause.com/pt/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nervio" />
+  <meta property="og:title" content="Nervio — Exercícios de respiração grátis para calma, foco, sono e reinício" />
+  <meta property="og:description" content="O Nervio é um aplicativo grátis de respiração, com os modos Calma, Foco, Sono e Reinício. Em português, inglês, francês e espanhol. Sem conta." />
+  <meta property="og:url" content="https://www.panicpause.com/pt/" />
+  <meta property="og:image" content="https://www.panicpause.com/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nervio, a free breathing app on a black background" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:locale:alternate" content="fr_CA" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+  <link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+  <link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nervio — Exercícios de respiração grátis para calma, foco, sono e reinício" />
+  <meta name="twitter:description" content="O Nervio é um aplicativo grátis de respiração, com os modos Calma, Foco, Sono e Reinício. Em português, inglês, francês e espanhol. Sem conta." />
+  <meta name="twitter:image" content="https://www.panicpause.com/og.png" />
+  
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Nervio","url":"https://www.panicpause.com/pt/","inLanguage":["en","fr-CA","es","pt-BR"],"description":"O Nervio é um aplicativo grátis de respiração, com os modos Calma, Foco, Sono e Reinício. Em português, inglês, francês e espanhol. Sem conta."},{"@type":"WebApplication","name":"Nervio","url":"https://www.panicpause.com/pt/","applicationCategory":"LifestyleApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"inLanguage":["en","fr-CA","es","pt-BR"],"offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"O Nervio é um aplicativo grátis de respiração, com os modos Calma, Foco, Sono e Reinício. Em português, inglês, francês e espanhol. Sem conta."}]}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main" id="skip">Pular para o conteúdo</a>
+  <div class="app is-idle" id="app" data-mode="calm">
+    <div class="progress" id="progress" hidden>
+      <div class="progress-fill" id="progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso da sessão"></div>
+    </div>
+    <header class="nav">
+      <a class="brand" href="/pt/" id="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Nervio</span>
+      </a>
+      <div class="nav-actions">
+        <nav class="langs" id="langs" aria-label="Idioma">
+          <a href="/" data-set-lang="en" lang="en" hreflang="en">EN</a>
+          <a href="/fr/" data-set-lang="fr" lang="fr-CA" hreflang="fr-CA">FR</a>
+          <a href="/es/" data-set-lang="es" lang="es" hreflang="es">ES</a>
+          <a href="/pt/" data-set-lang="pt" lang="pt-BR" hreflang="pt-BR" aria-current="page">PT</a>
+        </nav>
+        <button type="button" class="icon-btn" id="cancel" hidden aria-label="Cancelar a sessão"><span aria-hidden="true">✕</span></button>
+        <button type="button" class="icon-btn" id="mute" aria-pressed="false" aria-label="Silenciar">
+          <svg class="icon-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm12.5 3a3.5 3.5 0 0 0-1.8-3.06v6.12A3.5 3.5 0 0 0 16.5 12z"/></svg>
+          <svg class="icon-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm13.1 3 2.4-2.4-1.4-1.4L15.7 10.6 13.3 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>
+        </button>
+      </div>
+    </header>
+    <main id="main" class="stage-wrap">
+      <div class="hero" id="hero">
+        <h1 id="hero-title">Acalme o ruído.</h1>
+        <p class="hero-sub" id="hero-sub">Apenas respire.</p>
+      </div>
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="breath" id="breath">
+          <div class="glow"></div>
+          <div class="orb" id="orb"></div>
+          <div class="ring"></div>
+        </div>
+      </div>
+      <p class="phase" id="phase" aria-live="polite"></p>
+      <p class="hint" id="hint"></p>
+    </main>
+    <section class="controls" id="controls" aria-label="Sessão de respiração">
+      <p class="pattern" id="pattern">Inspire 4 s · Expire 6 s · 2 min</p>
+      <div class="checkin" id="checkin" hidden>
+        <h2 id="how-feel" tabindex="-1">Como você está agora?</h2>
+        <div class="checkin-grid">
+          <button type="button" data-feedback="better"><span id="label-better">Melhor</span></button>
+          <button type="button" data-feedback="same"><span id="label-same">Igual</span></button>
+          <button type="button" data-feedback="worse"><span id="label-worse">Pior</span></button>
+        </div>
+      </div>
+      <div class="modes" id="modes" role="group" aria-label="Modo">
+        <button type="button" class="mode-btn" data-mode="calm" aria-pressed="true">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 14c2.2-3.6 3.8-3.6 6 0s3.8 3.6 6 0 3.8-3.6 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">Calma</span><span class="mode-sub">Sentir mais calma</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="focus" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">Foco</span><span class="mode-sub">Clarear a mente</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="sleep" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15.2 5.2a6.8 6.8 0 1 0 5.2 11.2A7.2 7.2 0 0 1 15.2 5.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">Sono</span><span class="mode-sub">Preparar o descanso</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="panic" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">Reinício</span><span class="mode-sub">Sobrecarregado</span></span>
+        </button>
+      </div>
+      <div class="durations" id="durations" role="group" aria-label="Duração">
+        <button type="button" data-dur="30s" aria-pressed="false">Rápido</button>
+        <button type="button" data-dur="1m" aria-pressed="false">1 min</button>
+        <button type="button" data-dur="2m" aria-pressed="true">2 min</button>
+      </div>
+      <button type="button" class="go" id="go" aria-describedby="pattern">Respirar</button>
+      <a class="guides-jump" id="guides-jump" href="#guides">Guias</a>
+      <p class="liability" id="liability">
+        <span id="liability-line">O Nervio é um cronômetro de respiração para o bem-estar em geral. Não é orientação médica, nem diagnóstico, nem tratamento, e não é para emergências. Se você está em crise, ligue para o número de emergência local ou para uma linha de crise.</span>
+        <span id="liability-stop">Pare se sentir tontura ou a cabeça leve. Se você tem um problema no coração, nos pulmões ou outra condição de saúde, ou se está grávida, fale com um médico antes.</span>
+        <a id="liability-terms" href="/pt/aviso/">Termos e aviso</a>
+      </p>
+    </section>
+  </div>
+  <noscript class="noscript">
+    <p>The guided exercise needs JavaScript. The written guides below work without it.</p>
+    <p lang="fr-CA">L’exercice guidé a besoin de JavaScript. Les guides écrits plus bas fonctionnent sans.</p>
+    <p lang="es">El ejercicio guiado necesita JavaScript. Las guías escritas de abajo funcionan sin él.</p>
+    <p lang="pt-BR">O exercício guiado precisa de JavaScript. Os guias escritos abaixo funcionam sem ele.</p>
+  </noscript>
+  <footer class="site-footer" id="guides">
+    <!-- guides:start -->
+    <h2>Guides</h2>
+  <div class="guide-columns">
+    <section aria-labelledby="guides-en">
+      <h3 id="guides-en" lang="en">English</h3>
+      <ul class="guide-list">
+        <li><a href="/en/breathing-exercise-for-panic-attack/" lang="en">A breathing exercise for a panic attack</a></li>
+        <li><a href="/en/box-breathing/" lang="en">Box breathing</a></li>
+        <li><a href="/en/4-7-8-breathing-for-sleep/" lang="en">4-7-8 breathing for sleep</a></li>
+        <li><a href="/en/breathing-to-calm-anxiety/" lang="en">Breathing to calm anxiety fast</a></li>
+        <li><a href="/en/breathing-for-focus/" lang="en">Breathing for focus</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-fr">
+      <h3 id="guides-fr" lang="fr-CA">Français</h3>
+      <ul class="guide-list">
+        <li><a href="/fr/exercice-respiration-crise-panique/" lang="fr-CA">Exercice de respiration pour une crise de panique</a></li>
+        <li><a href="/fr/respiration-carree/" lang="fr-CA">Respiration carrée</a></li>
+        <li><a href="/fr/respiration-4-7-8-pour-dormir/" lang="fr-CA">Respiration 4-7-8 pour dormir</a></li>
+        <li><a href="/fr/respiration-pour-calmer-anxiete/" lang="fr-CA">Respiration pour calmer l’anxiété rapidement</a></li>
+        <li><a href="/fr/respiration-pour-la-concentration/" lang="fr-CA">Respiration pour la concentration</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-es">
+      <h3 id="guides-es" lang="es">Español</h3>
+      <ul class="guide-list">
+        <li><a href="/es/ejercicio-respiracion-ataque-panico/" lang="es">Ejercicio de respiración para un ataque de pánico</a></li>
+        <li><a href="/es/respiracion-cuadrada/" lang="es">Respiración cuadrada</a></li>
+        <li><a href="/es/respiracion-4-7-8-para-dormir/" lang="es">Respiración 4-7-8 para dormir</a></li>
+        <li><a href="/es/respiracion-para-calmar-la-ansiedad/" lang="es">Respiración para calmar la ansiedad rápido</a></li>
+        <li><a href="/es/respiracion-para-concentrarse/" lang="es">Respiración para concentrarse</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-pt">
+      <h3 id="guides-pt" lang="pt-BR">Português</h3>
+      <ul class="guide-list">
+        <li><a href="/pt/exercicio-respiracao-ataque-panico/" lang="pt-BR">Exercício de respiração para um ataque de pânico</a></li>
+        <li><a href="/pt/respiracao-quadrada/" lang="pt-BR">Respiração quadrada</a></li>
+        <li><a href="/pt/respiracao-4-7-8-para-dormir/" lang="pt-BR">Respiração 4-7-8 para dormir</a></li>
+        <li><a href="/pt/respiracao-para-acalmar-ansiedade/" lang="pt-BR">Respiração para acalmar a ansiedade</a></li>
+        <li><a href="/pt/respiracao-para-focar/" lang="pt-BR">Respiração para focar</a></li>
+      </ul>
+    </section>
+  </div>
+  <div class="footer-blurbs">
+    <p lang="en">Nervio is a free breathing app for calm, focus, sleep, and moments of panic. No account. These guides are general wellness information, not medical advice.</p>
+    <p lang="fr-CA">Nervio est une application gratuite de respiration pour le calme, la concentration, le sommeil et les crises de panique. Sans compte. Ces guides sont de l’information générale sur le bien-être, pas un avis médical.</p>
+    <p lang="es">Nervio es una aplicación gratuita de respiración para la calma, el enfoque, el sueño y los ataques de pánico. Sin cuenta. Estas guías son información general de bienestar, no consejo médico.</p>
+    <p lang="pt-BR">O Nervio é um aplicativo grátis de respiração para calma, foco, sono e momentos de pânico. Sem conta. Estes guias são informação geral de bem-estar, não orientação médica.</p>
+  </div>
+  <nav class="legal-links" aria-label="Legal">
+    <p lang="en"><a href="/en/terms/" hreflang="en">Terms and disclaimer</a> · <a href="/en/privacy/" hreflang="en">Privacy</a></p>
+    <p lang="fr-CA"><a href="/fr/conditions/" hreflang="fr-CA">Conditions et avis</a> · <a href="/fr/confidentialite/" hreflang="fr-CA">Confidentialité</a></p>
+    <p lang="es"><a href="/es/aviso/" hreflang="es">Términos y aviso</a> · <a href="/es/privacidad/" hreflang="es">Privacidad</a></p>
+    <p lang="pt-BR"><a href="/pt/aviso/" hreflang="pt-BR">Termos e aviso</a> · <a href="/pt/privacidade/" hreflang="pt-BR">Privacidade</a></p>
+  </nav>
+    <!-- guides:end -->
+  </footer>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

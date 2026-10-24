@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { SITE, PUBLISHED, LANGS, TOPICS, CHROME, DISCLAIMERS, BLURBS, pagePath } from './content.js';
 import { CHECKED, CHECKED_DATE, SHORT, LINK_LABELS, LEGAL_PAGES, legalPath } from './legal.js';
+import { TRANSLATIONS } from '../i18n.js';
+import { homePath } from '../settings.js';
 
 const root = path.resolve(import.meta.dirname, '..');
 
@@ -43,10 +45,9 @@ function segments(parts) {
 
 function appUrl(lang, mode, dur) {
   const params = new URLSearchParams();
-  params.set('lang', lang);
   params.set('mode', mode);
   if (dur) params.set('dur', dur);
-  return `/?${params.toString()}`;
+  return `${homePath(lang)}?${params.toString()}`;
 }
 
 function iconLinks() {
@@ -190,8 +191,8 @@ function renderArticle(topic, lang) {
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Nervio', item: `${SITE}/?lang=${lang}` },
-          { '@type': 'ListItem', position: 2, name: chrome.guides, item: `${SITE}/?lang=${lang}#guides` },
+          { '@type': 'ListItem', position: 1, name: 'Nervio', item: `${SITE}${homePath(lang)}` },
+          { '@type': 'ListItem', position: 2, name: chrome.guides, item: `${SITE}${homePath(lang)}#guides` },
           { '@type': 'ListItem', position: 3, name: copy.h1, item: canonical },
         ],
       },
@@ -204,7 +205,7 @@ function renderArticle(topic, lang) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#10120f" />
+  <meta name="theme-color" content="#090c0b" />
   <title>${esc(copy.title)}</title>
   <meta name="description" content="${esc(copy.description)}" />
   <meta name="robots" content="index, follow" />
@@ -233,7 +234,7 @@ ${locales}
 <body>
   <a class="skip" href="#main">${esc(chrome.skip)}</a>
   <header class="nav">
-    <a class="brand" href="/?lang=${lang}">
+    <a class="brand" href="${homePath(lang)}">
       <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">Nervio</span>
     </a>
@@ -246,8 +247,8 @@ ${locales}
   <main id="main" class="article">
     <nav class="crumbs" aria-label="${esc(chrome.breadcrumb)}">
       <ol>
-        <li><a href="/?lang=${lang}">Nervio</a></li>
-        <li><a href="/?lang=${lang}#guides">${esc(chrome.guides)}</a></li>
+        <li><a href="${homePath(lang)}">Nervio</a></li>
+        <li><a href="${homePath(lang)}#guides">${esc(chrome.guides)}</a></li>
         <li aria-current="page">${esc(copy.h1)}</li>
       </ol>
     </nav>
@@ -272,7 +273,7 @@ ${locales}
   <footer class="site-footer">
     <p lang="${esc(chrome.htmlLang)}">${esc(BLURBS[lang])}</p>
     ${legalLinksHtml(lang)}
-    <p><a href="/?lang=${lang}">${esc(chrome.openApp)}</a></p>
+    <p><a href="${homePath(lang)}">${esc(chrome.openApp)}</a></p>
   </footer>
 </body>
 </html>
@@ -292,7 +293,7 @@ function render404() {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#10120f" />
+  <meta name="theme-color" content="#090c0b" />
   <title>${esc(CHROME.en.notFoundTitle)}</title>
   <meta name="description" content="This page is not on Nervio. Go back to the free breathing app or read a guide." />
   <meta name="robots" content="noindex" />
@@ -372,7 +373,7 @@ function renderLegal(kind, lang) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#10120f" />
+  <meta name="theme-color" content="#090c0b" />
   <title>${esc(page.title)}</title>
   <meta name="description" content="${esc(page.description)}" />
   <meta name="robots" content="index, follow" />
@@ -401,7 +402,7 @@ ${locales}
 <body>
   <a class="skip" href="#main">${esc(chrome.skip)}</a>
   <header class="nav">
-    <a class="brand" href="/?lang=${lang}">
+    <a class="brand" href="${homePath(lang)}">
       <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">Nervio</span>
     </a>
@@ -414,7 +415,7 @@ ${locales}
   <main id="main" class="article">
     <nav class="crumbs" aria-label="${esc(chrome.breadcrumb)}">
       <ol>
-        <li><a href="/?lang=${lang}">Nervio</a></li>
+        <li><a href="${homePath(lang)}">Nervio</a></li>
         <li aria-current="page">${esc(page.h1)}</li>
       </ol>
     </nav>
@@ -426,18 +427,265 @@ ${locales}
   <footer class="site-footer">
     <p lang="${esc(chrome.htmlLang)}">${esc(BLURBS[lang])}</p>
     ${legalLinksHtml(lang)}
-    <p><a href="/?lang=${lang}">${esc(chrome.openApp)}</a></p>
+    <p><a href="${homePath(lang)}">${esc(chrome.openApp)}</a></p>
   </footer>
 </body>
 </html>
 `;
 }
 
+const MODE_ICONS = {
+  calm: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 14c2.2-3.6 3.8-3.6 6 0s3.8 3.6 6 0 3.8-3.6 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  focus: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+  sleep: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15.2 5.2a6.8 6.8 0 1 0 5.2 11.2A7.2 7.2 0 0 1 15.2 5.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  panic: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/></svg>',
+};
+
+const HOME_HREFLANG = [
+  ['en', `${SITE}/`],
+  ['fr-CA', `${SITE}/fr/`],
+  ['fr', `${SITE}/fr/`],
+  ['es', `${SITE}/es/`],
+  ['pt-BR', `${SITE}/pt/`],
+  ['pt', `${SITE}/pt/`],
+  ['x-default', `${SITE}/`],
+];
+
+function homeHreflangLinks() {
+  return HOME_HREFLANG
+    .map(([hreflang, href]) => `  <link rel="alternate" hreflang="${hreflang}" href="${href}" />`)
+    .join('\n');
+}
+
+function langBootScript() {
+  return `<script>
+(function () {
+  function code(value) {
+    var v = String(value || '').toLowerCase();
+    if (v.indexOf('fr') === 0) return 'fr';
+    if (v.indexOf('es') === 0) return 'es';
+    if (v.indexOf('pt') === 0) return 'pt';
+    if (v.indexOf('en') === 0) return 'en';
+    return '';
+  }
+  function home(lang) { return lang === 'en' ? '/' : '/' + lang + '/'; }
+  var path = location.pathname.replace(/\\/index\\.html$/, '');
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  var onHome = path === '' || path === '/' || path === '/fr' || path === '/es' || path === '/pt';
+  if (!onHome) return;
+  var params = new URLSearchParams(location.search);
+  var queryLang = code(params.get('lang'));
+  if (queryLang) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('nervio') || '{}') || {};
+      if (!saved || typeof saved !== 'object') saved = {};
+      saved.v = 1;
+      saved.lang = queryLang;
+      localStorage.setItem('nervio', JSON.stringify(saved));
+    } catch (err) {}
+    params.delete('lang');
+    var qs = params.toString();
+    var dest = home(queryLang) + (qs ? '?' + qs : '') + location.hash;
+    var here = (path === '' || path === '/') ? '/' : path + '/';
+    if (here !== home(queryLang)) location.replace(dest);
+    else history.replaceState(null, '', dest);
+    return;
+  }
+  if (path !== '' && path !== '/') return;
+  var preferred = '';
+  try {
+    var note = JSON.parse(localStorage.getItem('nervio') || 'null');
+    preferred = code(note && note.lang);
+  } catch (err) {}
+  if (!preferred) {
+    var list = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < list.length; i += 1) {
+      preferred = code(list[i]);
+      if (preferred) break;
+    }
+  }
+  if (!preferred || preferred === 'en') return;
+  params.delete('lang');
+  var rest = params.toString();
+  location.replace(home(preferred) + (rest ? '?' + rest : '') + location.hash);
+})();
+</script>`;
+}
+
+function renderHome(lang) {
+  const copy = TRANSLATIONS[lang];
+  const chrome = CHROME[lang];
+  const canonical = `${SITE}${homePath(lang)}`;
+  const locales = LANGS.filter((code) => code !== lang)
+    .map((code) => `  <meta property="og:locale:alternate" content="${CHROME[code].ogLocale}" />`)
+    .join('\n');
+  const langLinks = LANGS.map((code) => {
+    const current = code === lang ? ' aria-current="page"' : '';
+    return `<a href="${homePath(code)}" data-set-lang="${code}" lang="${CHROME[code].htmlLang}" hreflang="${CHROME[code].htmlLang}"${current}>${code.toUpperCase()}</a>`;
+  }).join('\n          ');
+  const modes = ['calm', 'focus', 'sleep', 'panic'].map((id) => `        <button type="button" class="mode-btn" data-mode="${id}" aria-pressed="${id === 'calm' ? 'true' : 'false'}">
+          <span class="mode-icon" aria-hidden="true">${MODE_ICONS[id]}</span>
+          <span class="mode-copy"><span class="mode-name">${esc(copy.modes[id].name)}</span><span class="mode-sub">${esc(copy.modes[id].sub)}</span></span>
+        </button>`).join('\n');
+  const durations = [
+    ['30s', 'quick', false],
+    ['1m', 'min1', false],
+    ['2m', 'min2', true],
+  ].map(([id, key, on]) => `        <button type="button" data-dur="${id}" aria-pressed="${on}">${esc(copy.durations[key])}</button>`).join('\n');
+  const pattern = `${copy.phases.INHALE} ${copy.sec(4)} · ${copy.phases.EXHALE} ${copy.sec(6)} · ${copy.durations.min2}`;
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        name: 'Nervio',
+        url: canonical,
+        inLanguage: ['en', 'fr-CA', 'es', 'pt-BR'],
+        description: copy.description,
+      },
+      {
+        '@type': 'WebApplication',
+        name: 'Nervio',
+        url: canonical,
+        applicationCategory: 'LifestyleApplication',
+        operatingSystem: 'Any',
+        browserRequirements: 'Requires JavaScript',
+        isAccessibleForFree: true,
+        inLanguage: ['en', 'fr-CA', 'es', 'pt-BR'],
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+        description: copy.description,
+      },
+    ],
+  }).replaceAll('<', '\\u003c');
+
+  return `<!DOCTYPE html>
+<html lang="${chrome.htmlLang}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  ${langBootScript()}
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#090c0b" />
+  <link rel="preload" href="/fonts/fraunces-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <title>${esc(copy.title)}</title>
+  <meta name="description" content="${esc(copy.description)}" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="${canonical}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nervio" />
+  <meta property="og:title" content="${esc(copy.title)}" />
+  <meta property="og:description" content="${esc(copy.description)}" />
+  <meta property="og:url" content="${canonical}" />
+  <meta property="og:image" content="${SITE}/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nervio, a free breathing app on a black background" />
+  <meta property="og:locale" content="${chrome.ogLocale}" />
+${locales}
+${homeHreflangLinks()}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${esc(copy.title)}" />
+  <meta name="twitter:description" content="${esc(copy.description)}" />
+  <meta name="twitter:image" content="${SITE}/og.png" />
+  ${iconLinks()}
+  <script type="application/ld+json">
+  ${jsonLd}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main" id="skip">${esc(copy.skip)}</a>
+  <div class="app is-idle" id="app" data-mode="calm">
+    <div class="progress" id="progress" hidden>
+      <div class="progress-fill" id="progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="${esc(copy.progress)}"></div>
+    </div>
+    <header class="nav">
+      <a class="brand" href="${homePath(lang)}" id="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Nervio</span>
+      </a>
+      <div class="nav-actions">
+        <nav class="langs" id="langs" aria-label="${esc(copy.language)}">
+          ${langLinks}
+        </nav>
+        <button type="button" class="icon-btn" id="cancel" hidden aria-label="${esc(copy.cancel)}"><span aria-hidden="true">✕</span></button>
+        <button type="button" class="icon-btn" id="mute" aria-pressed="false" aria-label="${esc(copy.mute)}">
+          <svg class="icon-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm12.5 3a3.5 3.5 0 0 0-1.8-3.06v6.12A3.5 3.5 0 0 0 16.5 12z"/></svg>
+          <svg class="icon-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm13.1 3 2.4-2.4-1.4-1.4L15.7 10.6 13.3 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>
+        </button>
+      </div>
+    </header>
+    <main id="main" class="stage-wrap">
+      <div class="hero" id="hero">
+        <h1 id="hero-title">${esc(copy.welcome)}</h1>
+        <p class="hero-sub" id="hero-sub">${esc(copy.subWelcome)}</p>
+      </div>
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="breath" id="breath">
+          <div class="glow"></div>
+          <div class="orb" id="orb"></div>
+          <div class="ring"></div>
+        </div>
+      </div>
+      <p class="phase" id="phase" aria-live="polite"></p>
+      <p class="hint" id="hint"></p>
+    </main>
+    <section class="controls" id="controls" aria-label="${esc(copy.sessionControls)}">
+      <p class="pattern" id="pattern">${esc(pattern)}</p>
+      <div class="checkin" id="checkin" hidden>
+        <h2 id="how-feel" tabindex="-1">${esc(copy.howFeel)}</h2>
+        <div class="checkin-grid">
+          <button type="button" data-feedback="better"><span id="label-better">${esc(copy.better)}</span></button>
+          <button type="button" data-feedback="same"><span id="label-same">${esc(copy.same)}</span></button>
+          <button type="button" data-feedback="worse"><span id="label-worse">${esc(copy.worse)}</span></button>
+        </div>
+      </div>
+      <div class="modes" id="modes" role="group" aria-label="${esc(copy.modesLabel)}">
+${modes}
+      </div>
+      <div class="durations" id="durations" role="group" aria-label="${esc(copy.durationLabel)}">
+${durations}
+      </div>
+      <button type="button" class="go" id="go" aria-describedby="pattern">${esc(copy.breathe)}</button>
+      <a class="guides-jump" id="guides-jump" href="#guides">${esc(copy.guides)}</a>
+      <p class="liability" id="liability">
+        <span id="liability-line">${esc(copy.liability)}</span>
+        <span id="liability-stop">${esc(copy.liabilityStop)}</span>
+        <a id="liability-terms" href="${esc(legalPath('terms', lang))}">${esc(copy.terms)}</a>
+      </p>
+    </section>
+  </div>
+  <noscript class="noscript">
+    <p>The guided exercise needs JavaScript. The written guides below work without it.</p>
+    <p lang="fr-CA">L’exercice guidé a besoin de JavaScript. Les guides écrits plus bas fonctionnent sans.</p>
+    <p lang="es">El ejercicio guiado necesita JavaScript. Las guías escritas de abajo funcionan sin él.</p>
+    <p lang="pt-BR">O exercício guiado precisa de JavaScript. Os guias escritos abaixo funcionam sem ele.</p>
+  </noscript>
+  <footer class="site-footer" id="guides">
+    <!-- guides:start -->
+    ${footerHtml()}
+    <!-- guides:end -->
+  </footer>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
+`;
+}
+
+function homeAlternatesXml() {
+  return HOME_HREFLANG
+    .map(([hreflang, href]) => `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}" />`)
+    .join('\n');
+}
+
 function sitemap() {
-  const legalUrls = LANGS.flatMap((lang) => ['terms', 'privacy'].map((kind) => `${SITE}${legalPath(kind, lang)}`));
-  const urls = [`${SITE}/`, ...legalUrls, ...TOPICS.flatMap((topic) => LANGS.map((lang) => `${SITE}${pagePath(topic, lang)}`))];
-  const body = urls.map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${PUBLISHED}</lastmod>\n  </url>`).join('\n');
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+  const homeLastmod = '2026-10-24';
+  const homes = LANGS.map((lang) => `  <url>\n    <loc>${SITE}${homePath(lang)}</loc>\n    <lastmod>${homeLastmod}</lastmod>\n${homeAlternatesXml()}\n  </url>`);
+  const rest = [
+    ...LANGS.flatMap((lang) => ['terms', 'privacy'].map((kind) => `${SITE}${legalPath(kind, lang)}`)),
+    ...TOPICS.flatMap((topic) => LANGS.map((lang) => `${SITE}${pagePath(topic, lang)}`)),
+  ].map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${PUBLISHED}</lastmod>\n  </url>`);
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${homes.concat(rest).join('\n')}\n</urlset>\n`;
 }
 
 function write(file, contents) {
@@ -462,16 +710,8 @@ for (const kind of ['terms', 'privacy']) {
 
 write('404.html', render404());
 write('sitemap.xml', sitemap());
-
-const indexPath = path.join(root, 'index.html');
-const index = fs.readFileSync(indexPath, 'utf8');
-if (!index.includes('<!-- guides:start -->') || !index.includes('<!-- guides:end -->')) {
-  throw new Error('Could not find guide markers in index.html');
+for (const lang of LANGS) {
+  write(lang === 'en' ? 'index.html' : path.join(lang, 'index.html'), renderHome(lang));
 }
-const next = index.replace(
-  /<!-- guides:start -->[\s\S]*?<!-- guides:end -->/,
-  `<!-- guides:start -->\n    ${footerHtml()}\n    <!-- guides:end -->`,
-);
-fs.writeFileSync(indexPath, next);
 
-console.log(`Wrote ${TOPICS.length * LANGS.length} guides, ${LANGS.length * 2} legal pages, 404.html, sitemap.xml, and the home footer.`);
+console.log(`Wrote ${TOPICS.length * LANGS.length} guides, ${LANGS.length * 2} legal pages, 4 language homes, 404.html, and sitemap.xml.`);
