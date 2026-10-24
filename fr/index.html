@@ -108,6 +108,10 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-name">Nervio</span>
       </a>
+      <button type="button" class="help-open" id="help-open" aria-haspopup="dialog" aria-controls="help-dialog" aria-label="Besoin d’aide maintenant ?">
+        <span class="help-open-long">Besoin d’aide maintenant ?</span>
+        <span class="help-open-short" aria-hidden="true">Aide</span>
+      </button>
       <div class="nav-actions">
         <nav class="langs" id="langs" aria-label="Langue">
           <a href="/" data-set-lang="en" lang="en" hreflang="en">EN</a>
@@ -244,6 +248,277 @@
   </nav>
     <!-- guides:end -->
   </footer>
+  <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title">
+    <div class="help-panel">
+      <div class="help-head">
+        <h2 id="help-title">Besoin d’aide maintenant ?</h2>
+        <button type="button" class="help-close" id="help-close" aria-label="Fermer"><span aria-hidden="true">×</span></button>
+      </div>
+      <p class="help-lead">Si vous êtes en détresse ou si vous pensez à vous faire du mal, contactez une ligne de votre pays. Nervio n’est pas un service d’urgence et ne peut joindre personne pour vous.</p>
+      <label class="help-pick">
+        <span>Pays</span>
+        <select id="help-country" name="country">
+          <option value="">Tous les pays</option>
+          <option value="CA">Canada</option>
+            <option value="US">États-Unis</option>
+            <option value="MX">Mexique</option>
+            <option value="CO">Colombie</option>
+            <option value="PE">Pérou</option>
+            <option value="AR">Argentine</option>
+            <option value="CL">Chili</option>
+            <option value="UY">Uruguay</option>
+            <option value="EC">Équateur</option>
+            <option value="CR">Costa Rica</option>
+            <option value="DO">République dominicaine</option>
+            <option value="BR">Brésil</option>
+            <option value="PT">Portugal</option>
+            <option value="ES">Espagne</option>
+            <option value="FR">France</option>
+            <option value="BE">Belgique</option>
+            <option value="CH">Suisse</option>
+            <option value="GB">Royaume-Uni</option>
+            <option value="IE">Irlande</option>
+            <option value="DE">Allemagne</option>
+            <option value="AT">Autriche</option>
+            <option value="IT">Italie</option>
+            <option value="NL">Pays-Bas</option>
+            <option value="NO">Norvège</option>
+            <option value="FI">Finlande</option>
+            <option value="DK">Danemark</option>
+            <option value="TR">Turquie</option>
+            <option value="IN">Inde</option>
+            <option value="PH">Philippines</option>
+            <option value="ID">Indonésie</option>
+            <option value="JP">Japon</option>
+            <option value="KR">Corée du Sud</option>
+            <option value="MY">Malaisie</option>
+            <option value="TH">Thaïlande</option>
+            <option value="IL">Israël</option>
+            <option value="AE">Émirats arabes unis</option>
+            <option value="AU">Australie</option>
+            <option value="NZ">Nouvelle-Zélande</option>
+            <option value="ZA">Afrique du Sud</option>
+            <option value="NG">Nigeria</option>
+            <option value="MA">Maroc</option>
+            <option value="CI">Côte d’Ivoire</option>
+        </select>
+      </label>
+      <div class="help-list" id="help-list">
+        <section class="help-country" data-iso="CA">
+        <h3>Canada</h3>
+        <ul><li>9-8-8 Suicide Crisis Helpline: <a href="tel:988">988</a> ou <a href="sms:988">text 988</a>. Appelez ou textez, en tout temps. (<a href="https://988.ca/" rel="noopener noreferrer">9-8-8 Suicide Crisis Helpline</a>).</li><li>Ligne québécoise de prévention du suicide: <a href="tel:+18662773553">1 866 277-3553</a> ou <a href="sms:535353">535353</a>. 1 866 APPELLE. Gratuit, en tout temps. Vous pouvez aussi texter le 535353. (<a href="https://www.quebec.ca/sante/sante-mentale/s-informer-sur-sante-mentale-et-troubles-mentaux/reconnaitre-signes-detresse-et-prevenir-suicide" rel="noopener noreferrer">Gouvernement du Québec</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="US">
+        <h3>États-Unis</h3>
+        <ul><li>988 Suicide &amp; Crisis Lifeline: <a href="tel:988">988</a> ou <a href="sms:988">text 988</a>. Composez ou textez, 24 h/24. En espagnol, appuyez sur 2 ou textez AYUDA. (<a href="https://988lifeline.org/" rel="noopener noreferrer">988 Suicide &amp; Crisis Lifeline</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="MX">
+        <h3>Mexique</h3>
+        <ul><li>Línea de la Vida: <a href="tel:8009112000">800 911 2000</a>. Gratuit, 24 h/24, tous les jours. (<a href="https://www.gob.mx/lineadelavida" rel="noopener noreferrer">gob.mx/lineadelavida</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="CO">
+        <h3>Colombie</h3>
+        <ul><li>Línea 106: <a href="tel:106">106</a>. Gratuit, 24 h/24. (<a href="https://www.minsalud.gov.co/salud/publica/salud-mental/Paginas/linea-106.aspx" rel="noopener noreferrer">Ministerio de Salud</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:123">123</a></p>
+      </section>
+        <section class="help-country" data-iso="PE">
+        <h3>Pérou</h3>
+        <ul><li>Línea 113: <a href="tel:113">113</a>. Puis l’option 5. Gratuit, 24 h/24. (<a href="https://www.gob.pe/20715" rel="noopener noreferrer">Ministerio de Salud del Perú</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:106">106</a> ou <a href="tel:105">105</a></p>
+      </section>
+        <section class="help-country" data-iso="AR">
+        <h3>Argentine</h3>
+        <ul><li>Línea 0800 Salud Mental: <a href="tel:08009990091">0800-999-0091</a>. Ligne nationale. Gratuite, 24 h/24, tous les jours. (<a href="https://www.argentina.gob.ar/salud/hospitalbonaparte/hospital-en-red/dispositivo-0800" rel="noopener noreferrer">argentina.gob.ar</a>).</li><li>Centro de Asistencia al Suicida: <a href="tel:135">135</a>, <a href="tel:08003451435">0800 345 1435</a> et <a href="tel:+541152751135">(011) 5275-1135</a>. Le 135 est gratuit seulement depuis CABA et le Grand Buenos Aires. Les autres numéros couvrent le reste du pays. 24 h/24. (<a href="https://www.asistenciaalsuicida.org.ar/" rel="noopener noreferrer">asistenciaalsuicida.org.ar</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a> ou <a href="tel:107">107</a></p>
+      </section>
+        <section class="help-country" data-iso="CL">
+        <h3>Chili</h3>
+        <ul><li>Línea *4141: <a href="tel:*4141">*4141</a>. Gratuit depuis un mobile, tout opérateur, 24 h/24, tous les jours. (<a href="https://www.minsal.cl/linea-de-atencion-4141-no-estas-solo-no-estas-sola/" rel="noopener noreferrer">MINSAL</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:131">131</a> ou <a href="tel:133">133</a></p>
+      </section>
+        <section class="help-country" data-iso="UY">
+        <h3>Uruguay</h3>
+        <ul><li>Línea Vida: <a href="tel:08000767">0800 0767</a> ou <a href="tel:*0767">*0767</a>. Gratuit, 24 h/24. (<a href="https://www.gub.uy/ministerio-salud-publica/salud-mental" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="EC">
+        <h3>Équateur</h3>
+        <ul><li>Línea 171: <a href="tel:171">171</a>. Option 6. Gratuit, tous les jours de 7 h à 20 h. Pas une ligne 24 h/24. (<a href="https://www.salud.gob.ec/a-traves-de-la-linea-171-msp-ofrece-atencion-en-salud-mental/" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="CR">
+        <h3>Costa Rica</h3>
+        <ul><li>Aquí Estoy: <a href="tel:8002737869">800 273 7869</a>. Gratuit. Du lundi au vendredi, de 14 h à 22 h, et le samedi, de 9 h à 16 h. Fermé le dimanche. (<a href="https://aquiestoy.cr/" rel="noopener noreferrer">aquiestoy.cr</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="DO">
+        <h3>République dominicaine</h3>
+        <ul><li>Cuida tu Salud Mental: <a href="tel:711">711</a>. Gratuit et confidentiel, tous les jours de 8 h à minuit. Pas une ligne 24 h/24. (<a href="https://msp.gob.do/web/?p=21208" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="BR">
+        <h3>Brésil</h3>
+        <ul><li>CVV — Centro de Valorização da Vida: <a href="tel:188">188</a>. Gratuit, 24 h/24. (<a href="https://www.cvv.org.br/" rel="noopener noreferrer">Centro de Valorização da Vida</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:192">192</a></p>
+      </section>
+        <section class="help-country" data-iso="PT">
+        <h3>Portugal</h3>
+        <ul><li>Linha 1411: <a href="tel:1411">1411</a>. Ligne nationale de prévention du suicide, lancée en septembre 2025. Gratuite, 24 h/24, tous les jours. (<a href="https://www.spms.min-saude.pt/2025/09/lancamento-da-linha-nacional-de-prevencao-do-suicidio-e-apoio-psicologico-1411/" rel="noopener noreferrer">SPMS</a>).</li><li>SNS 24: <a href="tel:808242424">808 24 24 24, puis l’option 4</a>. Conseil psychologique du SNS 24. Non confirmé sur une page en direct lors de cette vérification (<a href="https://www.sns24.gov.pt/servico/aconselhamento-psicologico-no-sns-24/" rel="noopener noreferrer">SNS 24</a>). <span class="help-flag">Non confirmé</span></li><li>SOS Voz Amiga: <a href="tel:+351213544545">213 544 545</a>, <a href="tel:+351912802669">912 802 669</a>, <a href="tel:+351963524660">963 524 660</a> et <a href="tel:+351930712500">930 712 500</a>. Soutien émotionnel et prévention du suicide, tous les jours de 15 h 30 à 00 h 30. Pas une ligne 24 h/24. (<a href="https://www.sosvozamiga.org/contactos" rel="noopener noreferrer">SOS Voz Amiga</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="ES">
+        <h3>Espagne</h3>
+        <ul><li>Línea 024: <a href="tel:024">024</a>. 24 h/24, tous les jours. (<a href="https://www.sanidad.gob.es/linea024/" rel="noopener noreferrer">Línea de atención a la conducta suicida</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="FR">
+        <h3>France</h3>
+        <ul><li>3114: <a href="tel:3114">3114</a>. Numéro national de prévention du suicide, 24 h/24. (<a href="https://3114.fr/" rel="noopener noreferrer">3114.fr</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a> ou <a href="tel:15">15</a></p>
+      </section>
+        <section class="help-country" data-iso="BE">
+        <h3>Belgique</h3>
+        <ul><li>Centre de Prévention du Suicide: <a href="tel:080032123">0800 32 123</a>. Belgique francophone. Anonyme et gratuit, 24 h/24. (<a href="https://www.preventionsuicide.be/la-ligne-decoute-0800-32-123" rel="noopener noreferrer">Centre de prévention du suicide</a>).</li><li>Zelfmoordlijn 1813: <a href="tel:1813">1813</a>. Belgique néerlandophone. Le téléphone est gratuit, 24 h/24. Le clavardage est tous les jours de 17 h à minuit, et le mercredi de 12 h à minuit. (<a href="https://www.zelfmoord1813.be/" rel="noopener noreferrer">Zelfmoordlijn 1813</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="CH">
+        <h3>Suisse</h3>
+        <ul><li>La Main Tendue: <a href="tel:143">143</a>. 24 h/24. (<a href="https://www.143.ch/fr/" rel="noopener noreferrer">143.ch</a>).</li><li>147: <a href="tel:147">147</a>. Pour les enfants et les jeunes. 24 h/24. (<a href="https://www.147.ch/" rel="noopener noreferrer">147.ch</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:144">144</a> ou <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="GB">
+        <h3>Royaume-Uni</h3>
+        <ul><li>Samaritans: <a href="tel:116123">116 123</a>. Gratuit, en tout temps. (<a href="https://www.samaritans.org/how-we-can-help/contact-samaritan/talk-us-phone/" rel="noopener noreferrer">Samaritans</a>).</li><li>Shout: <a href="sms:85258?body=SHOUT">text SHOUT to 85258</a>. Par texto seulement. Gratuit, 24 h/24. (<a href="https://giveusashout.org/" rel="noopener noreferrer">Shout</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:999">999</a> ou <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="IE">
+        <h3>Irlande</h3>
+        <ul><li>Samaritans: <a href="tel:116123">116 123</a>. Gratuit, en tout temps. (<a href="https://www.samaritans.org/ireland/" rel="noopener noreferrer">Samaritans Ireland</a>).</li><li>Pieta: <a href="tel:1800247247">1800 247 247</a> ou <a href="sms:51444?body=HELP">text HELP to 51444</a>. Gratuit, 24 h/24. (<a href="https://www.pieta.ie/how-we-can-help/helpline/" rel="noopener noreferrer">Pieta</a>).</li><li>Text About It: <a href="sms:50808?body=TALK">text TALK to 50808</a>. Par texto seulement. Gratuit, 24 h/24. (<a href="https://www.textaboutit.ie/" rel="noopener noreferrer">Text About It</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a> ou <a href="tel:999">999</a></p>
+      </section>
+        <section class="help-country" data-iso="DE">
+        <h3>Allemagne</h3>
+        <ul><li>TelefonSeelsorge: <a href="tel:08001110111">0800 111 0 111</a>, <a href="tel:08001110222">0800 111 0 222</a> et <a href="tel:116123">116 123</a>. Gratuit, jour et nuit. (<a href="https://www.telefonseelsorge.de/" rel="noopener noreferrer">TelefonSeelsorge</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="AT">
+        <h3>Autriche</h3>
+        <ul><li>TelefonSeelsorge: <a href="tel:142">142</a>. Gratuit, 24 h/24, tous les jours. (<a href="https://www.telefonseelsorge.at/" rel="noopener noreferrer">TelefonSeelsorge Österreich</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a> ou <a href="tel:144">144</a></p>
+      </section>
+        <section class="help-country" data-iso="IT">
+        <h3>Italie</h3>
+        <ul><li>Telefono Amico Italia: <a href="tel:+390223272327">02 2327 2327</a> ou <a href="https://wa.me/393240117252" rel="noopener noreferrer">WhatsApp 324 011 7252</a>. La ligne téléphonique répond tous les jours, 24 h/24, au tarif d’un appel normal. Ce n’est pas un numéro gratuit. Le WhatsApp est seulement de 18 h à 21 h, tous les jours. (<a href="https://www.telefonoamico.it/" rel="noopener noreferrer">Telefono Amico</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="NL">
+        <h3>Pays-Bas</h3>
+        <ul><li>113 Zelfmoordpreventie: <a href="tel:113">113</a> ou <a href="tel:08000113">0800-0113</a>. Le 0800-0113 est gratuit. 24 h/24. Le clavardage est sur 113.nl. (<a href="https://www.113.nl/" rel="noopener noreferrer">113</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="NO">
+        <h3>Norvège</h3>
+        <ul><li>Mental Helse Hjelpetelefonen: <a href="tel:116123">116 123</a>. Ouvert 24 h/24, toute l’année. (<a href="https://mentalhelse.no/fa-hjelp/hjelpetelefonen/" rel="noopener noreferrer">Mental Helse</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:113">113</a> ou <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="FI">
+        <h3>Finlande</h3>
+        <ul><li>MIELI Kriisipuhelin: <a href="tel:+358925250111">09 2525 0111</a>. 24 h/24, tous les jours. (<a href="https://mieli.fi/tukea-ja-apua/kriisipuhelin/" rel="noopener noreferrer">MIELI</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="DK">
+        <h3>Danemark</h3>
+        <ul><li>Livslinien: <a href="tel:70201201">70 201 201</a>. Tous les jours de 9 h à 5 h. Pas une ligne 24 h/24. Le clavardage a des horaires plus courts. (<a href="https://www.livslinien.dk/" rel="noopener noreferrer">Livslinien</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="TR">
+        <h3>Turquie</h3>
+        <p>Aucune ligne de crise dédiée n’est indiquée ici.</p>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="IN">
+        <h3>Inde</h3>
+        <ul><li>Tele MANAS: <a href="tel:14416">14416</a> ou <a href="tel:18008914416">1-800-891-4416</a>. Sans frais, 24 h/24, dans de nombreuses langues de l’Inde. (<a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2022057&amp;lang=2&amp;reg=3" rel="noopener noreferrer">Press Information Bureau</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="PH">
+        <h3>Philippines</h3>
+        <ul><li>NCMH Crisis Hotline: <a href="tel:1553">1553</a> ou <a href="tel:09190571553">0919 057 1553</a>. 24 h/24. Un avis de juillet 2026 indique ces deux numéros. (<a href="https://www.facebook.com/ncmhcrisishotline/posts/1446226184192317/" rel="noopener noreferrer">NCMH</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="ID">
+        <h3>Indonésie</h3>
+        <ul><li>Healing119: <a href="tel:119">119</a>. Puis le poste 8. La page du service n’indique pas les horaires. Elle dit d’appeler pour une urgence suicidaire. (<a href="https://www.healing119.id/" rel="noopener noreferrer">Healing119</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a> ou <a href="tel:119">119</a></p>
+      </section>
+        <section class="help-country" data-iso="JP">
+        <h3>Japon</h3>
+        <ul><li>Inochi SOS: <a href="tel:0120061338">0120-061-338</a>. Gratuit, 24 h/24, tous les jours. (<a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer">Ministry of Health, Labour and Welfare</a>).</li><li>Yorisoi Hotline: <a href="tel:0120279338">0120-279-338</a> ou <a href="tel:0120279226">0120-279-226</a>. Gratuit, 24 h/24. Depuis Fukushima, utilisez le 0120-279-226. (<a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer">Ministry of Health, Labour and Welfare</a>).</li><li>TELL Lifeline: <a href="tel:08003008355">0800-300-8355</a>. Anglais. Les horaires sont limités. Vérifiez le site pour les heures actuelles. Pas une ligne 24 h/24. (<a href="https://telljp.com/lifeline/" rel="noopener noreferrer">TELL</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:119">119</a> ou <a href="tel:110">110</a></p>
+      </section>
+        <section class="help-country" data-iso="KR">
+        <h3>Corée du Sud</h3>
+        <ul><li>109: <a href="tel:109">109</a>. Conseil de prévention du suicide, 24 h/24. (<a href="https://www.129.go.kr/109" rel="noopener noreferrer">129.go.kr</a>).</li><li>Lifeline Korea: <a href="tel:15889191">1588-9191</a>. 24 h/24. (<a href="https://www.129.go.kr/109" rel="noopener noreferrer">129.go.kr</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:119">119</a> ou <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="MY">
+        <h3>Malaisie</h3>
+        <ul><li>Befrienders Kuala Lumpur: <a href="tel:+60376272929">03-7627 2929</a>. 24 h/24. (<a href="https://befrienders.org.my/" rel="noopener noreferrer">Befrienders</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:999">999</a></p>
+      </section>
+        <section class="help-country" data-iso="TH">
+        <h3>Thaïlande</h3>
+        <ul><li>Department of Mental Health: <a href="tel:1323">1323</a>. Gratuit, 24 h/24. (<a href="https://dmh.go.th/" rel="noopener noreferrer">Department of Mental Health</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:1669">1669</a> ou <a href="tel:191">191</a></p>
+      </section>
+        <section class="help-country" data-iso="IL">
+        <h3>Israël</h3>
+        <ul><li>ERAN: <a href="tel:1201">1201</a>. Les horaires n’étaient pas indiqués sur la page lue pour cette mise à jour. Cette liste ne la présente donc pas comme une ligne 24 h/24. (<a href="https://www.eran.org.il/" rel="noopener noreferrer">ERAN</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:101">101</a></p>
+      </section>
+        <section class="help-country" data-iso="AE">
+        <h3>Émirats arabes unis</h3>
+        <ul><li>800 HOPE: <a href="tel:8004673">800 4673</a>. Tous les jours de 8 h à 20 h. Pas une ligne 24 h/24. Le WhatsApp utilise le même numéro. (<a href="https://u.ae/en/information-and-services/health-and-fitness/FAQs-and-resources/handling-the-covid-19-outbreak/maintaining-mental-health-in-times-of-covid19" rel="noopener noreferrer">u.ae</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:999">999</a> ou <a href="tel:998">998</a></p>
+      </section>
+        <section class="help-country" data-iso="AU">
+        <h3>Australie</h3>
+        <ul><li>Lifeline: <a href="tel:131114">13 11 14</a>. 24 h/24. (<a href="https://www.lifeline.org.au/131114" rel="noopener noreferrer">Lifeline</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:000">000</a></p>
+      </section>
+        <section class="help-country" data-iso="NZ">
+        <h3>Nouvelle-Zélande</h3>
+        <ul><li>1737, Need to talk?: <a href="tel:080017371737">0800 1737 1737</a> ou <a href="sms:1737">text 1737</a>. Appelez ou textez, gratuit, en tout temps. (<a href="https://1737.org.nz/" rel="noopener noreferrer">1737, Need to talk?</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:111">111</a></p>
+      </section>
+        <section class="help-country" data-iso="ZA">
+        <h3>Afrique du Sud</h3>
+        <ul><li>SADAG: <a href="tel:0800567567">0800 567 567</a>. Ligne de crise suicidaire. Sans frais, 24 h/24. (<a href="https://www.sadag.org/" rel="noopener noreferrer">SADAG</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:10111">10111</a>, <a href="tel:10177">10177</a> et <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="NG">
+        <h3>Nigeria</h3>
+        <ul><li>SURPIN: <a href="tel:08000787746">0800 078 7746</a>, <a href="tel:09080217555">0908 021 7555</a>, <a href="tel:09034400009">0903 440 0009</a> et <a href="tel:08142241007">0814 224 1007</a>. Le numéro 0800 est sans frais. 24 h/24. C’est une ligne d’ONG. (<a href="https://www.surpinng.com/" rel="noopener noreferrer">SURPIN</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="MA">
+        <h3>Maroc</h3>
+        <p>Aucune ligne de crise dédiée n’est indiquée ici.</p>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:141">141</a>, <a href="tel:15">15</a>, <a href="tel:19">19</a> et <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="CI">
+        <h3>Côte d’Ivoire</h3>
+        <ul><li>Programme national de santé mentale: <a href="tel:143">143</a>. Gratuit. Du lundi au vendredi, de 8 h à 17 h. Pas une ligne 24 h/24. (<a href="https://www.pnsantementale.ci/projets/dispositif-143-assistance-psychologique" rel="noopener noreferrer">Programme national de santé mentale</a>).</li></ul>
+        <p class="help-emergency"><span>Urgence</span> <a href="tel:185">185</a> ou <a href="tel:110">110</a></p>
+      </section>
+      </div>
+      <p class="help-else">Ailleurs : <a href="https://findahelpline.com/" rel="noopener noreferrer">Find a Helpline</a> indique des lignes locales.</p>
+    </div>
+  </dialog>
+  <script type="module" src="/help.js"></script>
   <script type="module" src="/app.js"></script>
 </body>
 </html>

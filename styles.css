@@ -164,7 +164,177 @@ body > * {
   align-items: center;
   justify-content: flex-end;
   gap: 0.35rem;
+}
+
+.help-open {
+  appearance: none;
+  font: inherit;
   margin-left: auto;
+  min-height: 44px;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 22%, transparent), color-mix(in srgb, var(--accent) 8%, transparent));
+  color: var(--text);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+}
+
+.help-open-short {
+  display: none;
+}
+
+.help-open:hover {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.help-dialog {
+  width: min(36rem, calc(100vw - 1.5rem));
+  max-width: calc(100vw - 1.5rem);
+  max-height: min(85dvh, 46rem);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+}
+
+.help-dialog::backdrop {
+  background: rgba(6, 8, 7, 0.72);
+}
+
+.help-panel {
+  max-height: min(85dvh, 46rem);
+  overflow: auto;
+  padding: 1.15rem 1.15rem 1.3rem;
+  border-radius: 1.6rem;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 46%),
+    #141a17;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+}
+
+.help-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.help-head h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.help-close {
+  appearance: none;
+  font: inherit;
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.help-lead {
+  margin: 0.8rem 0 1rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.help-pick {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--quiet);
+}
+
+.help-pick select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 0.85rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.help-country {
+  padding: 0.95rem 0 0.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.help-country h3 {
+  margin: 0 0 0.35rem;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.45rem;
+  letter-spacing: -0.03em;
+}
+
+.help-country ul,
+.help-country p {
+  margin: 0.35rem 0 0.7rem;
+}
+
+.help-country ul {
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.help-country a {
+  color: var(--text);
+}
+
+.help-emergency {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.help-emergency span {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--quiet);
+  margin-right: 0.35rem;
+}
+
+.help-flag {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0.08rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--quiet);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.15em;
+}
+
+.help-else {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+}
+
+.other-countries .help-flag {
+  vertical-align: baseline;
 }
 
 .langs {
@@ -975,8 +1145,19 @@ a.go {
   }
 
   .stage {
-    width: min(42vw, 24dvh, 180px);
-    margin-top: 0.4rem;
+    width: min(32vw, 14dvh, 96px);
+    margin-top: 0.25rem;
+  }
+
+  .help-open {
+    order: 1;
+    flex: 1 0 100%;
+    margin-left: 0;
+  }
+
+  .help-dialog,
+  .help-panel {
+    max-height: calc(100dvh - 1rem);
   }
 }
 
@@ -1069,8 +1250,8 @@ a.go {
   }
 
   .stage {
-    width: min(34vw, 16dvh, 112px);
-    margin-top: 0.2rem;
+    width: min(30vw, 12dvh, 80px);
+    margin-top: 0.15rem;
   }
 
   .app.is-running .stage {
@@ -1109,9 +1290,14 @@ a.go {
 
   .go,
   a.go {
-    min-height: 52px;
-    padding-top: 0.7rem;
-    padding-bottom: 0.7rem;
+    min-height: 48px;
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }
+
+  .liability {
+    font-size: 0.72rem;
+    line-height: 1.28;
   }
 }
 
@@ -1148,6 +1334,24 @@ a.go {
     min-width: 44px;
     min-height: 44px;
     padding: 0;
+  }
+}
+
+@media (max-width: 719px) and (max-height: 780px) {
+  .help-open {
+    order: 0;
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: 0 0.55rem;
+    font-size: 0.78rem;
+  }
+
+  .help-open-long {
+    display: none;
+  }
+
+  .help-open-short {
+    display: inline;
   }
 }
 
@@ -1190,6 +1394,8 @@ a.go {
   .mode-btn,
   .durations button,
   .go,
+  .help-open,
+  .help-close,
   .orb,
   .glow,
   .breath,
@@ -1204,7 +1410,8 @@ a.go {
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .controls {
+  .controls,
+  .help-panel {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background: #171c19;
@@ -1216,6 +1423,8 @@ a.go {
   .go,
   .mode-btn,
   .icon-btn,
+  .help-open,
+  .help-close,
   .langs a {
     border: 1px solid CanvasText;
   }

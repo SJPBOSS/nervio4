@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { SITE, PUBLISHED, LANGS, TOPICS, CHROME, DISCLAIMERS, BLURBS, pagePath } from './content.js';
+import { helpButtonHtml, helpDialogHtml, othersListHtml } from './helplines.js';
 import { CHECKED, CHECKED_DATE, SHORT, LINK_LABELS, LEGAL_PAGES, legalPath } from './legal.js';
 import { TRANSLATIONS } from '../i18n.js';
 import { homePath } from '../settings.js';
@@ -104,14 +105,7 @@ function disclaimerHtml(lang) {
   const block = DISCLAIMERS[lang];
   const paragraphs = block.blocks.map((parts) => `<p>${segments(parts)}</p>`).join('\n      ');
   const checked = `<p class="checked"><time datetime="${CHECKED_DATE}">${esc(CHECKED[lang])}</time></p>`;
-  const others = block.others?.length
-    ? `<details class="other-countries">
-      <summary>${esc(block.othersLabel)}</summary>
-      <ul>
-          ${block.others.map((parts) => `<li>${segments(parts)}</li>`).join('\n          ')}
-      </ul>
-    </details>`
-    : '';
+  const others = othersListHtml(lang);
   const tail = (block.tail || []).map((parts) => `<p>${segments(parts)}</p>`).join('\n      ');
   return `<aside class="disclaimer">
       <h2>${esc(block.heading)}</h2>
@@ -604,6 +598,7 @@ ${homeHreflangLinks()}
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-name">Nervio</span>
       </a>
+      ${helpButtonHtml(lang)}
       <div class="nav-actions">
         <nav class="langs" id="langs" aria-label="${esc(copy.language)}">
           ${langLinks}
@@ -666,6 +661,8 @@ ${durations}
     ${footerHtml()}
     <!-- guides:end -->
   </footer>
+  ${helpDialogHtml(lang)}
+  <script type="module" src="/help.js"></script>
   <script type="module" src="/app.js"></script>
 </body>
 </html>

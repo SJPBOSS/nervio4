@@ -6,6 +6,7 @@ import { DURATION_SECONDS, TECHNIQUES, durationOf, nextPhase, scaleFor, stepSess
 import { TRANSLATIONS } from '../i18n.js';
 import { homePath, languageTarget, publicMode, resolveSettings } from '../settings.js';
 import { LANGS, TOPICS, pagePath } from '../scripts/content.js';
+import { COUNTRIES, HELP_UI, othersListHtml, suggestCountry } from '../scripts/helplines.js';
 import { CHECKED, legalPath } from '../scripts/legal.js';
 
 const root = path.resolve(import.meta.dirname, '..');
@@ -238,6 +239,11 @@ test('each language home is crawlable on its own path', () => {
     assert.match(html, /name="description"/);
     assert.ok(html.includes(TRANSLATIONS[lang].description), `${lang} meta description`);
     assert.ok(html.includes(TRANSLATIONS[lang].title), `${lang} title`);
+    assert.match(html, /id="help-open"/);
+    assert.match(html, /id="help-dialog"/);
+    assert.match(html, /id="help-country"/);
+    assert.ok(html.includes(HELP_UI[lang].open), `${lang} help label`);
+    assert.match(html, /src="\/help\.js"/);
   }
   const fr = fs.readFileSync(path.join(root, 'fr/index.html'), 'utf8');
   assert.match(fr, /Respirer/);
@@ -317,6 +323,18 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /tel:116123/);
         assert.match(html, /tel:131114/);
         assert.match(html, /tel:080017371737/);
+        assert.match(html, /0800-999-0091/);
+        assert.match(html, /free only from CABA and Greater Buenos Aires/);
+        assert.match(html, /808 24 24 24, then option 4/);
+        assert.match(html, /tel:1411/);
+        assert.match(html, /text SHOUT to 85258/);
+        assert.match(html, /1800 247 247/);
+        assert.match(html, /text HELP to 51444/);
+        assert.match(html, /text TALK to 50808/);
+        assert.match(html, /tel:1813/);
+        assert.match(html, /tel:147/);
+        assert.match(html, /09:00 to 05:00/);
+        assert.match(html, /Not a 24-hour line/);
         assert.match(html, /sms:1737/);
         assert.match(html, /https:\/\/findahelpline\.com\//);
         assert.ok(html.indexOf('https://988.ca/') < html.indexOf('Other countries'));
@@ -342,6 +360,8 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /tel:113/);
         assert.match(html, /opción 5/);
         assert.match(html, /tel:135/);
+        assert.match(html, /0800-999-0091/);
+        assert.match(html, /CABA y el Gran Buenos Aires/);
         assert.match(html, /tel:\*4141/);
         assert.match(html, /Otros países/);
         assert.match(html, /presiona 2/);
@@ -361,6 +381,8 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /\/pt\//);
         assert.match(html, /Outros países/);
         assert.match(html, /tel:808242424/);
+        assert.match(html, /808 24 24 24, depois a opção 4/);
+        assert.match(html, /tel:1411/);
         assert.match(html, /tel:\+351213544545/);
         assert.match(html, /tel:\+351912802669/);
         assert.match(html, /tel:\+351963524660/);
@@ -425,4 +447,29 @@ test('terms and privacy pages describe the real storage and the crisis check dat
   assert.match(enTerms, /as it is/);
   assert.match(enTerms, /not responsible/);
   assert.match(enTerms, /not for emergencies/i);
+});
+
+test('the helpline directory follows the checked list', () => {
+  const isos = COUNTRIES.map((country) => country.iso);
+  for (const iso of ['DE', 'AT', 'IT', 'NL', 'NO', 'FI', 'DK', 'IN', 'PH', 'ID', 'JP', 'KR', 'MY', 'TH', 'IL', 'AE', 'ZA', 'NG', 'TR', 'MA']) {
+    assert.ok(isos.includes(iso), iso);
+  }
+  assert.equal(COUNTRIES.filter((country) => country.iso === 'TR' || country.iso === 'MA').every((country) => country.emergencyOnly), true);
+  const en = othersListHtml('en');
+  assert.match(en, /Not confirmed/);
+  assert.match(en, /No dedicated crisis line is listed here/);
+  assert.doesNotMatch(en, /7786264|920033360|0861 322 322|16328|722 178 177|Umang/);
+  assert.equal(suggestCountry(['en-GB'], 'America/New_York', isos), 'GB');
+  assert.equal(suggestCountry(['en-UK'], 'America/New_York', isos), 'GB');
+  assert.equal(suggestCountry(['pt-BR', 'en'], 'Europe/Lisbon', isos), 'BR');
+  assert.equal(suggestCountry(['fr-CA'], 'Europe/Paris', isos), 'CA');
+  assert.equal(suggestCountry(['en'], 'Europe/Lisbon', isos), 'PT');
+  assert.equal(suggestCountry(['es-AR'], 'America/Mexico_City', isos), 'AR');
+  assert.equal(suggestCountry(['en'], 'UTC', isos), '');
+  const src = fs.readFileSync(path.join(root, 'scripts/helplines.js'), 'utf8');
+  assert.match(src, /TODO: human check before publishing/);
+  assert.match(src, /Canada 911/);
+  assert.match(src, /Australia 000/);
+  assert.match(src, /Costa Rica/);
+  assert.match(src, /New Zealand 111/);
 });
