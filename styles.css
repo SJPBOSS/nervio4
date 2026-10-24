@@ -415,7 +415,7 @@ body > * {
   font-size: 0.92rem;
 }
 
-.help-emergency span {
+.help-emergency .help-kicker {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.72rem;

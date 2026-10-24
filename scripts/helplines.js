@@ -1,22 +1,34 @@
 /**
  * Crisis lines checked against the 2026-10-23 helpline list.
  *
- * Emergency numbers were NOT re-verified on 2026-10-23, except the four that
- * appeared on fetched helpline pages: Canada 911, Australia 000, Costa Rica
- * 911, and New Zealand 111.
+ * Emergency numbers were checked on 2026-10-24. A confirmed number keeps its
+ * tel: link and cites the official page. A number with no official page stays
+ * tappable and is badged Not confirmed.
  *
- * TODO: human check before publishing:
- * United States 911, Mexico 911, Colombia 123, Peru 106 and 105,
- * Argentina 911 and 107, Chile 131 and 133, Uruguay 911, Ecuador 911,
- * Dominican Republic 911, Brazil 192, Portugal 112, Spain 112,
- * France 112 and 15, Belgium 112, Switzerland 144 and 112,
- * United Kingdom 999 and 112, Ireland 112 and 999, Germany 112,
- * Austria 112 and 144, Italy 112, Netherlands 112, Norway 113 and 112,
- * Finland 112, Denmark 112, Turkey 112, India 112, Philippines 911,
- * Indonesia 112 and 119, Japan 119 and 110, South Korea 119 and 112,
- * Malaysia 999, Thailand 1669 and 191, Israel 101,
- * United Arab Emirates 999 and 998, South Africa 10111, 10177, and 112,
- * Nigeria 112, Morocco 141, 15, 19, and 112, Côte d'Ivoire 185 and 110.
+ * Verified: Canada 911 (988.ca); United States 911 (911.gov); Mexico 911
+ * (sonora.gob.mx); Colombia 123 (policia.gov.co); Peru 106 (gob.pe) and 105
+ * (Policía Nacional); Argentina 911 and 107 (argentina.gob.ar); Chile 131 and
+ * 133 (gob.cl); Uruguay 911 (gub.uy); Ecuador 911 (gob.ec); Costa Rica 911
+ * (aquiestoy.cr); Dominican Republic 911 (911.gob.do); Brazil 192 (gov.br);
+ * Portugal 112 (gov.pt); Spain 112 (administracion.gob.es); France 112 and 15
+ * (service-public.fr); Belgium 112 (112.be); Switzerland 144 and 112
+ * (bakom.admin.ch); United Kingdom 999 and 112 (gov.uk); Ireland 112 and 999
+ * (gov.ie); Germany 112 (gesund.bund.de); Austria 112 and 144
+ * (oesterreich.gv.at); Italy 112 (affarieuropei.gov.it); Netherlands 112
+ * (government.nl); Norway 113 and 112 (politiet.no); Finland 112 (suomi.fi);
+ * Denmark 112 (brs.dk); Turkey 112 (saglik.gov.tr); India 112 (mha.gov.in);
+ * Philippines 911 (e911.gov.ph); Indonesia 112 (layanan112.kominfo.go.id) and
+ * 119 (kemkes.go.id); Japan 119 (fdma.go.jp) and 110 (npa.go.jp); South Korea
+ * 119 and 112 (mois.go.kr); Malaysia 999 (999.gov.my); Thailand 1669
+ * (niems.go.th) and 191 (police.go.th); Israel 101 (mdais.org); United Arab
+ * Emirates 999 and 998 (u.ae); Australia 000 (infrastructure.gov.au);
+ * New Zealand 111 (police.govt.nz); South Africa 10111 (saps.gov.za), 10177 and
+ * 112 (westerncape.gov.za); Nigeria 112 (ncc.gov.ng); Morocco 141
+ * (sehati.gov.ma); Côte d'Ivoire 185 and 110 (gouv.ci).
+ *
+ * Not confirmed: Morocco 15, 19, and 112. sehati.gov.ma lists 141. No
+ * Moroccan ministry page was found for 15, 19, or 112. The French embassy in
+ * Rabat lists them; that was not treated as confirmation.
  *
  * Omitted on purpose (unverified, not shown): Pakistan Umang 0311 7786264,
  * Saudi Arabia 920033360, South Africa LifeLine 0861 322 322,
@@ -29,6 +41,150 @@ import { HELP_UI_EXTRA, applyHelplineLocales } from './helpline-locales.js';
 
 const t = (en, fr, es, pt) => ({ en, fr, es, pt });
 const phone = (href, label) => ({ href, label });
+const cited = (url, label) => [url, label];
+const text988 = {
+  en: 'text 988', fr: 'textez le 988', es: 'mensaje al 988', pt: 'mensagem para 988',
+  de: 'SMS an 988', it: 'messaggio al 988', nl: 'sms 988', ja: '988にテキスト', ko: '988에 문자', hi: '988 पर संदेश',
+};
+const textShout = {
+  en: 'text SHOUT to 85258', fr: 'textez SHOUT au 85258', es: 'envía SHOUT al 85258', pt: 'envie SHOUT para 85258',
+  de: 'SHOUT an 85258 schreiben', it: 'invia SHOUT al 85258', nl: 'stuur SHOUT naar 85258',
+  ja: '85258にSHOUTとテキスト', ko: '85258에 SHOUT 문자', hi: '85258 पर SHOUT भेजें',
+};
+const textHelp = {
+  en: 'text HELP to 51444', fr: 'textez HELP au 51444', es: 'envía HELP al 51444', pt: 'envie HELP para 51444',
+  de: 'HELP an 51444 schreiben', it: 'invia HELP al 51444', nl: 'stuur HELP naar 51444',
+  ja: '51444にHELPとテキスト', ko: '51444에 HELP 문자', hi: '51444 पर HELP भेजें',
+};
+const textTalk = {
+  en: 'text TALK to 50808', fr: 'textez TALK au 50808', es: 'envía TALK al 50808', pt: 'envie TALK para 50808',
+  de: 'TALK an 50808 schreiben', it: 'invia TALK al 50808', nl: 'stuur TALK naar 50808',
+  ja: '50808にTALKとテキスト', ko: '50808에 TALK 문자', hi: '50808 पर TALK भेजें',
+};
+const text1737 = {
+  en: 'text 1737', fr: 'textez le 1737', es: 'mensaje al 1737', pt: 'mensagem para 1737',
+  de: 'SMS an 1737', it: 'messaggio al 1737', nl: 'sms 1737', ja: '1737にテキスト', ko: '1737에 문자', hi: '1737 पर संदेश',
+};
+
+const EMERGENCY_SOURCES = {
+  CA: { 911: cited('https://988.ca/', '988.ca') },
+  US: { 911: cited('https://www.911.gov/', '911.gov') },
+  MX: { 911: cited('https://www.sonora.gob.mx/servicios-y-tramites/753-9-1-1', 'sonora.gob.mx') },
+  CO: { 123: cited('https://www.policia.gov.co/inicio', 'policia.gov.co') },
+  PE: {
+    106: cited('https://www.gob.pe/1013', 'gob.pe'),
+    105: cited('https://www.gob.pe/institucion/pnp/contacto-y-numeros-de-emergencias', 'Policía Nacional'),
+  },
+  AR: {
+    911: cited('https://www.argentina.gob.ar/seguridad/911emergencias', 'argentina.gob.ar'),
+    107: cited('https://www.argentina.gob.ar/salud/primerosauxilios', 'argentina.gob.ar'),
+  },
+  CL: {
+    131: cited('https://www.gob.cl/noticias/estas-fiestas-patrias-no-olvides-numeros-emergencia/', 'gob.cl'),
+    133: cited('https://www.gob.cl/noticias/estas-fiestas-patrias-no-olvides-numeros-emergencia/', 'gob.cl'),
+  },
+  UY: { 911: cited('https://www.gub.uy/ministerio-interior/tramites-y-servicios/servicios/emergencia-9-1-1', 'gub.uy') },
+  EC: { 911: cited('https://www.gob.ec/ecu-911', 'gob.ec') },
+  CR: { 911: cited('https://aquiestoy.cr/', 'aquiestoy.cr') },
+  DO: { 911: cited('https://911.gob.do/', '911.gob.do') },
+  BR: { 192: cited('https://www.gov.br/saude/pt-br/composicao/saes/samu-192', 'gov.br') },
+  PT: { 112: cited('https://www.gov.pt/guias/contactos-de-emergencia-em-portugal', 'gov.pt') },
+  ES: { 112: cited('https://administracion.gob.es/tu-espacio-europeo/derechos-obligaciones/ciudadanos/asistencia-sanitaria/numeros-urgencia', 'administracion.gob.es') },
+  FR: {
+    112: cited('https://www.service-public.gouv.fr/particuliers/vosdroits/F33954', 'service-public.fr'),
+    15: cited('https://www.service-public.gouv.fr/particuliers/vosdroits/F33954', 'service-public.fr'),
+  },
+  BE: { 112: cited('https://112.be/fr/how-call/comment-appeler-le-112', '112.be') },
+  CH: {
+    144: cited('https://www.bakom.admin.ch/de/weitere-nummern-kostenpflichtig-oder-gratis', 'bakom.admin.ch'),
+    112: cited('https://www.bakom.admin.ch/de/weitere-nummern-kostenpflichtig-oder-gratis', 'bakom.admin.ch'),
+  },
+  GB: {
+    999: cited('https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers', 'gov.uk'),
+    112: cited('https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers', 'gov.uk'),
+  },
+  IE: {
+    112: cited('https://www.gov.ie/en/department-of-the-taoiseach/services/how-to-contact-emergency-services-in-ireland/', 'gov.ie'),
+    999: cited('https://www.gov.ie/en/department-of-the-taoiseach/services/how-to-contact-emergency-services-in-ireland/', 'gov.ie'),
+  },
+  DE: { 112: cited('https://gesund.bund.de/notfallnummern', 'gesund.bund.de') },
+  AT: {
+    112: cited('https://www.oesterreich.gv.at/de/themen/notfaelle_unfaelle_und_kriminalitaet/notrufnummern', 'oesterreich.gv.at'),
+    144: cited('https://www.oesterreich.gv.at/de/themen/notfaelle_unfaelle_und_kriminalitaet/notrufnummern', 'oesterreich.gv.at'),
+  },
+  IT: { 112: cited('https://www.affarieuropei.gov.it/it/comunicazione/notizie/112-un-numero-salvavita/', 'affarieuropei.gov.it') },
+  NL: { 112: cited('https://www.government.nl/themes/justice-security-and-defence/emergency-number-112', 'government.nl') },
+  NO: {
+    113: cited('https://www.politiet.no/kontakt-politiet/nod-sms', 'politiet.no'),
+    112: cited('https://www.politiet.no/english/contact-the-police', 'politiet.no'),
+  },
+  FI: { 112: cited('https://www.suomi.fi/services/112-emergency-number-in-finland-emergency-response-centre-agency-finland/01a571b5-3eb9-4b49-a27e-ec8427737c5b', 'suomi.fi') },
+  DK: { 112: cited('https://www.brs.dk/da/borger/var-klar-nar-krisen-rammer/1-1-2-og-andre-vigtige-telefonnumre/', 'brs.dk') },
+  TR: { 112: cited('https://www.saglik.gov.tr/TR-12230/724--hayat-kurtariyoruz.html', 'saglik.gov.tr') },
+  IN: { 112: cited('https://www.mha.gov.in/en/commoncontent/emergency-response-support-system-erss', 'mha.gov.in') },
+  PH: { 911: cited('https://e911.gov.ph/emergency-hotline-numbers/', 'e911.gov.ph') },
+  ID: {
+    112: cited('https://layanan112.kominfo.go.id/', 'layanan112.kominfo.go.id'),
+    119: cited('https://www.kemkes.go.id/id/kejadian-gawat-darurat-medik-laporkan-ke-119', 'kemkes.go.id'),
+  },
+  JP: {
+    119: cited('https://www.fdma.go.jp/mission/enrichment/kyukyumusen_kinkyutuhou/119.html', 'fdma.go.jp'),
+    110: cited('https://www.npa.go.jp/hakusyo/r07/honbun/html/bb2232000.html', 'npa.go.jp'),
+  },
+  KR: {
+    119: cited('https://www.mois.go.kr/eng/sub/a03/bestPractices3/screen.do', 'mois.go.kr'),
+    112: cited('https://www.mois.go.kr/eng/sub/a03/bestPractices3/screen.do', 'mois.go.kr'),
+  },
+  MY: { 999: cited('https://999.gov.my/', '999.gov.my') },
+  TH: {
+    1669: cited('https://www2.niems.go.th/contact/electronic', 'niems.go.th'),
+    191: cited('https://logistics.police.go.th/feq-administrative/', 'police.go.th'),
+  },
+  IL: { 101: cited('https://www.mdais.org/en/101', 'mdais.org') },
+  AE: {
+    999: cited('https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies', 'u.ae'),
+    998: cited('https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies', 'u.ae'),
+  },
+  AU: { '000': cited('https://www.infrastructure.gov.au/media-communications/phone/triple-zero/how-call-triple-zero-000', 'infrastructure.gov.au') },
+  NZ: { 111: cited('https://www.police.govt.nz/call-111', 'police.govt.nz') },
+  ZA: {
+    10111: cited('https://www.saps.gov.za/services/cc_10111.php', 'saps.gov.za'),
+    10177: cited('https://www.westerncape.gov.za/service/accessing-health-services', 'westerncape.gov.za'),
+    112: cited('https://www.westerncape.gov.za/know-who-you-can-call-emergency', 'westerncape.gov.za'),
+  },
+  NG: { 112: cited('https://ncc.gov.ng/about/servicom-charter/departmental-charters/special-duties-department-service-charter', 'ncc.gov.ng') },
+  MA: {
+    141: cited('https://sehati.gov.ma/numeros_utiles', 'sehati.gov.ma'),
+    15: null,
+    19: null,
+    112: null,
+  },
+  CI: {
+    185: cited('https://www.gouv.ci/uploads/publications/17507230128.pdf', 'gouv.ci'),
+    110: cited('https://www.gouv.ci/uploads/publications/17507230128.pdf', 'gouv.ci'),
+  },
+};
+
+function noteEmergencySources(countries) {
+  for (const country of countries) {
+    const book = EMERGENCY_SOURCES[country.iso];
+    if (!book) throw new Error(`No emergency source book for ${country.iso}`);
+    for (const contact of country.emergencyContacts || []) {
+      const label = typeof contact.label === 'string' ? contact.label : contact.label.en;
+      if (!Object.prototype.hasOwnProperty.call(book, label)) {
+        throw new Error(`No emergency source for ${country.iso} ${label}`);
+      }
+      const found = book[label];
+      if (!found) {
+        contact.verified = false;
+        continue;
+      }
+      contact.verified = true;
+      contact.source = found[0];
+      contact.sourceLabel = found[1];
+    }
+  }
+}
 
 const SNS_SOURCE = 'https://www.sns24.gov.pt/servico/aconselhamento-psicologico-no-sns-24/';
 
@@ -41,8 +197,8 @@ function snsParts() {
   };
   const tail = {
     en: '. Psychological counselling through SNS 24. Not confirmed from a live page on this check (',
-    fr: '. Conseil psychologique du SNS 24. Non confirmé sur une page en direct lors de cette vérification (',
-    es: '. Consejo psicológico del SNS 24. No confirmado en una página en vivo en esta revisión (',
+    fr: '. Soutien psychologique du SNS 24. Non confirmé sur une page en direct lors de cette vérification (',
+    es: '. Asesoramiento psicológico del SNS 24. No confirmado en una página en vivo en esta revisión (',
     pt: '. Aconselhamento psicológico do SNS 24. Não confirmado numa página ao vivo nesta verificação (',
   };
   return Object.fromEntries(['en', 'fr', 'es', 'pt'].map((lang) => [lang, [
@@ -54,7 +210,7 @@ function snsParts() {
   ]]));
 }
 
-const always = t(
+const always = () => t(
   'Free, 24 hours.',
   'Gratuit, 24 h/24.',
   'Gratis, las 24 horas.',
@@ -73,7 +229,7 @@ export const HELP_UI = {
     unverified: 'Not confirmed',
     close: 'Close',
     others: 'Other countries',
-    somewhere: 'Somewhere else:',
+    somewhere: 'Somewhere else: call your local emergency number first, or',
     find: 'lists local lines.',
     noLine: 'No dedicated crisis line is listed here.',
   },
@@ -88,7 +244,7 @@ export const HELP_UI = {
     unverified: 'Non confirmé',
     close: 'Fermer',
     others: 'Autres pays',
-    somewhere: 'Ailleurs :',
+    somewhere: 'Ailleurs : appelez d’abord votre numéro d’urgence local, ou',
     find: 'indique des lignes locales.',
     noLine: 'Aucune ligne de crise dédiée n’est indiquée ici.',
   },
@@ -103,7 +259,7 @@ export const HELP_UI = {
     unverified: 'Sin confirmar',
     close: 'Cerrar',
     others: 'Otros países',
-    somewhere: 'En otros lugares:',
+    somewhere: 'En otros lugares: llama primero a tu número de emergencias local, o',
     find: 'reúne líneas locales.',
     noLine: 'Aquí no hay una línea de crisis dedicada.',
   },
@@ -118,7 +274,7 @@ export const HELP_UI = {
     unverified: 'Não confirmado',
     close: 'Fechar',
     others: 'Outros países',
-    somewhere: 'Em outros lugares:',
+    somewhere: 'Em outros lugares: ligue primeiro para o número de emergência local, ou',
     find: 'lista linhas locais.',
     noLine: 'Nenhuma linha de crise dedicada está listada aqui.',
   },
@@ -147,7 +303,7 @@ export const COUNTRIES = [
     services: [
       line(
         '9-8-8 Suicide Crisis Helpline',
-        [phone('tel:988', '988'), phone('sms:988', 'text 988')],
+        [phone('tel:988', '988'), phone('sms:988', text988)],
         t('Call or text, any time.', 'Appelez ou textez, en tout temps.', 'Llama o envía un mensaje, a cualquier hora.', 'Ligue ou envie uma mensagem, a qualquer hora.'),
         'https://988.ca/',
         '9-8-8 Suicide Crisis Helpline',
@@ -168,7 +324,7 @@ export const COUNTRIES = [
     services: [
       line(
         '988 Suicide & Crisis Lifeline',
-        [phone('tel:988', '988'), phone('sms:988', 'text 988')],
+        [phone('tel:988', '988'), phone('sms:988', text988)],
         t(
           'Call or text, 24 hours. In Spanish, press 2 or text AYUDA.',
           'Composez ou textez, 24 h/24. En espagnol, appuyez sur 2 ou textez AYUDA.',
@@ -189,8 +345,8 @@ export const COUNTRIES = [
         'Línea de la Vida',
         [phone('tel:8009112000', '800 911 2000')],
         t('Free, 24 hours, every day.', 'Gratuit, 24 h/24, tous les jours.', 'Gratis, las 24 horas, todos los días.', 'Grátis, 24 horas, todos os dias.'),
-        'https://www.gob.mx/lineadelavida',
-        'gob.mx/lineadelavida',
+        'https://salud.michoacan.gob.mx/llama-a-la-linea-de-la-vida-y-recibe-atencion-gratuita-en-salud-mental-y-adicciones/',
+        'salud.michoacan.gob.mx',
       ),
     ],
   },
@@ -202,7 +358,7 @@ export const COUNTRIES = [
       line(
         'Línea 106',
         [phone('tel:106', '106')],
-        always,
+        always(),
         'https://www.minsalud.gov.co/salud/publica/salud-mental/Paginas/linea-106.aspx',
         'Ministerio de Salud',
       ),
@@ -216,7 +372,7 @@ export const COUNTRIES = [
       line(
         'Línea 113',
         [phone('tel:113', '113')],
-        t('Then option 5. Free, 24 hours.', 'Puis l’option 5. Gratuit, 24 h/24.', 'opción 5, gratis, las 24 horas.', 'Depois a opção 5. Grátis, 24 horas.'),
+        t('Then option 5. Free, 24 hours.', 'Puis l’option 5. Gratuit, 24 h/24.', 'Luego, la opción 5. Gratis, las 24 horas.', 'Depois a opção 5. Grátis, 24 horas.'),
         'https://www.gob.pe/20715',
         'Ministerio de Salud del Perú',
       ),
@@ -280,7 +436,7 @@ export const COUNTRIES = [
       line(
         'Línea Vida',
         [phone('tel:08000767', '0800 0767'), phone('tel:*0767', '*0767')],
-        always,
+        always(),
         'https://www.gub.uy/ministerio-salud-publica/salud-mental',
         'Ministerio de Salud Pública',
       ),
@@ -297,7 +453,7 @@ export const COUNTRIES = [
         t(
           'Option 6. Free, every day from 07:00 to 20:00. Not a 24-hour line.',
           'Option 6. Gratuit, tous les jours de 7 h à 20 h. Pas une ligne 24 h/24.',
-          'opción 6, gratis, todos los días de 7:00 a 20:00. No es una línea de 24 horas.',
+          'Opción 6. Gratis, todos los días de 7:00 a 20:00. No es una línea de 24 horas.',
           'Opção 6. Grátis, todos os dias das 7:00 às 20:00. Não é uma linha 24 horas.',
         ),
         'https://www.salud.gob.ec/a-traves-de-la-linea-171-msp-ofrece-atencion-en-salud-mental/',
@@ -374,7 +530,7 @@ export const COUNTRIES = [
         'https://www.spms.min-saude.pt/2025/09/lancamento-da-linha-nacional-de-prevencao-do-suicidio-e-apoio-psicologico-1411/',
         'SPMS',
       ),
-      line('SNS 24', [], always, SNS_SOURCE, 'SNS 24', { verified: false, parts: snsParts() }),
+      line('SNS 24', [], always(), SNS_SOURCE, 'SNS 24', { verified: false, parts: snsParts() }),
       line(
         'SOS Voz Amiga',
         [
@@ -493,7 +649,7 @@ export const COUNTRIES = [
       ),
       line(
         'Shout',
-        [phone('sms:85258?body=SHOUT', 'text SHOUT to 85258')],
+        [phone('sms:85258?body=SHOUT', textShout)],
         t('Text only. Free, 24 hours.', 'Par texto seulement. Gratuit, 24 h/24.', 'Solo texto. Gratis, las 24 horas.', 'Só texto. Grátis, 24 horas.'),
         'https://giveusashout.org/',
         'Shout',
@@ -514,14 +670,14 @@ export const COUNTRIES = [
       ),
       line(
         'Pieta',
-        [phone('tel:1800247247', '1800 247 247'), phone('sms:51444?body=HELP', 'text HELP to 51444')],
+        [phone('tel:1800247247', '1800 247 247'), phone('sms:51444?body=HELP', textHelp)],
         t('Free, 24 hours.', 'Gratuit, 24 h/24.', 'Gratis, las 24 horas.', 'Grátis, 24 horas.'),
         'https://www.pieta.ie/how-we-can-help/helpline/',
         'Pieta',
       ),
       line(
         'Text About It',
-        [phone('sms:50808?body=TALK', 'text TALK to 50808')],
+        [phone('sms:50808?body=TALK', textTalk)],
         t('Text only. Free, 24 hours.', 'Par texto seulement. Gratuit, 24 h/24.', 'Solo texto. Gratis, las 24 horas.', 'Só texto. Grátis, 24 horas.'),
         'https://www.textaboutit.ie/',
         'Text About It',
@@ -631,10 +787,10 @@ export const COUNTRIES = [
         'Livslinien',
         [phone('tel:70201201', '70 201 201')],
         t(
-          'Every day from 09:00 to 05:00. Not a 24-hour line. Chat hours are shorter.',
-          'Tous les jours de 9 h à 5 h. Pas une ligne 24 h/24. Le clavardage a des horaires plus courts.',
-          'Todos los días de 09:00 a 05:00. No es una línea de 24 horas. El chat tiene un horario más corto.',
-          'Todos os dias das 09:00 às 05:00. Não é uma linha 24 horas. O chat tem horário mais curto.',
+          'Every day from 09:00 to 05:00. Not a 24-hour line. Chat is open on limited days.',
+          'Tous les jours de 9 h à 5 h. Pas une ligne 24 h/24. Le clavardage n’est ouvert que certains jours.',
+          'Todos los días de 09:00 a 05:00. No es una línea de 24 horas. El chat está abierto solo algunos días.',
+          'Todos os dias das 09:00 às 05:00. Não é uma linha 24 horas. O chat funciona só em alguns dias.',
         ),
         'https://www.livslinien.dk/',
         'Livslinien',
@@ -861,7 +1017,7 @@ export const COUNTRIES = [
     services: [
       line(
         '1737, Need to talk?',
-        [phone('tel:080017371737', '0800 1737 1737'), phone('sms:1737', 'text 1737')],
+        [phone('tel:1737', '1737'), phone('tel:080017371737', '0800 1737 1737'), phone('sms:1737', text1737)],
         t('Call or text, free, any time.', 'Appelez ou textez, gratuit, en tout temps.', 'Llama o envía un texto, gratis, a cualquier hora.', 'Ligue ou envie uma mensagem, grátis, a qualquer hora.'),
         'https://1737.org.nz/',
         '1737, Need to talk?',
@@ -939,6 +1095,7 @@ export const COUNTRIES = [
   },
 ];
 
+noteEmergencySources(COUNTRIES);
 applyHelplineLocales(COUNTRIES);
 
 const ZONE_PREFIXES = [
@@ -1100,7 +1257,8 @@ function link(href, label) {
 }
 
 function textOf(pack, lang) {
-  if (!pack) return '';
+  if (pack == null || pack === '') return '';
+  if (typeof pack === 'string') return pack;
   const value = pack[lang];
   if (value != null && value !== '') return value;
   return pack.en ?? '';
@@ -1110,8 +1268,15 @@ function uiOf(lang) {
   return HELP_UI[lang] || HELP_UI.en;
 }
 
+function contactHtml(lang, item) {
+  const anchor = link(item.href, textOf(item.label, lang));
+  if (item.verified === false) return `${anchor} <span class="help-flag">${esc(uiOf(lang).unverified)}</span>`;
+  if (item.source) return `${anchor} (${link(item.source, item.sourceLabel)})`;
+  return anchor;
+}
+
 function joinLinks(lang, contacts) {
-  const body = contacts.map((item) => link(item.href, item.label));
+  const body = contacts.map((item) => contactHtml(lang, item));
   if (body.length === 1) return body[0];
   if (lang === 'ja') return body.join('、');
   const or = { en: 'or', fr: 'ou', es: 'o', pt: 'ou', de: 'oder', it: 'o', nl: 'of', ko: '또는', hi: 'या' }[lang] || 'or';
@@ -1149,7 +1314,7 @@ function countrySection(lang, country) {
   return `<section class="help-country" data-iso="${esc(country.iso)}">
         <h3>${esc(textOf(country.name, lang))}</h3>
         ${lines}
-        <p class="help-emergency"><span>${esc(ui.emergency)}</span> ${emergencyHtml(lang, country)}</p>
+        <p class="help-emergency"><span class="help-kicker">${esc(ui.emergency)}</span> ${emergencyHtml(lang, country)}</p>
       </section>`;
 }
 

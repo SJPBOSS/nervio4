@@ -381,6 +381,9 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /808 24 24 24, then option 4/);
         assert.match(html, /tel:1411/);
         assert.match(html, /text SHOUT to 85258/);
+        assert.match(html, /tel:1737/);
+        assert.match(html, /Chat is open on limited days/);
+        assert.match(html, /call your local emergency number first/);
         assert.match(html, /1800 247 247/);
         assert.match(html, /text HELP to 51444/);
         assert.match(html, /text TALK to 50808/);
@@ -397,6 +400,8 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /pas un substitut à des soins professionnels/);
         assert.match(html, /3114/);
         assert.match(html, /textez/);
+        assert.match(html, /textez SHOUT au 85258/);
+        assert.match(html, /Soutien psychologique/);
         assert.match(html, /Autres pays/);
         assert.match(html, /tel:\+18662773553/);
         assert.match(html, /sms:535353/);
@@ -408,7 +413,7 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /no sustituye la atención profesional/);
         assert.match(html, /tel:024/);
         assert.match(html, /tel:8009112000/);
-        assert.match(html, /https:\/\/www\.gob\.mx\/lineadelavida/);
+        assert.match(html, /https:\/\/salud\.michoacan\.gob\.mx\/llama-a-la-linea-de-la-vida-y-recibe-atencion-gratuita-en-salud-mental-y-adicciones\//);
         assert.match(html, /tel:106/);
         assert.match(html, /tel:113/);
         assert.match(html, /opción 5/);
@@ -420,7 +425,11 @@ test('guides are linked, translated, and careful', () => {
         assert.match(html, /presiona 2/);
         assert.match(html, /tel:08000767/);
         assert.match(html, /tel:\*0767/);
-        assert.match(html, /opción 6/);
+        assert.match(html, /Opción 6/);
+        assert.match(html, /Luego, la opción 5/);
+        assert.match(html, /envía SHOUT al 85258/);
+        assert.match(html, /mensaje al 988/);
+        assert.match(html, /Asesoramiento psicológico/);
         assert.match(html, /tel:8002737869/);
         assert.match(html, /tel:711/);
         assert.ok(html.indexOf('tel:024') < html.indexOf('Otros países'));
@@ -538,11 +547,18 @@ test('the helpline directory follows the checked list', () => {
   assert.equal(suggestCountry(['es-AR'], 'America/Mexico_City', isos), 'AR');
   assert.equal(suggestCountry(['en'], 'UTC', isos), '');
   const src = fs.readFileSync(path.join(root, 'scripts/helplines.js'), 'utf8');
-  assert.match(src, /TODO: human check before publishing/);
+  assert.doesNotMatch(src, /TODO: human check before publishing/);
+  assert.match(src, /Not confirmed: Morocco 15, 19, and 112/);
   assert.match(src, /Canada 911/);
   assert.match(src, /Australia 000/);
   assert.match(src, /Costa Rica/);
   assert.match(src, /New Zealand 111/);
+  assert.match(en, /tel:15"[^>]*>15<\/a> <span class="help-flag">Not confirmed<\/span>/);
+  assert.match(en, /tel:19"[^>]*>19<\/a> <span class="help-flag">Not confirmed<\/span>/);
+  assert.match(en, /tel:141/);
+  assert.match(en, /sehati\.gov\.ma/);
+  assert.match(en, /saglik\.gov\.tr/);
+  assert.match(en, /tel:112/);
   assert.deepEqual(HELP_GROUPS, {
     de: ['DE', 'AT', 'CH'],
     it: ['IT'],
