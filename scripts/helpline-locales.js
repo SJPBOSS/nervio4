@@ -336,11 +336,11 @@ const DETAILS = {
   ),
   'BE|Zelfmoordlijn 1813': six(
     'Niederländischsprachiges Belgien. Das Telefon ist kostenlos, 24 Stunden. Der Chat ist täglich von 17:00 bis Mitternacht, mittwochs von 12:00 bis Mitternacht.',
-    'Belgio neerlandofono. Il telefono è gratuito, 24 ore. La chat è tutti i giorni dalle 17:00 a mezzanotte, il mercoledì dalle 12:00.',
-    'Nederlandstalig België. De telefoon is gratis, 24 uur. De chat is elke dag van 17:00 tot middernacht, en op woensdag vanaf 12:00.',
-    'オランダ語圏のベルギー。電話は無料で24時間。チャットは毎日 17:00 から深夜、水曜は 12:00 から。',
-    '네덜란드어권 벨기에. 전화는 무료, 24시간. 채팅은 매일 17:00–자정, 수요일은 12:00부터.',
-    'डच भाषी बेल्जियम। फ़ोन मुफ़्त है, 24 घंटे। चैट हर दिन 17:00 से आधी रात, बुधवार को 12:00 से।',
+    'Belgio neerlandofono. Il telefono è gratuito, 24 ore. La chat è tutti i giorni dalle 17:00 a mezzanotte, il mercoledì dalle 12:00 a mezzanotte.',
+    'Nederlandstalig België. De telefoon is gratis, 24 uur. De chat is elke dag van 17:00 tot middernacht, en op woensdag van 12:00 tot middernacht.',
+    'オランダ語圏のベルギー。電話は無料で24時間。チャットは毎日 17:00 から深夜まで、水曜は 12:00 から深夜まで。',
+    '네덜란드어권 벨기에. 전화는 무료, 24시간. 채팅은 매일 17:00–자정, 수요일은 12:00–자정.',
+    'डच भाषी बेल्जियम। फ़ोन मुफ़्त है, 24 घंटे। चैट हर दिन 17:00 से आधी रात तक, बुधवार को 12:00 से आधी रात तक।',
   ),
   'CH|La Main Tendue': dayNight,
   'CH|147': six(
