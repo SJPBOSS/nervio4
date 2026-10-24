@@ -1,7 +1,7 @@
 import { TECHNIQUES, DURATION_SECONDS, withDifficulty, stepSession, scaleFor } from './breathing.js';
 import { TRANSLATIONS, MODE_ORDER, DUR_ORDER } from './i18n.js';
 import { legalPath } from './scripts/legal.js';
-import { resolveSettings, publicMode } from './settings.js';
+import { resolveSettings, publicMode, homePath, homeLang, languageTarget, normalizeLang, LANG_META } from './settings.js';
 
 const STORAGE_KEY = 'nervio';
 
@@ -20,6 +20,7 @@ const els = {
   heroTitle: $('hero-title'),
   heroSub: $('hero-sub'),
   stage: $('stage'),
+  breath: $('breath'),
   glow: document.querySelector('.glow'),
   orb: $('orb'),
   phase: $('phase'),
@@ -37,7 +38,14 @@ const els = {
   liabilityTerms: $('liability-terms'),
 };
 
-let settings = loadSettings();
+let settings = {
+  lang: 'en',
+  mode: 'calm',
+  duration: '2m',
+  muted: false,
+  difficulty: 0,
+  sessions: 0,
+};
 let idle = true;
 let active = false;
 let completed = false;
@@ -61,16 +69,31 @@ motionQuery.addEventListener?.('change', (event) => {
 });
 document.body.classList.toggle('reduced', reduceMotion);
 
-function loadSettings() {
-  let stored = null;
+function peekStored() {
   try {
-    stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    return stored && typeof stored === 'object' ? stored : null;
   } catch {
-    stored = null;
+    return null;
   }
+}
+
+function writeStoredLang(lang) {
+  const stored = peekStored() || {};
+  stored.v = 1;
+  stored.lang = lang;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+  } catch {
+    /* private mode should not block a language redirect */
+  }
+}
+
+function loadSettings() {
   return resolveSettings({
     search: location.search,
-    stored,
+    pathname: location.pathname,
+    stored: peekStored(),
     languages: navigator.languages || [navigator.language || ''],
   });
 }
@@ -100,10 +123,11 @@ function persist() {
     /* private mode and full storage should not break the exercise */
   }
   const params = new URLSearchParams(location.search);
-  params.set('lang', settings.lang);
+  params.delete('lang');
   params.set('mode', publicMode(settings.mode));
   params.set('dur', settings.duration);
-  const next = `${location.pathname}?${params.toString()}${location.hash}`;
+  const qs = params.toString();
+  const next = `${homePath(settings.lang)}${qs ? `?${qs}` : ''}${location.hash}`;
   const current = `${location.pathname}${location.search}${location.hash}`;
   if (next !== current) history.replaceState({ nervio: 1 }, '', next);
 }
@@ -126,6 +150,7 @@ function render() {
   els.app.dataset.mode = settings.mode;
   els.app.classList.toggle('is-idle', idle && !completed);
   document.documentElement.lang = copy.htmlLang;
+  syncDocumentMeta(copy);
   els.skip.textContent = copy.skip;
   els.langs.setAttribute('aria-label', copy.language);
   els.controls.setAttribute('aria-label', copy.sessionControls);
@@ -145,19 +170,19 @@ function render() {
 
   for (const link of els.langs.querySelectorAll('[data-set-lang]')) {
     const on = link.dataset.setLang === settings.lang;
-    link.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+    link.removeAttribute('aria-pressed');
     const params = new URLSearchParams();
-    params.set('lang', link.dataset.setLang);
     params.set('mode', publicMode(settings.mode));
     params.set('dur', settings.duration);
-    link.href = `/?${params.toString()}`;
+    link.href = `${homePath(link.dataset.setLang)}?${params.toString()}`;
   }
 
   const brandParams = new URLSearchParams();
-  brandParams.set('lang', settings.lang);
   brandParams.set('mode', publicMode(settings.mode));
   brandParams.set('dur', settings.duration);
-  els.brand.href = `/?${brandParams.toString()}`;
+  els.brand.href = `${homePath(settings.lang)}?${brandParams.toString()}`;
 
   for (const button of els.modes.querySelectorAll('[data-mode]')) {
     const id = button.dataset.mode;
@@ -229,10 +254,25 @@ function render() {
   paintMotion();
 }
 
-/** Visual only. 0 and 1 stay put, so the orb still finishes exactly when the phase does. */
+/** Visual only. Endpoints stay 0 and 1, so the orb still finishes exactly when the phase does. */
 function easeVisual(progress) {
   const p = Math.min(1, Math.max(0, Number(progress) || 0));
-  return p < 0.5 ? 4 * p * p * p : 1 - ((-2 * p + 2) ** 3) / 2;
+  return 0.5 - 0.5 * Math.cos(Math.PI * p);
+}
+
+function syncDocumentMeta(copy) {
+  const origin = 'https://www.panicpause.com';
+  const canonicalHref = `${origin}${homePath(settings.lang)}`;
+  document.querySelector('link[rel="canonical"]')?.setAttribute('href', canonicalHref);
+  document.querySelector('meta[name="description"]')?.setAttribute('content', copy.description);
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonicalHref);
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', copy.title);
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', copy.description);
+  document.querySelector('meta[property="og:locale"]')?.setAttribute('content', LANG_META[settings.lang]?.og || 'en_US');
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', copy.title);
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', copy.description);
+  const theme = { calm: '#07110e', focus: '#110c07', sleep: '#070814', panic: '#140c0b' }[settings.mode];
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme);
 }
 
 function paintMotion() {
@@ -242,15 +282,24 @@ function paintMotion() {
     : 0;
   const progress = dur > 0 ? phaseElapsed / dur : 0;
   els.orb.dataset.phase = active ? phase : 'READY';
+  const target = els.breath || els.orb;
   if (reduceMotion || !active) {
-    els.orb.style.transform = '';
-    els.glow.style.transform = '';
-    els.glow.style.opacity = '';
+    target.style.transform = '';
+    if (target !== els.orb) els.orb.style.transform = '';
+    if (els.glow) {
+      els.glow.style.transform = '';
+      els.glow.style.opacity = '';
+    }
   } else {
     const scale = scaleFor(phase, easeVisual(progress));
-    els.orb.style.transform = `scale(${scale})`;
-    els.glow.style.transform = `scale(${scale})`;
-    els.glow.style.opacity = String(0.45 + (scale - 1) * 0.62);
+    target.style.transform = `translateZ(0) scale(${scale})`;
+    if (els.glow) {
+      const lift = Math.min(1, Math.max(0, (scale - 1) / 0.62));
+      els.glow.style.opacity = String(0.62 + lift * 0.38);
+    }
+    if (!els.breath && els.glow) {
+      els.glow.style.transform = `translateZ(0) scale(${scale})`;
+    }
   }
   if (active && settings.mode !== 'panic') {
     const total = DURATION_SECONDS[settings.duration];
@@ -420,9 +469,31 @@ function resetToIdle() {
 }
 
 function setLang(lang) {
-  settings.lang = lang;
-  persist();
-  render();
+  const next = normalizeLang(lang) || 'en';
+  settings.lang = next;
+  const stored = peekStored() || {};
+  stored.v = 1;
+  stored.lang = next;
+  stored.mode = settings.mode;
+  stored.duration = settings.duration;
+  stored.muted = settings.muted;
+  stored.difficulty = settings.difficulty;
+  stored.sessions = settings.sessions;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+  } catch {
+    /* private mode should not block a language change */
+  }
+  const params = new URLSearchParams();
+  params.set('mode', publicMode(settings.mode));
+  params.set('dur', settings.duration);
+  const dest = `${homePath(next)}?${params.toString()}`;
+  if (homeLang(location.pathname) === next) {
+    history.replaceState({ nervio: 1 }, '', dest);
+    render();
+    return;
+  }
+  location.assign(dest);
 }
 
 function setMode(mode) {
@@ -521,5 +592,24 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-persist();
-render();
+const bootTarget = languageTarget({
+  pathname: location.pathname,
+  search: location.search,
+  hash: location.hash,
+  stored: peekStored(),
+  languages: navigator.languages || [navigator.language || ''],
+});
+if (bootTarget?.method === 'replace') {
+  const queryLang = normalizeLang(new URLSearchParams(location.search).get('lang'));
+  if (queryLang) writeStoredLang(queryLang);
+  location.replace(bootTarget.url);
+} else {
+  if (bootTarget?.method === 'replaceState') {
+    const queryLang = normalizeLang(new URLSearchParams(location.search).get('lang'));
+    if (queryLang) writeStoredLang(queryLang);
+    history.replaceState({ nervio: 1 }, '', bootTarget.url);
+  }
+  settings = loadSettings();
+  persist();
+  render();
+}

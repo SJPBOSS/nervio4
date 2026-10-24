@@ -1,7 +1,56 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { SITE, PUBLISHED, LANGS, TOPICS, CHROME, DISCLAIMERS, BLURBS, pagePath } from './content.js';
+import { SITE, PUBLISHED, LANGS as GUIDE_LANGS, TOPICS, CHROME, DISCLAIMERS, BLURBS, pagePath } from './content.js';
+import { helpButtonHtml, helpDialogHtml, othersListHtml } from './helplines.js';
 import { CHECKED, CHECKED_DATE, SHORT, LINK_LABELS, LEGAL_PAGES, legalPath } from './legal.js';
+import { TRANSLATIONS } from '../i18n.js';
+import { LANGS as APP_LANGS, LANG_META, homePath } from '../settings.js';
+
+const OPEN_APP = {
+  de: 'Zur App',
+  it: 'Apri l’app',
+  nl: 'Open de app',
+  ja: 'アプリを開く',
+  ko: '앱 열기',
+  hi: 'ऐप खोलें',
+};
+
+function chromeFor(lang) {
+  if (CHROME[lang]) return CHROME[lang];
+  const meta = LANG_META[lang];
+  const copy = TRANSLATIONS[lang];
+  return {
+    htmlLang: meta.htmlLang,
+    ogLocale: meta.og,
+    skip: copy.skip,
+    language: copy.language,
+    guides: copy.guides,
+    breadcrumb: meta.breadcrumb,
+    other: copy.guides,
+    column: meta.name,
+    openApp: OPEN_APP[lang] || copy.breathe,
+  };
+}
+
+function blurbFor(lang) {
+  return BLURBS[lang] || TRANSLATIONS[lang].description;
+}
+
+function langMenuHtml(langs, hrefFor, currentLang) {
+  const label = chromeFor(currentLang).language;
+  const current = LANG_META[currentLang];
+  const links = langs.map((code) => {
+    const meta = LANG_META[code];
+    const on = code === currentLang ? ' aria-current="page"' : '';
+    return `<a href="${esc(hrefFor(code))}" data-set-lang="${code}" lang="${esc(meta.htmlLang)}" hreflang="${esc(meta.htmlLang)}"${on}>${esc(meta.name)}</a>`;
+  }).join('\n            ');
+  return `<details class="lang-menu" id="langs">
+          <summary aria-label="${esc(label)}">${esc(current.code)}</summary>
+          <div class="lang-panel">
+            ${links}
+          </div>
+        </details>`;
+}
 
 const root = path.resolve(import.meta.dirname, '..');
 
@@ -43,10 +92,9 @@ function segments(parts) {
 
 function appUrl(lang, mode, dur) {
   const params = new URLSearchParams();
-  params.set('lang', lang);
   params.set('mode', mode);
   if (dur) params.set('dur', dur);
-  return `/?${params.toString()}`;
+  return `${homePath(lang)}?${params.toString()}`;
 }
 
 function iconLinks() {
@@ -59,7 +107,7 @@ function iconLinks() {
 }
 
 function guideColumns() {
-  return LANGS.map((lang) => {
+  return GUIDE_LANGS.map((lang) => {
     const chrome = CHROME[lang];
     const items = TOPICS.map((topic) => {
       const copy = topic[lang];
@@ -75,10 +123,10 @@ function guideColumns() {
 }
 
 function legalLinksHtml(onlyLang) {
-  const langs = onlyLang ? [onlyLang] : LANGS;
+  const langs = onlyLang ? [onlyLang] : GUIDE_LANGS;
   const rows = langs.map((lang) => {
     const labels = LINK_LABELS[lang];
-    const htmlLang = CHROME[lang].htmlLang;
+    const htmlLang = chromeFor(lang).htmlLang;
     return `<p lang="${esc(htmlLang)}"><a href="${esc(legalPath('terms', lang))}" hreflang="${esc(htmlLang)}">${esc(labels.terms)}</a> · <a href="${esc(legalPath('privacy', lang))}" hreflang="${esc(htmlLang)}">${esc(labels.privacy)}</a></p>`;
   }).join('\n    ');
   const label = LINK_LABELS[onlyLang || 'en'].legal;
@@ -88,7 +136,7 @@ function legalLinksHtml(onlyLang) {
 }
 
 function footerHtml() {
-  const blurbs = LANGS.map((lang) => `<p lang="${esc(CHROME[lang].htmlLang)}">${esc(BLURBS[lang])}</p>`).join('\n    ');
+  const blurbs = GUIDE_LANGS.map((lang) => `<p lang="${esc(CHROME[lang].htmlLang)}">${esc(BLURBS[lang])}</p>`).join('\n    ');
   return `<h2>Guides</h2>
   <div class="guide-columns">
     ${guideColumns()}
@@ -103,14 +151,7 @@ function disclaimerHtml(lang) {
   const block = DISCLAIMERS[lang];
   const paragraphs = block.blocks.map((parts) => `<p>${segments(parts)}</p>`).join('\n      ');
   const checked = `<p class="checked"><time datetime="${CHECKED_DATE}">${esc(CHECKED[lang])}</time></p>`;
-  const others = block.others?.length
-    ? `<details class="other-countries">
-      <summary>${esc(block.othersLabel)}</summary>
-      <ul>
-          ${block.others.map((parts) => `<li>${segments(parts)}</li>`).join('\n          ')}
-      </ul>
-    </details>`
-    : '';
+  const others = othersListHtml(lang);
   const tail = (block.tail || []).map((parts) => `<p>${segments(parts)}</p>`).join('\n      ');
   return `<aside class="disclaimer">
       <h2>${esc(block.heading)}</h2>
@@ -131,7 +172,7 @@ function renderArticle(topic, lang) {
   const chrome = CHROME[lang];
   const canonicalPath = pagePath(topic, lang);
   const canonical = `${SITE}${canonicalPath}`;
-  const alternates = LANGS.map((code) => {
+  const alternates = GUIDE_LANGS.map((code) => {
     const href = `${SITE}${pagePath(topic, code)}`;
     const hreflang = CHROME[code].htmlLang;
     return `  <link rel="alternate" hreflang="${hreflang}" href="${href}" />`;
@@ -140,7 +181,7 @@ function renderArticle(topic, lang) {
   alternates.push(`  <link rel="alternate" hreflang="pt" href="${SITE}${pagePath(topic, 'pt')}" />`);
   alternates.push(`  <link rel="alternate" hreflang="x-default" href="${SITE}${pagePath(topic, 'en')}" />`);
 
-  const locales = LANGS.filter((code) => code !== lang)
+  const locales = GUIDE_LANGS.filter((code) => code !== lang)
     .map((code) => `  <meta property="og:locale:alternate" content="${CHROME[code].ogLocale}" />`)
     .join('\n');
 
@@ -166,7 +207,7 @@ function renderArticle(topic, lang) {
     `<li><a href="${esc(pagePath(item, lang))}">${esc(item[lang].h1)}</a></li>`
   )).join('\n        ');
 
-  const langLinks = LANGS.map((code) => {
+  const langLinks = GUIDE_LANGS.map((code) => {
     const href = pagePath(topic, code);
     const current = code === lang ? ' aria-current="page"' : '';
     return `<a href="${href}" lang="${CHROME[code].htmlLang}" hreflang="${CHROME[code].htmlLang}"${current}>${code.toUpperCase()}</a>`;
@@ -190,8 +231,8 @@ function renderArticle(topic, lang) {
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Nervio', item: `${SITE}/?lang=${lang}` },
-          { '@type': 'ListItem', position: 2, name: chrome.guides, item: `${SITE}/?lang=${lang}#guides` },
+          { '@type': 'ListItem', position: 1, name: 'Nervio', item: `${SITE}${homePath(lang)}` },
+          { '@type': 'ListItem', position: 2, name: chrome.guides, item: `${SITE}${homePath(lang)}#guides` },
           { '@type': 'ListItem', position: 3, name: copy.h1, item: canonical },
         ],
       },
@@ -204,7 +245,7 @@ function renderArticle(topic, lang) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#10120f" />
+  <meta name="theme-color" content="#090c0b" />
   <title>${esc(copy.title)}</title>
   <meta name="description" content="${esc(copy.description)}" />
   <meta name="robots" content="index, follow" />
@@ -233,7 +274,7 @@ ${locales}
 <body>
   <a class="skip" href="#main">${esc(chrome.skip)}</a>
   <header class="nav">
-    <a class="brand" href="/?lang=${lang}">
+    <a class="brand" href="${homePath(lang)}">
       <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">Nervio</span>
     </a>
@@ -246,8 +287,8 @@ ${locales}
   <main id="main" class="article">
     <nav class="crumbs" aria-label="${esc(chrome.breadcrumb)}">
       <ol>
-        <li><a href="/?lang=${lang}">Nervio</a></li>
-        <li><a href="/?lang=${lang}#guides">${esc(chrome.guides)}</a></li>
+        <li><a href="${homePath(lang)}">Nervio</a></li>
+        <li><a href="${homePath(lang)}#guides">${esc(chrome.guides)}</a></li>
         <li aria-current="page">${esc(copy.h1)}</li>
       </ol>
     </nav>
@@ -272,7 +313,7 @@ ${locales}
   <footer class="site-footer">
     <p lang="${esc(chrome.htmlLang)}">${esc(BLURBS[lang])}</p>
     ${legalLinksHtml(lang)}
-    <p><a href="/?lang=${lang}">${esc(chrome.openApp)}</a></p>
+    <p><a href="${homePath(lang)}">${esc(chrome.openApp)}</a></p>
   </footer>
 </body>
 </html>
@@ -280,7 +321,7 @@ ${locales}
 }
 
 function render404() {
-  const blocks = LANGS.map((lang, index) => {
+  const blocks = GUIDE_LANGS.map((lang, index) => {
     const chrome = CHROME[lang];
     const tag = index === 0 ? 'h1' : 'h2';
     return `<${tag} lang="${chrome.htmlLang}">${esc(chrome.notFoundH1)}</${tag}>
@@ -292,7 +333,7 @@ function render404() {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#10120f" />
+  <meta name="theme-color" content="#090c0b" />
   <title>${esc(CHROME.en.notFoundTitle)}</title>
   <meta name="description" content="This page is not on Nervio. Go back to the free breathing app or read a guide." />
   <meta name="robots" content="noindex" />
@@ -336,24 +377,20 @@ function legalSectionHtml(section, lang) {
 
 function renderLegal(kind, lang) {
   const page = LEGAL_PAGES[lang][kind];
-  const chrome = CHROME[lang];
+  const chrome = chromeFor(lang);
   const canonicalPath = legalPath(kind, lang);
   const canonical = `${SITE}${canonicalPath}`;
-  const alternates = LANGS.map((code) => {
+  const alternates = APP_LANGS.map((code) => {
     const href = `${SITE}${legalPath(kind, code)}`;
-    return `  <link rel="alternate" hreflang="${CHROME[code].htmlLang}" href="${href}" />`;
+    return `  <link rel="alternate" hreflang="${LANG_META[code].htmlLang}" href="${href}" />`;
   });
   alternates.push(`  <link rel="alternate" hreflang="fr" href="${SITE}${legalPath(kind, 'fr')}" />`);
   alternates.push(`  <link rel="alternate" hreflang="pt" href="${SITE}${legalPath(kind, 'pt')}" />`);
   alternates.push(`  <link rel="alternate" hreflang="x-default" href="${SITE}${legalPath(kind, 'en')}" />`);
-  const locales = LANGS.filter((code) => code !== lang)
-    .map((code) => `  <meta property="og:locale:alternate" content="${CHROME[code].ogLocale}" />`)
+  const locales = APP_LANGS.filter((code) => code !== lang)
+    .map((code) => `  <meta property="og:locale:alternate" content="${LANG_META[code].og}" />`)
     .join('\n');
-  const langLinks = LANGS.map((code) => {
-    const href = legalPath(kind, code);
-    const current = code === lang ? ' aria-current="page"' : '';
-    return `<a href="${href}" lang="${CHROME[code].htmlLang}" hreflang="${CHROME[code].htmlLang}"${current}>${code.toUpperCase()}</a>`;
-  }).join('\n          ');
+  const langLinks = langMenuHtml(APP_LANGS, (code) => legalPath(kind, code), lang);
   const sections = page.sections.map((section) => legalSectionHtml(section, lang)).join('\n      ');
   const jsonLd = JSON.stringify({
     '@context': 'https://schema.org',
@@ -372,7 +409,7 @@ function renderLegal(kind, lang) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#10120f" />
+  <meta name="theme-color" content="#090c0b" />
   <title>${esc(page.title)}</title>
   <meta name="description" content="${esc(page.description)}" />
   <meta name="robots" content="index, follow" />
@@ -401,20 +438,18 @@ ${locales}
 <body>
   <a class="skip" href="#main">${esc(chrome.skip)}</a>
   <header class="nav">
-    <a class="brand" href="/?lang=${lang}">
+    <a class="brand" href="${homePath(lang)}">
       <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">Nervio</span>
     </a>
     <div class="nav-actions">
-      <nav class="langs" aria-label="${esc(chrome.language)}">
-          ${langLinks}
-      </nav>
+      ${langLinks}
     </div>
   </header>
   <main id="main" class="article">
     <nav class="crumbs" aria-label="${esc(chrome.breadcrumb)}">
       <ol>
-        <li><a href="/?lang=${lang}">Nervio</a></li>
+        <li><a href="${homePath(lang)}">Nervio</a></li>
         <li aria-current="page">${esc(page.h1)}</li>
       </ol>
     </nav>
@@ -424,20 +459,283 @@ ${locales}
     </article>
   </main>
   <footer class="site-footer">
-    <p lang="${esc(chrome.htmlLang)}">${esc(BLURBS[lang])}</p>
+    <p lang="${esc(chrome.htmlLang)}">${esc(blurbFor(lang))}</p>
     ${legalLinksHtml(lang)}
-    <p><a href="/?lang=${lang}">${esc(chrome.openApp)}</a></p>
+    <p><a href="${homePath(lang)}">${esc(chrome.openApp)}</a></p>
   </footer>
 </body>
 </html>
 `;
 }
 
+const MODE_ICONS = {
+  calm: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 14c2.2-3.6 3.8-3.6 6 0s3.8 3.6 6 0 3.8-3.6 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  focus: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+  sleep: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15.2 5.2a6.8 6.8 0 1 0 5.2 11.2A7.2 7.2 0 0 1 15.2 5.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  panic: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/></svg>',
+};
+
+const HOME_HREFLANG = [
+  ['en', `${SITE}/`],
+  ['fr-CA', `${SITE}/fr/`],
+  ['fr', `${SITE}/fr/`],
+  ['es', `${SITE}/es/`],
+  ['pt-BR', `${SITE}/pt/`],
+  ['pt', `${SITE}/pt/`],
+  ['de', `${SITE}/de/`],
+  ['it', `${SITE}/it/`],
+  ['nl', `${SITE}/nl/`],
+  ['ja', `${SITE}/ja/`],
+  ['ko', `${SITE}/ko/`],
+  ['hi', `${SITE}/hi/`],
+  ['x-default', `${SITE}/`],
+];
+
+function homeHreflangLinks() {
+  return HOME_HREFLANG
+    .map(([hreflang, href]) => `  <link rel="alternate" hreflang="${hreflang}" href="${href}" />`)
+    .join('\n');
+}
+
+function langBootScript() {
+  const codes = APP_LANGS.filter((code) => code !== 'en').concat('en');
+  const checks = codes.map((code) => `    if (v === '${code}' || v.indexOf('${code}-') === 0) return '${code}';`).join('\n');
+  const homes = APP_LANGS.filter((code) => code !== 'en').map((code) => `path === '/${code}'`).join(' || ');
+  return `<script>
+(function () {
+  function code(value) {
+    var v = String(value || '').toLowerCase().replace(/_/g, '-');
+${checks}
+    return '';
+  }
+  function home(lang) { return lang === 'en' ? '/' : '/' + lang + '/'; }
+  var path = location.pathname.replace(/\\/index\\.html$/, '');
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  var onHome = path === '' || path === '/' || ${homes};
+  if (!onHome) return;
+  var params = new URLSearchParams(location.search);
+  var queryLang = code(params.get('lang'));
+  if (queryLang) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('nervio') || '{}') || {};
+      if (!saved || typeof saved !== 'object') saved = {};
+      saved.v = 1;
+      saved.lang = queryLang;
+      localStorage.setItem('nervio', JSON.stringify(saved));
+    } catch (err) {}
+    params.delete('lang');
+    var qs = params.toString();
+    var dest = home(queryLang) + (qs ? '?' + qs : '') + location.hash;
+    var here = (path === '' || path === '/') ? '/' : path + '/';
+    if (here !== home(queryLang)) location.replace(dest);
+    else history.replaceState(null, '', dest);
+    return;
+  }
+  if (path !== '' && path !== '/') return;
+  var preferred = '';
+  try {
+    var note = JSON.parse(localStorage.getItem('nervio') || 'null');
+    preferred = code(note && note.lang);
+  } catch (err) {}
+  if (!preferred) {
+    var list = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < list.length; i += 1) {
+      preferred = code(list[i]);
+      if (preferred) break;
+    }
+  }
+  if (!preferred || preferred === 'en') return;
+  params.delete('lang');
+  var rest = params.toString();
+  location.replace(home(preferred) + (rest ? '?' + rest : '') + location.hash);
+})();
+</script>`;
+}
+
+const HOME_FONT_PRELOAD = {
+  ja: '/fonts/noto-sans-jp-400.woff2',
+  ko: '/fonts/noto-sans-kr-400.woff2',
+  hi: '/fonts/noto-sans-deva-400.woff2',
+};
+
+function renderHome(lang) {
+  const copy = TRANSLATIONS[lang];
+  const chrome = chromeFor(lang);
+  const canonical = `${SITE}${homePath(lang)}`;
+  const locales = APP_LANGS.filter((code) => code !== lang)
+    .map((code) => `  <meta property="og:locale:alternate" content="${LANG_META[code].og}" />`)
+    .join('\n');
+  const langLinks = langMenuHtml(APP_LANGS, (code) => homePath(code), lang);
+  const fontPreload = HOME_FONT_PRELOAD[lang]
+    ? `\n  <link rel="preload" href="${HOME_FONT_PRELOAD[lang]}" as="font" type="font/woff2" crossorigin />`
+    : '';
+  const modes = ['calm', 'focus', 'sleep', 'panic'].map((id) => `        <button type="button" class="mode-btn" data-mode="${id}" aria-pressed="${id === 'calm' ? 'true' : 'false'}">
+          <span class="mode-icon" aria-hidden="true">${MODE_ICONS[id]}</span>
+          <span class="mode-copy"><span class="mode-name">${esc(copy.modes[id].name)}</span><span class="mode-sub">${esc(copy.modes[id].sub)}</span></span>
+        </button>`).join('\n');
+  const durations = [
+    ['30s', 'quick', false],
+    ['1m', 'min1', false],
+    ['2m', 'min2', true],
+  ].map(([id, key, on]) => `        <button type="button" data-dur="${id}" aria-pressed="${on}">${esc(copy.durations[key])}</button>`).join('\n');
+  const pattern = `${copy.phases.INHALE} ${copy.sec(4)} · ${copy.phases.EXHALE} ${copy.sec(6)} · ${copy.durations.min2}`;
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        name: 'Nervio',
+        url: canonical,
+        inLanguage: APP_LANGS.map((code) => LANG_META[code].htmlLang),
+        description: copy.description,
+      },
+      {
+        '@type': 'WebApplication',
+        name: 'Nervio',
+        url: canonical,
+        applicationCategory: 'LifestyleApplication',
+        operatingSystem: 'Any',
+        browserRequirements: 'Requires JavaScript',
+        isAccessibleForFree: true,
+        inLanguage: APP_LANGS.map((code) => LANG_META[code].htmlLang),
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+        description: copy.description,
+      },
+    ],
+  }).replaceAll('<', '\\u003c');
+
+  return `<!DOCTYPE html>
+<html lang="${chrome.htmlLang}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  ${langBootScript()}
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#090c0b" />
+  <link rel="preload" href="/fonts/fraunces-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />${fontPreload}
+  <title>${esc(copy.title)}</title>
+  <meta name="description" content="${esc(copy.description)}" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="${canonical}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nervio" />
+  <meta property="og:title" content="${esc(copy.title)}" />
+  <meta property="og:description" content="${esc(copy.description)}" />
+  <meta property="og:url" content="${canonical}" />
+  <meta property="og:image" content="${SITE}/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nervio, a free breathing app on a black background" />
+  <meta property="og:locale" content="${chrome.ogLocale}" />
+${locales}
+${homeHreflangLinks()}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${esc(copy.title)}" />
+  <meta name="twitter:description" content="${esc(copy.description)}" />
+  <meta name="twitter:image" content="${SITE}/og.png" />
+  ${iconLinks()}
+  <script type="application/ld+json">
+  ${jsonLd}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main" id="skip">${esc(copy.skip)}</a>
+  <div class="app is-idle" id="app" data-mode="calm">
+    <div class="progress" id="progress" hidden>
+      <div class="progress-fill" id="progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="${esc(copy.progress)}"></div>
+    </div>
+    <header class="nav">
+      <a class="brand" href="${homePath(lang)}" id="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Nervio</span>
+      </a>
+      ${helpButtonHtml(lang)}
+      <div class="nav-actions">
+        ${langLinks}
+        <button type="button" class="icon-btn" id="cancel" hidden aria-label="${esc(copy.cancel)}"><span aria-hidden="true">✕</span></button>
+        <button type="button" class="icon-btn" id="mute" aria-pressed="false" aria-label="${esc(copy.mute)}">
+          <svg class="icon-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm12.5 3a3.5 3.5 0 0 0-1.8-3.06v6.12A3.5 3.5 0 0 0 16.5 12z"/></svg>
+          <svg class="icon-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm13.1 3 2.4-2.4-1.4-1.4L15.7 10.6 13.3 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>
+        </button>
+      </div>
+    </header>
+    <main id="main" class="stage-wrap">
+      <div class="hero" id="hero">
+        <h1 id="hero-title">${esc(copy.welcome)}</h1>
+        <p class="hero-sub" id="hero-sub">${esc(copy.subWelcome)}</p>
+      </div>
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="breath" id="breath">
+          <div class="aurora" aria-hidden="true"></div>
+          <div class="glow"></div>
+          <div class="motes" aria-hidden="true"></div>
+          <div class="orb" id="orb"></div>
+          <div class="ring ring-outer" aria-hidden="true"></div>
+          <div class="ring"></div>
+        </div>
+      </div>
+      <p class="phase" id="phase" aria-live="polite"></p>
+      <p class="hint" id="hint"></p>
+    </main>
+    <section class="controls" id="controls" aria-label="${esc(copy.sessionControls)}">
+      <p class="pattern" id="pattern">${esc(pattern)}</p>
+      <div class="checkin" id="checkin" hidden>
+        <h2 id="how-feel" tabindex="-1">${esc(copy.howFeel)}</h2>
+        <div class="checkin-grid">
+          <button type="button" data-feedback="better"><span id="label-better">${esc(copy.better)}</span></button>
+          <button type="button" data-feedback="same"><span id="label-same">${esc(copy.same)}</span></button>
+          <button type="button" data-feedback="worse"><span id="label-worse">${esc(copy.worse)}</span></button>
+        </div>
+      </div>
+      <div class="modes" id="modes" role="group" aria-label="${esc(copy.modesLabel)}">
+${modes}
+      </div>
+      <div class="durations" id="durations" role="group" aria-label="${esc(copy.durationLabel)}">
+${durations}
+      </div>
+      <button type="button" class="go" id="go" aria-describedby="pattern">${esc(copy.breathe)}</button>
+      <a class="guides-jump" id="guides-jump" href="#guides">${esc(copy.guides)}</a>
+      <p class="liability" id="liability">
+        <span id="liability-line">${esc(copy.liability)}</span>
+        <span id="liability-stop">${esc(copy.liabilityStop)}</span>
+        <a id="liability-terms" href="${esc(legalPath('terms', lang))}">${esc(copy.terms)}</a>
+      </p>
+    </section>
+  </div>
+  <noscript class="noscript">
+    <p>The guided exercise needs JavaScript. The written guides below work without it.</p>
+    <p lang="fr-CA">L’exercice guidé a besoin de JavaScript. Les guides écrits plus bas fonctionnent sans.</p>
+    <p lang="es">El ejercicio guiado necesita JavaScript. Las guías escritas de abajo funcionan sin él.</p>
+    <p lang="pt-BR">O exercício guiado precisa de JavaScript. Os guias escritos abaixo funcionam sem ele.</p>
+  </noscript>
+  <footer class="site-footer" id="guides">
+    <!-- guides:start -->
+    ${footerHtml()}
+    <!-- guides:end -->
+  </footer>
+  ${helpDialogHtml(lang)}
+  <script type="module" src="/help.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
+`;
+}
+
+function homeAlternatesXml() {
+  return HOME_HREFLANG
+    .map(([hreflang, href]) => `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}" />`)
+    .join('\n');
+}
+
 function sitemap() {
-  const legalUrls = LANGS.flatMap((lang) => ['terms', 'privacy'].map((kind) => `${SITE}${legalPath(kind, lang)}`));
-  const urls = [`${SITE}/`, ...legalUrls, ...TOPICS.flatMap((topic) => LANGS.map((lang) => `${SITE}${pagePath(topic, lang)}`))];
-  const body = urls.map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${PUBLISHED}</lastmod>\n  </url>`).join('\n');
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+  const homeLastmod = '2026-10-24';
+  const homes = APP_LANGS.map((lang) => `  <url>\n    <loc>${SITE}${homePath(lang)}</loc>\n    <lastmod>${homeLastmod}</lastmod>\n${homeAlternatesXml()}\n  </url>`);
+  const rest = [
+    ...APP_LANGS.flatMap((lang) => ['terms', 'privacy'].map((kind) => `${SITE}${legalPath(kind, lang)}`)),
+    ...TOPICS.flatMap((topic) => GUIDE_LANGS.map((lang) => `${SITE}${pagePath(topic, lang)}`)),
+  ].map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${PUBLISHED}</lastmod>\n  </url>`);
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${homes.concat(rest).join('\n')}\n</urlset>\n`;
 }
 
 function write(file, contents) {
@@ -447,14 +745,14 @@ function write(file, contents) {
 }
 
 for (const topic of TOPICS) {
-  for (const lang of LANGS) {
+  for (const lang of GUIDE_LANGS) {
     if (!topic[lang]) throw new Error(`Missing ${lang} copy for ${topic.id}`);
     write(path.join(lang, topic[lang].slug, 'index.html'), renderArticle(topic, lang));
   }
 }
 
 for (const kind of ['terms', 'privacy']) {
-  for (const lang of LANGS) {
+  for (const lang of APP_LANGS) {
     const rel = legalPath(kind, lang).replace(/^\/|\/$/g, '');
     write(path.join(rel, 'index.html'), renderLegal(kind, lang));
   }
@@ -462,16 +760,8 @@ for (const kind of ['terms', 'privacy']) {
 
 write('404.html', render404());
 write('sitemap.xml', sitemap());
-
-const indexPath = path.join(root, 'index.html');
-const index = fs.readFileSync(indexPath, 'utf8');
-if (!index.includes('<!-- guides:start -->') || !index.includes('<!-- guides:end -->')) {
-  throw new Error('Could not find guide markers in index.html');
+for (const lang of APP_LANGS) {
+  write(lang === 'en' ? 'index.html' : path.join(lang, 'index.html'), renderHome(lang));
 }
-const next = index.replace(
-  /<!-- guides:start -->[\s\S]*?<!-- guides:end -->/,
-  `<!-- guides:start -->\n    ${footerHtml()}\n    <!-- guides:end -->`,
-);
-fs.writeFileSync(indexPath, next);
 
-console.log(`Wrote ${TOPICS.length * LANGS.length} guides, ${LANGS.length * 2} legal pages, 404.html, sitemap.xml, and the home footer.`);
+console.log(`Wrote ${TOPICS.length * GUIDE_LANGS.length} guides, ${APP_LANGS.length * 2} legal pages, ${APP_LANGS.length} language homes, 404.html, and sitemap.xml.`);

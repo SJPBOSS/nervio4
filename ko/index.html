@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+(function () {
+  function code(value) {
+    var v = String(value || '').toLowerCase().replace(/_/g, '-');
+    if (v === 'fr' || v.indexOf('fr-') === 0) return 'fr';
+    if (v === 'es' || v.indexOf('es-') === 0) return 'es';
+    if (v === 'pt' || v.indexOf('pt-') === 0) return 'pt';
+    if (v === 'de' || v.indexOf('de-') === 0) return 'de';
+    if (v === 'it' || v.indexOf('it-') === 0) return 'it';
+    if (v === 'nl' || v.indexOf('nl-') === 0) return 'nl';
+    if (v === 'ja' || v.indexOf('ja-') === 0) return 'ja';
+    if (v === 'ko' || v.indexOf('ko-') === 0) return 'ko';
+    if (v === 'hi' || v.indexOf('hi-') === 0) return 'hi';
+    if (v === 'en' || v.indexOf('en-') === 0) return 'en';
+    return '';
+  }
+  function home(lang) { return lang === 'en' ? '/' : '/' + lang + '/'; }
+  var path = location.pathname.replace(/\/index\.html$/, '');
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  var onHome = path === '' || path === '/' || path === '/fr' || path === '/es' || path === '/pt' || path === '/de' || path === '/it' || path === '/nl' || path === '/ja' || path === '/ko' || path === '/hi';
+  if (!onHome) return;
+  var params = new URLSearchParams(location.search);
+  var queryLang = code(params.get('lang'));
+  if (queryLang) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('nervio') || '{}') || {};
+      if (!saved || typeof saved !== 'object') saved = {};
+      saved.v = 1;
+      saved.lang = queryLang;
+      localStorage.setItem('nervio', JSON.stringify(saved));
+    } catch (err) {}
+    params.delete('lang');
+    var qs = params.toString();
+    var dest = home(queryLang) + (qs ? '?' + qs : '') + location.hash;
+    var here = (path === '' || path === '/') ? '/' : path + '/';
+    if (here !== home(queryLang)) location.replace(dest);
+    else history.replaceState(null, '', dest);
+    return;
+  }
+  if (path !== '' && path !== '/') return;
+  var preferred = '';
+  try {
+    var note = JSON.parse(localStorage.getItem('nervio') || 'null');
+    preferred = code(note && note.lang);
+  } catch (err) {}
+  if (!preferred) {
+    var list = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < list.length; i += 1) {
+      preferred = code(list[i]);
+      if (preferred) break;
+    }
+  }
+  if (!preferred || preferred === 'en') return;
+  params.delete('lang');
+  var rest = params.toString();
+  location.replace(home(preferred) + (rest ? '?' + rest : '') + location.hash);
+})();
+</script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#090c0b" />
+  <link rel="preload" href="/fonts/fraunces-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/noto-sans-kr-400.woff2" as="font" type="font/woff2" crossorigin />
+  <title>Nervio — 고요, 집중, 잠, 가다듬기를 위한 무료 호흡</title>
+  <meta name="description" content="Nervio는 고요, 집중, 잠, 가다듬기 모드가 있는 무료 호흡 앱입니다. 한국어를 포함한 여러 언어. 계정은 필요 없습니다." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.panicpause.com/ko/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nervio" />
+  <meta property="og:title" content="Nervio — 고요, 집중, 잠, 가다듬기를 위한 무료 호흡" />
+  <meta property="og:description" content="Nervio는 고요, 집중, 잠, 가다듬기 모드가 있는 무료 호흡 앱입니다. 한국어를 포함한 여러 언어. 계정은 필요 없습니다." />
+  <meta property="og:url" content="https://www.panicpause.com/ko/" />
+  <meta property="og:image" content="https://www.panicpause.com/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nervio, a free breathing app on a black background" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:locale:alternate" content="fr_CA" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:locale:alternate" content="pt_BR" />
+  <meta property="og:locale:alternate" content="de_DE" />
+  <meta property="og:locale:alternate" content="it_IT" />
+  <meta property="og:locale:alternate" content="nl_NL" />
+  <meta property="og:locale:alternate" content="ja_JP" />
+  <meta property="og:locale:alternate" content="hi_IN" />
+  <link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+  <link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+  <link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="de" href="https://www.panicpause.com/de/" />
+  <link rel="alternate" hreflang="it" href="https://www.panicpause.com/it/" />
+  <link rel="alternate" hreflang="nl" href="https://www.panicpause.com/nl/" />
+  <link rel="alternate" hreflang="ja" href="https://www.panicpause.com/ja/" />
+  <link rel="alternate" hreflang="ko" href="https://www.panicpause.com/ko/" />
+  <link rel="alternate" hreflang="hi" href="https://www.panicpause.com/hi/" />
+  <link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nervio — 고요, 집중, 잠, 가다듬기를 위한 무료 호흡" />
+  <meta name="twitter:description" content="Nervio는 고요, 집중, 잠, 가다듬기 모드가 있는 무료 호흡 앱입니다. 한국어를 포함한 여러 언어. 계정은 필요 없습니다." />
+  <meta name="twitter:image" content="https://www.panicpause.com/og.png" />
+  
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Nervio","url":"https://www.panicpause.com/ko/","inLanguage":["en","fr-CA","es","pt-BR","de","it","nl","ja","ko","hi"],"description":"Nervio는 고요, 집중, 잠, 가다듬기 모드가 있는 무료 호흡 앱입니다. 한국어를 포함한 여러 언어. 계정은 필요 없습니다."},{"@type":"WebApplication","name":"Nervio","url":"https://www.panicpause.com/ko/","applicationCategory":"LifestyleApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"inLanguage":["en","fr-CA","es","pt-BR","de","it","nl","ja","ko","hi"],"offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Nervio는 고요, 집중, 잠, 가다듬기 모드가 있는 무료 호흡 앱입니다. 한국어를 포함한 여러 언어. 계정은 필요 없습니다."}]}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main" id="skip">내용으로 가기</a>
+  <div class="app is-idle" id="app" data-mode="calm">
+    <div class="progress" id="progress" hidden>
+      <div class="progress-fill" id="progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="세션 진행"></div>
+    </div>
+    <header class="nav">
+      <a class="brand" href="/ko/" id="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Nervio</span>
+      </a>
+      <button type="button" class="help-open" id="help-open" aria-haspopup="dialog" aria-controls="help-dialog" aria-label="지금 도움이 필요하세요?">
+        <span class="help-open-long">지금 도움이 필요하세요?</span>
+        <span class="help-open-short" aria-hidden="true">도움</span>
+      </button>
+      <div class="nav-actions">
+        <details class="lang-menu" id="langs">
+          <summary aria-label="언어">KO</summary>
+          <div class="lang-panel">
+            <a href="/" data-set-lang="en" lang="en" hreflang="en">English</a>
+            <a href="/fr/" data-set-lang="fr" lang="fr-CA" hreflang="fr-CA">Français</a>
+            <a href="/es/" data-set-lang="es" lang="es" hreflang="es">Español</a>
+            <a href="/pt/" data-set-lang="pt" lang="pt-BR" hreflang="pt-BR">Português</a>
+            <a href="/de/" data-set-lang="de" lang="de" hreflang="de">Deutsch</a>
+            <a href="/it/" data-set-lang="it" lang="it" hreflang="it">Italiano</a>
+            <a href="/nl/" data-set-lang="nl" lang="nl" hreflang="nl">Nederlands</a>
+            <a href="/ja/" data-set-lang="ja" lang="ja" hreflang="ja">日本語</a>
+            <a href="/ko/" data-set-lang="ko" lang="ko" hreflang="ko" aria-current="page">한국어</a>
+            <a href="/hi/" data-set-lang="hi" lang="hi" hreflang="hi">हिन्दी</a>
+          </div>
+        </details>
+        <button type="button" class="icon-btn" id="cancel" hidden aria-label="세션 취소"><span aria-hidden="true">✕</span></button>
+        <button type="button" class="icon-btn" id="mute" aria-pressed="false" aria-label="소리 끄기">
+          <svg class="icon-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm12.5 3a3.5 3.5 0 0 0-1.8-3.06v6.12A3.5 3.5 0 0 0 16.5 12z"/></svg>
+          <svg class="icon-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm13.1 3 2.4-2.4-1.4-1.4L15.7 10.6 13.3 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>
+        </button>
+      </div>
+    </header>
+    <main id="main" class="stage-wrap">
+      <div class="hero" id="hero">
+        <h1 id="hero-title">소란을 내려놓아요.</h1>
+        <p class="hero-sub" id="hero-sub">숨만 쉬어요.</p>
+      </div>
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="breath" id="breath">
+          <div class="aurora" aria-hidden="true"></div>
+          <div class="glow"></div>
+          <div class="motes" aria-hidden="true"></div>
+          <div class="orb" id="orb"></div>
+          <div class="ring ring-outer" aria-hidden="true"></div>
+          <div class="ring"></div>
+        </div>
+      </div>
+      <p class="phase" id="phase" aria-live="polite"></p>
+      <p class="hint" id="hint"></p>
+    </main>
+    <section class="controls" id="controls" aria-label="호흡 세션">
+      <p class="pattern" id="pattern">들이쉬기 4초 · 내쉬기 6초 · 2분</p>
+      <div class="checkin" id="checkin" hidden>
+        <h2 id="how-feel" tabindex="-1">지금은 어때요?</h2>
+        <div class="checkin-grid">
+          <button type="button" data-feedback="better"><span id="label-better">나아졌어요</span></button>
+          <button type="button" data-feedback="same"><span id="label-same">비슷해요</span></button>
+          <button type="button" data-feedback="worse"><span id="label-worse">더 힘들어요</span></button>
+        </div>
+      </div>
+      <div class="modes" id="modes" role="group" aria-label="모드">
+        <button type="button" class="mode-btn" data-mode="calm" aria-pressed="true">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 14c2.2-3.6 3.8-3.6 6 0s3.8 3.6 6 0 3.8-3.6 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">고요</span><span class="mode-sub">마음을 가라앉혀요</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="focus" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">집중</span><span class="mode-sub">머리를 비워요</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="sleep" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15.2 5.2a6.8 6.8 0 1 0 5.2 11.2A7.2 7.2 0 0 1 15.2 5.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">잠</span><span class="mode-sub">쉴 준비</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="panic" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">가다듬기</span><span class="mode-sub">벅찰 때</span></span>
+        </button>
+      </div>
+      <div class="durations" id="durations" role="group" aria-label="시간">
+        <button type="button" data-dur="30s" aria-pressed="false">짧게</button>
+        <button type="button" data-dur="1m" aria-pressed="false">1분</button>
+        <button type="button" data-dur="2m" aria-pressed="true">2분</button>
+      </div>
+      <button type="button" class="go" id="go" aria-describedby="pattern">숨 쉬기</button>
+      <a class="guides-jump" id="guides-jump" href="#guides">안내</a>
+      <p class="liability" id="liability">
+        <span id="liability-line">Nervio는 일반적인 웰빙을 위한 호흡 타이머입니다. 의학적 조언도, 진단도, 치료도 아니고, 응급상황을 위한 것도 아닙니다. 위기라면 지역의 긴급 번호나 위기 상담 전화로 연락하세요.</span>
+        <span id="liability-stop">어지럽거나 머리가 멍하면 멈추세요. 심장, 폐, 다른 질환이 있거나 임신 중이라면 먼저 의사와 상의하세요.</span>
+        <a id="liability-terms" href="/ko/terms/">안내</a>
+      </p>
+    </section>
+  </div>
+  <noscript class="noscript">
+    <p>The guided exercise needs JavaScript. The written guides below work without it.</p>
+    <p lang="fr-CA">L’exercice guidé a besoin de JavaScript. Les guides écrits plus bas fonctionnent sans.</p>
+    <p lang="es">El ejercicio guiado necesita JavaScript. Las guías escritas de abajo funcionan sin él.</p>
+    <p lang="pt-BR">O exercício guiado precisa de JavaScript. Os guias escritos abaixo funcionam sem ele.</p>
+  </noscript>
+  <footer class="site-footer" id="guides">
+    <!-- guides:start -->
+    <h2>Guides</h2>
+  <div class="guide-columns">
+    <section aria-labelledby="guides-en">
+      <h3 id="guides-en" lang="en">English</h3>
+      <ul class="guide-list">
+        <li><a href="/en/breathing-exercise-for-panic-attack/" lang="en">A breathing exercise for a panic attack</a></li>
+        <li><a href="/en/box-breathing/" lang="en">Box breathing</a></li>
+        <li><a href="/en/4-7-8-breathing-for-sleep/" lang="en">4-7-8 breathing for sleep</a></li>
+        <li><a href="/en/breathing-to-calm-anxiety/" lang="en">Breathing to calm anxiety fast</a></li>
+        <li><a href="/en/breathing-for-focus/" lang="en">Breathing for focus</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-fr">
+      <h3 id="guides-fr" lang="fr-CA">Français</h3>
+      <ul class="guide-list">
+        <li><a href="/fr/exercice-respiration-crise-panique/" lang="fr-CA">Exercice de respiration pour une crise de panique</a></li>
+        <li><a href="/fr/respiration-carree/" lang="fr-CA">Respiration carrée</a></li>
+        <li><a href="/fr/respiration-4-7-8-pour-dormir/" lang="fr-CA">Respiration 4-7-8 pour dormir</a></li>
+        <li><a href="/fr/respiration-pour-calmer-anxiete/" lang="fr-CA">Respiration pour calmer l’anxiété rapidement</a></li>
+        <li><a href="/fr/respiration-pour-la-concentration/" lang="fr-CA">Respiration pour la concentration</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-es">
+      <h3 id="guides-es" lang="es">Español</h3>
+      <ul class="guide-list">
+        <li><a href="/es/ejercicio-respiracion-ataque-panico/" lang="es">Ejercicio de respiración para un ataque de pánico</a></li>
+        <li><a href="/es/respiracion-cuadrada/" lang="es">Respiración cuadrada</a></li>
+        <li><a href="/es/respiracion-4-7-8-para-dormir/" lang="es">Respiración 4-7-8 para dormir</a></li>
+        <li><a href="/es/respiracion-para-calmar-la-ansiedad/" lang="es">Respiración para calmar la ansiedad rápido</a></li>
+        <li><a href="/es/respiracion-para-concentrarse/" lang="es">Respiración para concentrarse</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-pt">
+      <h3 id="guides-pt" lang="pt-BR">Português</h3>
+      <ul class="guide-list">
+        <li><a href="/pt/exercicio-respiracao-ataque-panico/" lang="pt-BR">Exercício de respiração para um ataque de pânico</a></li>
+        <li><a href="/pt/respiracao-quadrada/" lang="pt-BR">Respiração quadrada</a></li>
+        <li><a href="/pt/respiracao-4-7-8-para-dormir/" lang="pt-BR">Respiração 4-7-8 para dormir</a></li>
+        <li><a href="/pt/respiracao-para-acalmar-ansiedade/" lang="pt-BR">Respiração para acalmar a ansiedade</a></li>
+        <li><a href="/pt/respiracao-para-focar/" lang="pt-BR">Respiração para focar</a></li>
+      </ul>
+    </section>
+  </div>
+  <div class="footer-blurbs">
+    <p lang="en">Nervio is a free breathing app for calm, focus, sleep, and moments of panic. No account. These guides are general wellness information, not medical advice.</p>
+    <p lang="fr-CA">Nervio est une application gratuite de respiration pour le calme, la concentration, le sommeil et les crises de panique. Sans compte. Ces guides sont de l’information générale sur le bien-être, pas un avis médical.</p>
+    <p lang="es">Nervio es una aplicación gratuita de respiración para la calma, el enfoque, el sueño y los ataques de pánico. Sin cuenta. Estas guías son información general de bienestar, no consejo médico.</p>
+    <p lang="pt-BR">O Nervio é um aplicativo grátis de respiração para calma, foco, sono e momentos de pânico. Sem conta. Estes guias são informação geral de bem-estar, não orientação médica.</p>
+  </div>
+  <nav class="legal-links" aria-label="Legal">
+    <p lang="en"><a href="/en/terms/" hreflang="en">Terms and disclaimer</a> · <a href="/en/privacy/" hreflang="en">Privacy</a></p>
+    <p lang="fr-CA"><a href="/fr/conditions/" hreflang="fr-CA">Conditions et avis</a> · <a href="/fr/confidentialite/" hreflang="fr-CA">Confidentialité</a></p>
+    <p lang="es"><a href="/es/aviso/" hreflang="es">Términos y aviso</a> · <a href="/es/privacidad/" hreflang="es">Privacidad</a></p>
+    <p lang="pt-BR"><a href="/pt/aviso/" hreflang="pt-BR">Termos e aviso</a> · <a href="/pt/privacidade/" hreflang="pt-BR">Privacidade</a></p>
+  </nav>
+    <!-- guides:end -->
+  </footer>
+  <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title" data-help-default="KR">
+    <div class="help-panel">
+      <div class="help-head">
+        <h2 id="help-title">지금 도움이 필요하세요?</h2>
+        <button type="button" class="help-close" id="help-close" aria-label="닫기"><span aria-hidden="true">×</span></button>
+      </div>
+      <p class="help-lead">위기이거나 자신을 해치려는 생각이 들면, 그 나라의 상담 전화를 이용하세요. Nervio는 긴급 서비스가 아니고, 대신 연락해 주지도 않습니다.</p>
+      <label class="help-pick">
+        <span>나라</span>
+        <select id="help-country" name="country">
+          <option value="">한국의 전화</option>
+            <option value="*">모든 나라</option>
+          <option value="CA">캐나다</option>
+            <option value="US">미국</option>
+            <option value="MX">멕시코</option>
+            <option value="CO">콜롬비아</option>
+            <option value="PE">페루</option>
+            <option value="AR">아르헨티나</option>
+            <option value="CL">칠레</option>
+            <option value="UY">우루과이</option>
+            <option value="EC">에콰도르</option>
+            <option value="CR">코스타리카</option>
+            <option value="DO">도미니카 공화국</option>
+            <option value="BR">브라질</option>
+            <option value="PT">포르투갈</option>
+            <option value="ES">스페인</option>
+            <option value="FR">프랑스</option>
+            <option value="BE">벨기에</option>
+            <option value="CH">스위스</option>
+            <option value="GB">영국</option>
+            <option value="IE">아일랜드</option>
+            <option value="DE">독일</option>
+            <option value="AT">오스트리아</option>
+            <option value="IT">이탈리아</option>
+            <option value="NL">네덜란드</option>
+            <option value="NO">노르웨이</option>
+            <option value="FI">핀란드</option>
+            <option value="DK">덴마크</option>
+            <option value="TR">튀르키예</option>
+            <option value="IN">인도</option>
+            <option value="PH">필리핀</option>
+            <option value="ID">인도네시아</option>
+            <option value="JP">일본</option>
+            <option value="KR">한국</option>
+            <option value="MY">말레이시아</option>
+            <option value="TH">태국</option>
+            <option value="IL">이스라엘</option>
+            <option value="AE">아랍에미리트</option>
+            <option value="AU">호주</option>
+            <option value="NZ">뉴질랜드</option>
+            <option value="ZA">남아프리카</option>
+            <option value="NG">나이지리아</option>
+            <option value="MA">모로코</option>
+            <option value="CI">코트디부아르</option>
+        </select>
+      </label>
+      <div class="help-list" id="help-list">
+        <section class="help-country" data-iso="CA">
+        <h3>캐나다</h3>
+        <ul><li>9-8-8 Suicide Crisis Helpline: <a href="tel:988">988</a> 또는 <a href="sms:988">988에 문자</a>. 전화나 문자, 언제든지. (<a href="https://988.ca/" rel="noopener noreferrer">9-8-8 Suicide Crisis Helpline</a>).</li><li>Ligne québécoise de prévention du suicide: <a href="tel:+18662773553">1 866 277-3553</a> 또는 <a href="sms:535353">535353</a>. 1 866 APPELLE. 무료, 언제든지. 535353으로 문자를 보낼 수도 있습니다. (<a href="https://www.quebec.ca/sante/sante-mentale/s-informer-sur-sante-mentale-et-troubles-mentaux/reconnaitre-signes-detresse-et-prevenir-suicide" rel="noopener noreferrer">Gouvernement du Québec</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://988.ca/" rel="noopener noreferrer">988.ca</a>)</p>
+      </section>
+        <section class="help-country" data-iso="US">
+        <h3>미국</h3>
+        <ul><li>988 Suicide &amp; Crisis Lifeline: <a href="tel:988">988</a> 또는 <a href="sms:988">988에 문자</a>. 전화나 문자, 24시간. 스페인어는 2를 누르거나 AYUDA를 보내세요. (<a href="https://988lifeline.org/" rel="noopener noreferrer">988 Suicide &amp; Crisis Lifeline</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://www.911.gov/" rel="noopener noreferrer">911.gov</a>)</p>
+      </section>
+        <section class="help-country" data-iso="MX">
+        <h3>멕시코</h3>
+        <ul><li>Línea de la Vida: <a href="tel:8009112000">800 911 2000</a>. 무료, 매일 24시간. (<a href="https://salud.michoacan.gob.mx/llama-a-la-linea-de-la-vida-y-recibe-atencion-gratuita-en-salud-mental-y-adicciones/" rel="noopener noreferrer">salud.michoacan.gob.mx</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://www.sonora.gob.mx/servicios-y-tramites/753-9-1-1" rel="noopener noreferrer">sonora.gob.mx</a>)</p>
+      </section>
+        <section class="help-country" data-iso="CO">
+        <h3>콜롬비아</h3>
+        <ul><li>Línea 106: <a href="tel:106">106</a>. 무료, 24시간. (<a href="https://www.minsalud.gov.co/salud/publica/salud-mental/Paginas/linea-106.aspx" rel="noopener noreferrer">Ministerio de Salud</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:123">123</a> (<a href="https://www.policia.gov.co/inicio" rel="noopener noreferrer">policia.gov.co</a>)</p>
+      </section>
+        <section class="help-country" data-iso="PE">
+        <h3>페루</h3>
+        <ul><li>Línea 113: <a href="tel:113">113</a>. 그다음 5번. 무료, 24시간. (<a href="https://www.gob.pe/20715" rel="noopener noreferrer">Ministerio de Salud del Perú</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:106">106</a> (<a href="https://www.gob.pe/1013" rel="noopener noreferrer">gob.pe</a>) 또는 <a href="tel:105">105</a> (<a href="https://www.gob.pe/institucion/pnp/contacto-y-numeros-de-emergencias" rel="noopener noreferrer">Policía Nacional</a>)</p>
+      </section>
+        <section class="help-country" data-iso="AR">
+        <h3>아르헨티나</h3>
+        <ul><li>Línea 0800 Salud Mental: <a href="tel:08009990091">0800-999-0091</a>. 전국 전화. 무료, 매일 24시간. (<a href="https://www.argentina.gob.ar/salud/hospitalbonaparte/hospital-en-red/dispositivo-0800" rel="noopener noreferrer">argentina.gob.ar</a>).</li><li>Centro de Asistencia al Suicida: <a href="tel:135">135</a>, <a href="tel:08003451435">0800 345 1435</a> 그리고 <a href="tel:+541152751135">(011) 5275-1135</a>. 135는 CABA와 부에노스아이레스 대도시권에서만 무료입니다. 다른 번호는 나머지 지역으로 연결됩니다. 24시간. (<a href="https://www.asistenciaalsuicida.org.ar/" rel="noopener noreferrer">asistenciaalsuicida.org.ar</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://www.argentina.gob.ar/seguridad/911emergencias" rel="noopener noreferrer">argentina.gob.ar</a>) 또는 <a href="tel:107">107</a> (<a href="https://www.argentina.gob.ar/salud/primerosauxilios" rel="noopener noreferrer">argentina.gob.ar</a>)</p>
+      </section>
+        <section class="help-country" data-iso="CL">
+        <h3>칠레</h3>
+        <ul><li>Línea *4141: <a href="tel:*4141">*4141</a>. 휴대전화에서, 어느 통신사든 무료. 매일 24시간. (<a href="https://www.minsal.cl/linea-de-atencion-4141-no-estas-solo-no-estas-sola/" rel="noopener noreferrer">MINSAL</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:131">131</a> (<a href="https://www.gob.cl/noticias/estas-fiestas-patrias-no-olvides-numeros-emergencia/" rel="noopener noreferrer">gob.cl</a>) 또는 <a href="tel:133">133</a> (<a href="https://www.gob.cl/noticias/estas-fiestas-patrias-no-olvides-numeros-emergencia/" rel="noopener noreferrer">gob.cl</a>)</p>
+      </section>
+        <section class="help-country" data-iso="UY">
+        <h3>우루과이</h3>
+        <ul><li>Línea Vida: <a href="tel:08000767">0800 0767</a> 또는 <a href="tel:*0767">*0767</a>. 무료, 24시간. (<a href="https://www.gub.uy/ministerio-salud-publica/salud-mental" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://www.gub.uy/ministerio-interior/tramites-y-servicios/servicios/emergencia-9-1-1" rel="noopener noreferrer">gub.uy</a>)</p>
+      </section>
+        <section class="help-country" data-iso="EC">
+        <h3>에콰도르</h3>
+        <ul><li>Línea 171: <a href="tel:171">171</a>. 6번. 무료. 매일 07:00–20:00. 24시간 전화가 아닙니다. (<a href="https://www.salud.gob.ec/a-traves-de-la-linea-171-msp-ofrece-atencion-en-salud-mental/" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://www.gob.ec/ecu-911" rel="noopener noreferrer">gob.ec</a>)</p>
+      </section>
+        <section class="help-country" data-iso="CR">
+        <h3>코스타리카</h3>
+        <ul><li>Aquí Estoy: <a href="tel:8002737869">800 273 7869</a>. 무료. 월–금 14:00–22:00, 토요일 09:00–16:00. 일요일은 쉽니다. (<a href="https://aquiestoy.cr/" rel="noopener noreferrer">aquiestoy.cr</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://aquiestoy.cr/" rel="noopener noreferrer">aquiestoy.cr</a>)</p>
+      </section>
+        <section class="help-country" data-iso="DO">
+        <h3>도미니카 공화국</h3>
+        <ul><li>Cuida tu Salud Mental: <a href="tel:711">711</a>. 무료이고 비밀이 지켜집니다. 매일 08:00부터 자정까지. 24시간 전화가 아닙니다. (<a href="https://msp.gob.do/web/?p=21208" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://911.gob.do/" rel="noopener noreferrer">911.gob.do</a>)</p>
+      </section>
+        <section class="help-country" data-iso="BR">
+        <h3>브라질</h3>
+        <ul><li>CVV — Centro de Valorização da Vida: <a href="tel:188">188</a>. 무료, 24시간. (<a href="https://www.cvv.org.br/" rel="noopener noreferrer">Centro de Valorização da Vida</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:192">192</a> (<a href="https://www.gov.br/saude/pt-br/composicao/saes/samu-192" rel="noopener noreferrer">gov.br</a>)</p>
+      </section>
+        <section class="help-country" data-iso="PT">
+        <h3>포르투갈</h3>
+        <ul><li>Linha 1411: <a href="tel:1411">1411</a>. 2025년 9월에 시작된 전국 자살 예방 전화. 무료, 매일 24시간. (<a href="https://www.spms.min-saude.pt/2025/09/lancamento-da-linha-nacional-de-prevencao-do-suicidio-e-apoio-psicologico-1411/" rel="noopener noreferrer">SPMS</a>).</li><li>SNS 24: <a href="tel:808242424">808 24 24 24, 그다음 4번</a>. SNS 24 심리 상담. 이번 확인에서는 실시간 페이지로 확인하지 못했습니다 (<a href="https://www.sns24.gov.pt/servico/aconselhamento-psicologico-no-sns-24/" rel="noopener noreferrer">SNS 24</a>). <span class="help-flag">미확인</span></li><li>SOS Voz Amiga: <a href="tel:+351213544545">213 544 545</a>, <a href="tel:+351912802669">912 802 669</a>, <a href="tel:+351963524660">963 524 660</a> 그리고 <a href="tel:+351930712500">930 712 500</a>. 정서적 지지와 자살 예방. 매일 15:30–00:30. 24시간 전화가 아닙니다. (<a href="https://www.sosvozamiga.org/contactos" rel="noopener noreferrer">SOS Voz Amiga</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.gov.pt/guias/contactos-de-emergencia-em-portugal" rel="noopener noreferrer">gov.pt</a>)</p>
+      </section>
+        <section class="help-country" data-iso="ES">
+        <h3>스페인</h3>
+        <ul><li>Línea 024: <a href="tel:024">024</a>. 매일 24시간. (<a href="https://www.sanidad.gob.es/linea024/" rel="noopener noreferrer">Línea de atención a la conducta suicida</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://administracion.gob.es/tu-espacio-europeo/derechos-obligaciones/ciudadanos/asistencia-sanitaria/numeros-urgencia" rel="noopener noreferrer">administracion.gob.es</a>)</p>
+      </section>
+        <section class="help-country" data-iso="FR">
+        <h3>프랑스</h3>
+        <ul><li>3114: <a href="tel:3114">3114</a>. 전국 자살 예방 번호. 24시간. (<a href="https://3114.fr/" rel="noopener noreferrer">3114.fr</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F33954" rel="noopener noreferrer">service-public.fr</a>) 또는 <a href="tel:15">15</a> (<a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F33954" rel="noopener noreferrer">service-public.fr</a>)</p>
+      </section>
+        <section class="help-country" data-iso="BE">
+        <h3>벨기에</h3>
+        <ul><li>Centre de Prévention du Suicide: <a href="tel:080032123">0800 32 123</a>. 프랑스어권 벨기에. 익명, 무료, 24시간. (<a href="https://www.preventionsuicide.be/la-ligne-decoute-0800-32-123" rel="noopener noreferrer">Centre de prévention du suicide</a>).</li><li>Zelfmoordlijn 1813: <a href="tel:1813">1813</a>. 네덜란드어권 벨기에. 전화는 무료, 24시간. 채팅은 매일 17:00–자정, 수요일은 12:00–자정. (<a href="https://www.zelfmoord1813.be/" rel="noopener noreferrer">Zelfmoordlijn 1813</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://112.be/fr/how-call/comment-appeler-le-112" rel="noopener noreferrer">112.be</a>)</p>
+      </section>
+        <section class="help-country" data-iso="CH">
+        <h3>스위스</h3>
+        <ul><li>La Main Tendue: <a href="tel:143">143</a>. 24시간. (<a href="https://www.143.ch/fr/" rel="noopener noreferrer">143.ch</a>).</li><li>147: <a href="tel:147">147</a>. 어린이와 청소년을 위한 전화. 24시간. (<a href="https://www.147.ch/" rel="noopener noreferrer">147.ch</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:144">144</a> (<a href="https://www.bakom.admin.ch/de/weitere-nummern-kostenpflichtig-oder-gratis" rel="noopener noreferrer">bakom.admin.ch</a>) 또는 <a href="tel:112">112</a> (<a href="https://www.bakom.admin.ch/de/weitere-nummern-kostenpflichtig-oder-gratis" rel="noopener noreferrer">bakom.admin.ch</a>)</p>
+      </section>
+        <section class="help-country" data-iso="GB">
+        <h3>영국</h3>
+        <ul><li>Samaritans: <a href="tel:116123">116 123</a>. 무료, 언제든지. (<a href="https://www.samaritans.org/how-we-can-help/contact-samaritan/talk-us-phone/" rel="noopener noreferrer">Samaritans</a>).</li><li>Shout: <a href="sms:85258?body=SHOUT">85258에 SHOUT 문자</a>. 문자만. 무료, 24시간. (<a href="https://giveusashout.org/" rel="noopener noreferrer">Shout</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:999">999</a> (<a href="https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers" rel="noopener noreferrer">gov.uk</a>) 또는 <a href="tel:112">112</a> (<a href="https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers" rel="noopener noreferrer">gov.uk</a>)</p>
+      </section>
+        <section class="help-country" data-iso="IE">
+        <h3>아일랜드</h3>
+        <ul><li>Samaritans: <a href="tel:116123">116 123</a>. 무료, 언제든지. (<a href="https://www.samaritans.org/ireland/" rel="noopener noreferrer">Samaritans Ireland</a>).</li><li>Pieta: <a href="tel:1800247247">1800 247 247</a> 또는 <a href="sms:51444?body=HELP">51444에 HELP 문자</a>. 무료, 24시간. (<a href="https://www.pieta.ie/how-we-can-help/helpline/" rel="noopener noreferrer">Pieta</a>).</li><li>Text About It: <a href="sms:50808?body=TALK">50808에 TALK 문자</a>. 문자만. 무료, 24시간. (<a href="https://www.textaboutit.ie/" rel="noopener noreferrer">Text About It</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.gov.ie/en/department-of-the-taoiseach/services/how-to-contact-emergency-services-in-ireland/" rel="noopener noreferrer">gov.ie</a>) 또는 <a href="tel:999">999</a> (<a href="https://www.gov.ie/en/department-of-the-taoiseach/services/how-to-contact-emergency-services-in-ireland/" rel="noopener noreferrer">gov.ie</a>)</p>
+      </section>
+        <section class="help-country" data-iso="DE">
+        <h3>독일</h3>
+        <ul><li>TelefonSeelsorge: <a href="tel:08001110111">0800 111 0 111</a>, <a href="tel:08001110222">0800 111 0 222</a> 그리고 <a href="tel:116123">116 123</a>. 무료, 낮에도 밤에도. (<a href="https://www.telefonseelsorge.de/" rel="noopener noreferrer">TelefonSeelsorge</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://gesund.bund.de/notfallnummern" rel="noopener noreferrer">gesund.bund.de</a>)</p>
+      </section>
+        <section class="help-country" data-iso="AT">
+        <h3>오스트리아</h3>
+        <ul><li>TelefonSeelsorge: <a href="tel:142">142</a>. 무료, 매일 24시간. (<a href="https://www.telefonseelsorge.at/" rel="noopener noreferrer">TelefonSeelsorge Österreich</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.oesterreich.gv.at/de/themen/notfaelle_unfaelle_und_kriminalitaet/notrufnummern" rel="noopener noreferrer">oesterreich.gv.at</a>) 또는 <a href="tel:144">144</a> (<a href="https://www.oesterreich.gv.at/de/themen/notfaelle_unfaelle_und_kriminalitaet/notrufnummern" rel="noopener noreferrer">oesterreich.gv.at</a>)</p>
+      </section>
+        <section class="help-country" data-iso="IT">
+        <h3>이탈리아</h3>
+        <ul><li>Telefono Amico Italia: <a href="tel:+390223272327">02 2327 2327</a> 또는 <a href="https://wa.me/393240117252" rel="noopener noreferrer">WhatsApp 324 011 7252</a>. 전화는 매일 24시간, 일반 통화료입니다. 무료 번호가 아닙니다. WhatsApp은 매일 18:00–21:00만. (<a href="https://www.telefonoamico.it/" rel="noopener noreferrer">Telefono Amico</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.affarieuropei.gov.it/it/comunicazione/notizie/112-un-numero-salvavita/" rel="noopener noreferrer">affarieuropei.gov.it</a>)</p>
+      </section>
+        <section class="help-country" data-iso="NL">
+        <h3>네덜란드</h3>
+        <ul><li>113 Zelfmoordpreventie: <a href="tel:113">113</a> 또는 <a href="tel:08000113">0800-0113</a>. 0800-0113은 무료. 24시간. 채팅은 113.nl. (<a href="https://www.113.nl/" rel="noopener noreferrer">113</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.government.nl/themes/justice-security-and-defence/emergency-number-112" rel="noopener noreferrer">government.nl</a>)</p>
+      </section>
+        <section class="help-country" data-iso="NO">
+        <h3>노르웨이</h3>
+        <ul><li>Mental Helse Hjelpetelefonen: <a href="tel:116123">116 123</a>. 일 년 내내 24시간. (<a href="https://mentalhelse.no/fa-hjelp/hjelpetelefonen/" rel="noopener noreferrer">Mental Helse</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:113">113</a> (<a href="https://www.politiet.no/kontakt-politiet/nod-sms" rel="noopener noreferrer">politiet.no</a>) 또는 <a href="tel:112">112</a> (<a href="https://www.politiet.no/english/contact-the-police" rel="noopener noreferrer">politiet.no</a>)</p>
+      </section>
+        <section class="help-country" data-iso="FI">
+        <h3>핀란드</h3>
+        <ul><li>MIELI Kriisipuhelin: <a href="tel:+358925250111">09 2525 0111</a>. 24시간. (<a href="https://mieli.fi/tukea-ja-apua/kriisipuhelin/" rel="noopener noreferrer">MIELI</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.suomi.fi/services/112-emergency-number-in-finland-emergency-response-centre-agency-finland/01a571b5-3eb9-4b49-a27e-ec8427737c5b" rel="noopener noreferrer">suomi.fi</a>)</p>
+      </section>
+        <section class="help-country" data-iso="DK">
+        <h3>덴마크</h3>
+        <ul><li>Livslinien: <a href="tel:70201201">70 201 201</a>. 매일 09:00–05:00. 24시간 전화가 아닙니다. 채팅은 일부 요일만 열립니다. (<a href="https://www.livslinien.dk/" rel="noopener noreferrer">Livslinien</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.brs.dk/da/borger/var-klar-nar-krisen-rammer/1-1-2-og-andre-vigtige-telefonnumre/" rel="noopener noreferrer">brs.dk</a>)</p>
+      </section>
+        <section class="help-country" data-iso="TR">
+        <h3>튀르키예</h3>
+        <p>여기에는 전용 위기 전화를 적지 않았습니다.</p>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.saglik.gov.tr/TR-12230/724--hayat-kurtariyoruz.html" rel="noopener noreferrer">saglik.gov.tr</a>)</p>
+      </section>
+        <section class="help-country" data-iso="IN">
+        <h3>인도</h3>
+        <ul><li>Tele MANAS: <a href="tel:14416">14416</a> 또는 <a href="tel:18008914416">1-800-891-4416</a>. 수신자 부담, 24시간. 인도의 여러 언어로. (<a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2022057&amp;lang=2&amp;reg=3" rel="noopener noreferrer">Press Information Bureau</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://www.mha.gov.in/en/commoncontent/emergency-response-support-system-erss" rel="noopener noreferrer">mha.gov.in</a>)</p>
+      </section>
+        <section class="help-country" data-iso="PH">
+        <h3>필리핀</h3>
+        <ul><li>NCMH Crisis Hotline: <a href="tel:1553">1553</a> 또는 <a href="tel:09190571553">0919 057 1553</a>. 24시간. 2026년 7월 안내가 이 두 번호를 적습니다. (<a href="https://www.facebook.com/ncmhcrisishotline/posts/1446226184192317/" rel="noopener noreferrer">NCMH</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:911">911</a> (<a href="https://e911.gov.ph/emergency-hotline-numbers/" rel="noopener noreferrer">e911.gov.ph</a>)</p>
+      </section>
+        <section class="help-country" data-iso="ID">
+        <h3>인도네시아</h3>
+        <ul><li>Healing119: <a href="tel:119">119</a>. 그다음 내선 8. 페이지에 시간은 없습니다. 자살 응급이면 전화하라고 합니다. (<a href="https://www.healing119.id/" rel="noopener noreferrer">Healing119</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://layanan112.kominfo.go.id/" rel="noopener noreferrer">layanan112.kominfo.go.id</a>) 또는 <a href="tel:119">119</a> (<a href="https://www.kemkes.go.id/id/kejadian-gawat-darurat-medik-laporkan-ke-119" rel="noopener noreferrer">kemkes.go.id</a>)</p>
+      </section>
+        <section class="help-country" data-iso="JP">
+        <h3>일본</h3>
+        <ul><li>Inochi SOS: <a href="tel:0120061338">0120-061-338</a>. 무료, 매일 24시간. (<a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer">Ministry of Health, Labour and Welfare</a>).</li><li>Yorisoi Hotline: <a href="tel:0120279338">0120-279-338</a> 또는 <a href="tel:0120279226">0120-279-226</a>. 무료, 24시간. 후쿠시마에서는 0120-279-226. (<a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer">Ministry of Health, Labour and Welfare</a>).</li><li>TELL Lifeline: <a href="tel:08003008355">0800-300-8355</a>. 영어. 시간이 제한되어 있습니다. 현재 시간은 사이트에서 확인하세요. 24시간 전화가 아닙니다. (<a href="https://telljp.com/lifeline/" rel="noopener noreferrer">TELL</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:119">119</a> (<a href="https://www.fdma.go.jp/mission/enrichment/kyukyumusen_kinkyutuhou/119.html" rel="noopener noreferrer">fdma.go.jp</a>) 또는 <a href="tel:110">110</a> (<a href="https://www.npa.go.jp/hakusyo/r07/honbun/html/bb2232000.html" rel="noopener noreferrer">npa.go.jp</a>)</p>
+      </section>
+        <section class="help-country" data-iso="KR">
+        <h3>한국</h3>
+        <ul><li>109: <a href="tel:109">109</a>. 자살 예방 상담, 24시간. (<a href="https://www.129.go.kr/109" rel="noopener noreferrer">129.go.kr</a>).</li><li>Lifeline Korea: <a href="tel:15889191">1588-9191</a>. 24시간. (<a href="https://www.129.go.kr/109" rel="noopener noreferrer">129.go.kr</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:119">119</a> (<a href="https://www.mois.go.kr/eng/sub/a03/bestPractices3/screen.do" rel="noopener noreferrer">mois.go.kr</a>) 또는 <a href="tel:112">112</a> (<a href="https://www.mois.go.kr/eng/sub/a03/bestPractices3/screen.do" rel="noopener noreferrer">mois.go.kr</a>)</p>
+      </section>
+        <section class="help-country" data-iso="MY">
+        <h3>말레이시아</h3>
+        <ul><li>Befrienders Kuala Lumpur: <a href="tel:+60376272929">03-7627 2929</a>. 24시간. (<a href="https://befrienders.org.my/" rel="noopener noreferrer">Befrienders</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:999">999</a> (<a href="https://999.gov.my/" rel="noopener noreferrer">999.gov.my</a>)</p>
+      </section>
+        <section class="help-country" data-iso="TH">
+        <h3>태국</h3>
+        <ul><li>Department of Mental Health: <a href="tel:1323">1323</a>. 무료, 24시간. (<a href="https://dmh.go.th/" rel="noopener noreferrer">Department of Mental Health</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:1669">1669</a> (<a href="https://www2.niems.go.th/contact/electronic" rel="noopener noreferrer">niems.go.th</a>) 또는 <a href="tel:191">191</a> (<a href="https://logistics.police.go.th/feq-administrative/" rel="noopener noreferrer">police.go.th</a>)</p>
+      </section>
+        <section class="help-country" data-iso="IL">
+        <h3>이스라엘</h3>
+        <ul><li>ERAN: <a href="tel:1201">1201</a>. 읽은 페이지에 시간이 없어서, 이 목록은 24시간이라고 하지 않습니다. (<a href="https://www.eran.org.il/" rel="noopener noreferrer">ERAN</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:101">101</a> (<a href="https://www.mdais.org/en/101" rel="noopener noreferrer">mdais.org</a>)</p>
+      </section>
+        <section class="help-country" data-iso="AE">
+        <h3>아랍에미리트</h3>
+        <ul><li>800 HOPE: <a href="tel:8004673">800 4673</a>. 매일 08:00–20:00. 24시간 전화가 아닙니다. WhatsApp도 같은 번호. (<a href="https://u.ae/en/information-and-services/health-and-fitness/FAQs-and-resources/handling-the-covid-19-outbreak/maintaining-mental-health-in-times-of-covid19" rel="noopener noreferrer">u.ae</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:999">999</a> (<a href="https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies" rel="noopener noreferrer">u.ae</a>) 또는 <a href="tel:998">998</a> (<a href="https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies" rel="noopener noreferrer">u.ae</a>)</p>
+      </section>
+        <section class="help-country" data-iso="AU">
+        <h3>호주</h3>
+        <ul><li>Lifeline: <a href="tel:131114">13 11 14</a>. 24시간. (<a href="https://www.lifeline.org.au/131114" rel="noopener noreferrer">Lifeline</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:000">000</a> (<a href="https://www.infrastructure.gov.au/media-communications/phone/triple-zero/how-call-triple-zero-000" rel="noopener noreferrer">infrastructure.gov.au</a>)</p>
+      </section>
+        <section class="help-country" data-iso="NZ">
+        <h3>뉴질랜드</h3>
+        <ul><li>1737, Need to talk?: <a href="tel:1737">1737</a>, <a href="tel:080017371737">0800 1737 1737</a> 그리고 <a href="sms:1737">1737에 문자</a>. 전화나 문자, 무료, 언제든지. (<a href="https://1737.org.nz/" rel="noopener noreferrer">1737, Need to talk?</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:111">111</a> (<a href="https://www.police.govt.nz/call-111" rel="noopener noreferrer">police.govt.nz</a>)</p>
+      </section>
+        <section class="help-country" data-iso="ZA">
+        <h3>남아프리카</h3>
+        <ul><li>SADAG: <a href="tel:0800567567">0800 567 567</a>. 자살 위기 전화. 수신자 부담, 24시간. (<a href="https://www.sadag.org/" rel="noopener noreferrer">SADAG</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:10111">10111</a> (<a href="https://www.saps.gov.za/services/cc_10111.php" rel="noopener noreferrer">saps.gov.za</a>), <a href="tel:10177">10177</a> (<a href="https://www.westerncape.gov.za/service/accessing-health-services" rel="noopener noreferrer">westerncape.gov.za</a>) 그리고 <a href="tel:112">112</a> (<a href="https://www.westerncape.gov.za/know-who-you-can-call-emergency" rel="noopener noreferrer">westerncape.gov.za</a>)</p>
+      </section>
+        <section class="help-country" data-iso="NG">
+        <h3>나이지리아</h3>
+        <ul><li>SURPIN: <a href="tel:08000787746">0800 078 7746</a>, <a href="tel:09080217555">0908 021 7555</a>, <a href="tel:09034400009">0903 440 0009</a> 그리고 <a href="tel:08142241007">0814 224 1007</a>. 0800 번호는 수신자 부담. 24시간. NGO 전화입니다. (<a href="https://www.surpinng.com/" rel="noopener noreferrer">SURPIN</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:112">112</a> (<a href="https://ncc.gov.ng/about/servicom-charter/departmental-charters/special-duties-department-service-charter" rel="noopener noreferrer">ncc.gov.ng</a>)</p>
+      </section>
+        <section class="help-country" data-iso="MA">
+        <h3>모로코</h3>
+        <p>여기에는 전용 위기 전화를 적지 않았습니다.</p>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:141">141</a> (<a href="https://sehati.gov.ma/numeros_utiles" rel="noopener noreferrer">sehati.gov.ma</a>), <a href="tel:15">15</a> <span class="help-flag">미확인</span>, <a href="tel:19">19</a> <span class="help-flag">미확인</span> 그리고 <a href="tel:112">112</a> <span class="help-flag">미확인</span></p>
+      </section>
+        <section class="help-country" data-iso="CI">
+        <h3>코트디부아르</h3>
+        <ul><li>Programme national de santé mentale: <a href="tel:143">143</a>. 무료. 월–금 08:00–17:00. 24시간 전화가 아닙니다. (<a href="https://www.pnsantementale.ci/projets/dispositif-143-assistance-psychologique" rel="noopener noreferrer">Programme national de santé mentale</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">긴급</span> <a href="tel:185">185</a> (<a href="https://www.gouv.ci/uploads/publications/17507230128.pdf" rel="noopener noreferrer">gouv.ci</a>) 또는 <a href="tel:110">110</a> (<a href="https://www.gouv.ci/uploads/publications/17507230128.pdf" rel="noopener noreferrer">gouv.ci</a>)</p>
+      </section>
+      </div>
+      <p class="help-else">다른 곳: 먼저 그 지역의 긴급 번호로 전화하세요. <a href="https://findahelpline.com/" rel="noopener noreferrer">Find a Helpline</a> 이 지역 전화를 모아 둡니다.</p>
+    </div>
+  </dialog>
+  <script type="module" src="/help.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

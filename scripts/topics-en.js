@@ -11,7 +11,7 @@ export const enTopics = [
     cta: 'Start Reset in Nervio',
     paragraphs: [
       'A panic attack often makes breathing fast and shallow. You do not have to force it back to normal. A small pattern, with the out-breath a little longer than the in-breath, gives you something simple to follow while the wave passes.',
-      'You can do this on your own, or [start Reset in Nervio](/?lang=en&mode=reset). Reset has no timer. You press Finish when you are ready. The words on the screen say it plainly: it is okay if your breath is small.',
+      'You can do this on your own, or [start Reset in Nervio](/?mode=reset). Reset has no timer. You press Finish when you are ready. The words on the screen say it plainly: it is okay if your breath is small.',
     ],
     sections: [
       {
@@ -63,7 +63,7 @@ export const enTopics = [
     cta: 'Start box breathing in Nervio',
     paragraphs: [
       'Box breathing, also called square breathing, is a counted pattern with four equal sides: breathe in, hold, breathe out, hold. A common count is 4 seconds on each side. People use it when they want a steady rhythm rather than a long, sleepy exhale.',
-      'In Nervio this lives in Focus mode, starting at 4-4-4-4. [This link opens a 2-minute Focus session](/?lang=en&mode=focus&dur=2m). You can also pick Quick (about 30 seconds) or 1 minute on the home screen.',
+      'In Nervio this lives in Focus mode, starting at 4-4-4-4. [This link opens a 2-minute Focus session](/?mode=focus&dur=2m). You can also pick Quick (about 30 seconds) or 1 minute on the home screen.',
     ],
     sections: [
       {
@@ -113,7 +113,7 @@ export const enTopics = [
     cta: 'Start 4-7-8 in Nervio',
     paragraphs: [
       '4-7-8 breathing is a slow count people use as a wind-down before sleep: inhale for 4, hold for 7, exhale for 8. The long exhale is the main idea. The hold is only useful if it feels comfortable.',
-      'Nervio’s Sleep mode starts at that count. [This link opens a 2-minute Sleep session](/?lang=en&mode=sleep&dur=2m). It is a few quiet minutes, not a promise that you will fall asleep.',
+      'Nervio’s Sleep mode starts at that count. [This link opens a 2-minute Sleep session](/?mode=sleep&dur=2m). It is a few quiet minutes, not a promise that you will fall asleep.',
     ],
     sections: [
       {
@@ -163,7 +163,7 @@ export const enTopics = [
     cta: 'Start Calm in Nervio',
     paragraphs: [
       'Fast, here, means the exercise itself is short. It does not mean anxiety disappears on a schedule. The pattern is a longer exhale than inhale, with no breath holds: in for 4 seconds, out for 6. A few minutes is the whole thing.',
-      '[Calm mode in Nervio](/?lang=en&mode=calm&dur=2m) starts at that count. You can choose 30 seconds, 1 minute, or 2 minutes. Eyes open is fine. Matching the guide loosely is fine.',
+      '[Calm mode in Nervio](/?mode=calm&dur=2m) starts at that count. You can choose 30 seconds, 1 minute, or 2 minutes. Eyes open is fine. Matching the guide loosely is fine.',
     ],
     sections: [
       {
@@ -213,7 +213,7 @@ export const enTopics = [
     cta: 'Start a focus session',
     paragraphs: [
       'Focus, here, means a short and even breathing pattern before a task. It is not a trick that does the task for you. Nervio’s Focus mode uses box breathing: four equal parts, 4 seconds each. One or two minutes is enough to mark a start.',
-      '[This link opens Focus for 2 minutes](/?lang=en&mode=focus&dur=2m). The steps of the pattern are on the [box breathing](/en/box-breathing/) page. What follows is how to use that minute.',
+      '[This link opens Focus for 2 minutes](/?mode=focus&dur=2m). The steps of the pattern are on the [box breathing](/en/box-breathing/) page. What follows is how to use that minute.',
     ],
     sections: [
       {

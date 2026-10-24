@@ -11,7 +11,7 @@ export const esTopics = [
     cta: 'Empezar Reinicio en Nervio',
     paragraphs: [
       'En un ataque de pánico la respiración suele volverse rápida y corta. No tienes que forzarla a volver a la normalidad. Un ritmo pequeño, con la exhalación un poco más larga que la inhalación, te da algo simple que seguir mientras pasa la ola.',
-      'Puedes hacerlo por tu cuenta o [empezar Reinicio en Nervio](/?lang=es&mode=reset). Este modo no tiene temporizador. Pulsas Finalizar cuando quieres. En la pantalla se dice claro: está bien si tu respiración es corta.',
+      'Puedes hacerlo por tu cuenta o [empezar Reinicio en Nervio](/es/?mode=reset). Este modo no tiene temporizador. Pulsas Finalizar cuando quieres. En la pantalla se dice claro: está bien si tu respiración es corta.',
     ],
     sections: [
       {
@@ -63,7 +63,7 @@ export const esTopics = [
     cta: 'Empezar la respiración cuadrada',
     paragraphs: [
       'La respiración cuadrada, también llamada box breathing, es un conteo de cuatro lados iguales: inhalas, mantienes, exhalas, mantienes. Una cuenta habitual es de 4 segundos en cada lado. Se usa cuando quieres un ritmo estable, no una exhalación larga que dé sueño.',
-      'En Nervio está en el modo Enfoque, que empieza en 4-4-4-4. [Este enlace abre una sesión de 2 minutos](/?lang=es&mode=focus&dur=2m). En el inicio también puedes elegir Rápido (unos 30 segundos) o 1 minuto.',
+      'En Nervio está en el modo Enfoque, que empieza en 4-4-4-4. [Este enlace abre una sesión de 2 minutos](/es/?mode=focus&dur=2m). En el inicio también puedes elegir Rápido (unos 30 segundos) o 1 minuto.',
     ],
     sections: [
       {
@@ -113,7 +113,7 @@ export const esTopics = [
     cta: 'Empezar el 4-7-8 en Nervio',
     paragraphs: [
       'La respiración 4-7-8 es un conteo lento que se usa como transición antes de dormir: inhala 4, mantén 7, exhala 8. La idea principal es la exhalación larga. La retención solo sirve si se siente cómoda.',
-      'El modo Sueño de Nervio empieza con esa cuenta. [Este enlace abre una sesión Sueño de 2 minutos](/?lang=es&mode=sleep&dur=2m). Son unos minutos tranquilos, no una promesa de que te vas a dormir.',
+      'El modo Sueño de Nervio empieza con esa cuenta. [Este enlace abre una sesión Sueño de 2 minutos](/es/?mode=sleep&dur=2m). Son unos minutos tranquilos, no una promesa de que te vas a dormir.',
     ],
     sections: [
       {
@@ -163,7 +163,7 @@ export const esTopics = [
     cta: 'Empezar Calma en Nervio',
     paragraphs: [
       'Rápido, aquí, quiere decir que el ejercicio en sí es corto. No quiere decir que la ansiedad desaparece en un plazo. El ritmo es una exhalación más larga que la inhalación, sin retenciones: 4 segundos para entrar, 6 para salir. Unos minutos y se acaba.',
-      'El [modo Calma de Nervio](/?lang=es&mode=calm&dur=2m) empieza con esa cuenta. Puedes elegir 30 segundos, 1 minuto o 2 minutos. Puedes dejar los ojos abiertos. Seguir la guía a tu manera también vale.',
+      'El [modo Calma de Nervio](/es/?mode=calm&dur=2m) empieza con esa cuenta. Puedes elegir 30 segundos, 1 minuto o 2 minutos. Puedes dejar los ojos abiertos. Seguir la guía a tu manera también vale.',
     ],
     sections: [
       {
@@ -213,7 +213,7 @@ export const esTopics = [
     cta: 'Empezar una sesión de Enfoque',
     paragraphs: [
       'Aquí, concentrarse quiere decir un ritmo de respiración corto y parejo antes de una tarea. No es un truco que hace la tarea por ti. El modo Enfoque de Nervio usa la respiración cuadrada: cuatro partes iguales, 4 segundos cada una. Uno o dos minutos bastan para marcar un inicio.',
-      '[Este enlace abre Enfoque durante 2 minutos](/?lang=es&mode=focus&dur=2m). Los pasos del ritmo están en la página de [respiración cuadrada](/es/respiracion-cuadrada/). Lo que sigue es cómo usar ese minuto.',
+      '[Este enlace abre Enfoque durante 2 minutos](/es/?mode=focus&dur=2m). Los pasos del ritmo están en la página de [respiración cuadrada](/es/respiracion-cuadrada/). Lo que sigue es cómo usar ese minuto.',
     ],
     sections: [
       {

@@ -3,8 +3,66 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+(function () {
+  function code(value) {
+    var v = String(value || '').toLowerCase().replace(/_/g, '-');
+    if (v === 'fr' || v.indexOf('fr-') === 0) return 'fr';
+    if (v === 'es' || v.indexOf('es-') === 0) return 'es';
+    if (v === 'pt' || v.indexOf('pt-') === 0) return 'pt';
+    if (v === 'de' || v.indexOf('de-') === 0) return 'de';
+    if (v === 'it' || v.indexOf('it-') === 0) return 'it';
+    if (v === 'nl' || v.indexOf('nl-') === 0) return 'nl';
+    if (v === 'ja' || v.indexOf('ja-') === 0) return 'ja';
+    if (v === 'ko' || v.indexOf('ko-') === 0) return 'ko';
+    if (v === 'hi' || v.indexOf('hi-') === 0) return 'hi';
+    if (v === 'en' || v.indexOf('en-') === 0) return 'en';
+    return '';
+  }
+  function home(lang) { return lang === 'en' ? '/' : '/' + lang + '/'; }
+  var path = location.pathname.replace(/\/index\.html$/, '');
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  var onHome = path === '' || path === '/' || path === '/fr' || path === '/es' || path === '/pt' || path === '/de' || path === '/it' || path === '/nl' || path === '/ja' || path === '/ko' || path === '/hi';
+  if (!onHome) return;
+  var params = new URLSearchParams(location.search);
+  var queryLang = code(params.get('lang'));
+  if (queryLang) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('nervio') || '{}') || {};
+      if (!saved || typeof saved !== 'object') saved = {};
+      saved.v = 1;
+      saved.lang = queryLang;
+      localStorage.setItem('nervio', JSON.stringify(saved));
+    } catch (err) {}
+    params.delete('lang');
+    var qs = params.toString();
+    var dest = home(queryLang) + (qs ? '?' + qs : '') + location.hash;
+    var here = (path === '' || path === '/') ? '/' : path + '/';
+    if (here !== home(queryLang)) location.replace(dest);
+    else history.replaceState(null, '', dest);
+    return;
+  }
+  if (path !== '' && path !== '/') return;
+  var preferred = '';
+  try {
+    var note = JSON.parse(localStorage.getItem('nervio') || 'null');
+    preferred = code(note && note.lang);
+  } catch (err) {}
+  if (!preferred) {
+    var list = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < list.length; i += 1) {
+      preferred = code(list[i]);
+      if (preferred) break;
+    }
+  }
+  if (!preferred || preferred === 'en') return;
+  params.delete('lang');
+  var rest = params.toString();
+  location.replace(home(preferred) + (rest ? '?' + rest : '') + location.hash);
+})();
+</script>
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#10120f" />
+  <meta name="theme-color" content="#090c0b" />
   <link rel="preload" href="/fonts/fraunces-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
   <title>Nervio — Free breathing exercises for calm, focus, sleep, and reset</title>
@@ -14,7 +72,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Nervio" />
   <meta property="og:title" content="Nervio — Free breathing exercises for calm, focus, sleep, and reset" />
-  <meta property="og:description" content="A free breathing app with Calm, Focus, Sleep, and Reset modes. English, French, Spanish, and Portuguese. No account." />
+  <meta property="og:description" content="Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account." />
   <meta property="og:url" content="https://www.panicpause.com/" />
   <meta property="og:image" content="https://www.panicpause.com/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -24,51 +82,37 @@
   <meta property="og:locale:alternate" content="fr_CA" />
   <meta property="og:locale:alternate" content="es_ES" />
   <meta property="og:locale:alternate" content="pt_BR" />
-  <link rel="alternate" hreflang="en" href="https://www.panicpause.com/?lang=en" />
-  <link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/?lang=fr" />
-  <link rel="alternate" hreflang="fr" href="https://www.panicpause.com/?lang=fr" />
-  <link rel="alternate" hreflang="es" href="https://www.panicpause.com/?lang=es" />
-  <link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/?lang=pt" />
-  <link rel="alternate" hreflang="pt" href="https://www.panicpause.com/?lang=pt" />
+  <meta property="og:locale:alternate" content="de_DE" />
+  <meta property="og:locale:alternate" content="it_IT" />
+  <meta property="og:locale:alternate" content="nl_NL" />
+  <meta property="og:locale:alternate" content="ja_JP" />
+  <meta property="og:locale:alternate" content="ko_KR" />
+  <meta property="og:locale:alternate" content="hi_IN" />
+  <link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+  <link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+  <link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="de" href="https://www.panicpause.com/de/" />
+  <link rel="alternate" hreflang="it" href="https://www.panicpause.com/it/" />
+  <link rel="alternate" hreflang="nl" href="https://www.panicpause.com/nl/" />
+  <link rel="alternate" hreflang="ja" href="https://www.panicpause.com/ja/" />
+  <link rel="alternate" hreflang="ko" href="https://www.panicpause.com/ko/" />
+  <link rel="alternate" hreflang="hi" href="https://www.panicpause.com/hi/" />
   <link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Nervio — Free breathing exercises for calm, focus, sleep, and reset" />
-  <meta name="twitter:description" content="A free breathing app with Calm, Focus, Sleep, and Reset modes. English, French, Spanish, and Portuguese. No account." />
+  <meta name="twitter:description" content="Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account." />
   <meta name="twitter:image" content="https://www.panicpause.com/og.png" />
+  
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="stylesheet" href="/styles.css" />
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "name": "Nervio",
-        "url": "https://www.panicpause.com/",
-        "inLanguage": ["en", "fr-CA", "es", "pt-BR"],
-        "description": "Free breathing exercises for calm, focus, sleep, and moments of panic."
-      },
-      {
-        "@type": "WebApplication",
-        "name": "Nervio",
-        "url": "https://www.panicpause.com/",
-        "applicationCategory": "LifestyleApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript",
-        "isAccessibleForFree": true,
-        "inLanguage": ["en", "fr-CA", "es", "pt-BR"],
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "CAD"
-        },
-        "description": "Free breathing exercises with Calm, Focus, Sleep, and Reset modes."
-      }
-    ]
-  }
+  {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Nervio","url":"https://www.panicpause.com/","inLanguage":["en","fr-CA","es","pt-BR","de","it","nl","ja","ko","hi"],"description":"Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account."},{"@type":"WebApplication","name":"Nervio","url":"https://www.panicpause.com/","applicationCategory":"LifestyleApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"inLanguage":["en","fr-CA","es","pt-BR","de","it","nl","ja","ko","hi"],"offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Nervio is a free breathing app with Calm, Focus, Sleep, and Reset modes for anxiety, panic, focus, and bedtime. In English, French, Spanish, and Portuguese. No account."}]}
   </script>
 </head>
 <body>
@@ -82,13 +126,26 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-name">Nervio</span>
       </a>
+      <button type="button" class="help-open" id="help-open" aria-haspopup="dialog" aria-controls="help-dialog" aria-label="Need help now?">
+        <span class="help-open-long">Need help now?</span>
+        <span class="help-open-short" aria-hidden="true">Help</span>
+      </button>
       <div class="nav-actions">
-        <nav class="langs" id="langs" aria-label="Language">
-          <a href="/?lang=en" data-set-lang="en" lang="en" hreflang="en">EN</a>
-          <a href="/?lang=fr" data-set-lang="fr" lang="fr-CA" hreflang="fr-CA">FR</a>
-          <a href="/?lang=es" data-set-lang="es" lang="es" hreflang="es">ES</a>
-          <a href="/?lang=pt" data-set-lang="pt" lang="pt-BR" hreflang="pt-BR">PT</a>
-        </nav>
+        <details class="lang-menu" id="langs">
+          <summary aria-label="Language">EN</summary>
+          <div class="lang-panel">
+            <a href="/" data-set-lang="en" lang="en" hreflang="en" aria-current="page">English</a>
+            <a href="/fr/" data-set-lang="fr" lang="fr-CA" hreflang="fr-CA">Français</a>
+            <a href="/es/" data-set-lang="es" lang="es" hreflang="es">Español</a>
+            <a href="/pt/" data-set-lang="pt" lang="pt-BR" hreflang="pt-BR">Português</a>
+            <a href="/de/" data-set-lang="de" lang="de" hreflang="de">Deutsch</a>
+            <a href="/it/" data-set-lang="it" lang="it" hreflang="it">Italiano</a>
+            <a href="/nl/" data-set-lang="nl" lang="nl" hreflang="nl">Nederlands</a>
+            <a href="/ja/" data-set-lang="ja" lang="ja" hreflang="ja">日本語</a>
+            <a href="/ko/" data-set-lang="ko" lang="ko" hreflang="ko">한국어</a>
+            <a href="/hi/" data-set-lang="hi" lang="hi" hreflang="hi">हिन्दी</a>
+          </div>
+        </details>
         <button type="button" class="icon-btn" id="cancel" hidden aria-label="Cancel session"><span aria-hidden="true">✕</span></button>
         <button type="button" class="icon-btn" id="mute" aria-pressed="false" aria-label="Mute sound">
           <svg class="icon-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm12.5 3a3.5 3.5 0 0 0-1.8-3.06v6.12A3.5 3.5 0 0 0 16.5 12z"/></svg>
@@ -102,8 +159,14 @@
         <p class="hero-sub" id="hero-sub">Just breathe.</p>
       </div>
       <div class="stage" id="stage" aria-hidden="true">
-        <div class="glow"></div>
-        <div class="orb" id="orb"></div>
+        <div class="breath" id="breath">
+          <div class="aurora" aria-hidden="true"></div>
+          <div class="glow"></div>
+          <div class="motes" aria-hidden="true"></div>
+          <div class="orb" id="orb"></div>
+          <div class="ring ring-outer" aria-hidden="true"></div>
+          <div class="ring"></div>
+        </div>
       </div>
       <p class="phase" id="phase" aria-live="polite"></p>
       <p class="hint" id="hint"></p>
@@ -120,19 +183,19 @@
       </div>
       <div class="modes" id="modes" role="group" aria-label="Mode">
         <button type="button" class="mode-btn" data-mode="calm" aria-pressed="true">
-          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 14c2.2-3.6 3.8-3.6 6 0s3.8 3.6 6 0 3.8-3.6 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
           <span class="mode-copy"><span class="mode-name">Calm</span><span class="mode-sub">Help you feel calmer</span></span>
         </button>
         <button type="button" class="mode-btn" data-mode="focus" aria-pressed="false">
-          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>
           <span class="mode-copy"><span class="mode-name">Focus</span><span class="mode-sub">Clear the mind</span></span>
         </button>
         <button type="button" class="mode-btn" data-mode="sleep" aria-pressed="false">
-          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15.2 5.2a6.8 6.8 0 1 0 5.2 11.2A7.2 7.2 0 0 1 15.2 5.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
           <span class="mode-copy"><span class="mode-name">Sleep</span><span class="mode-sub">Prepare for rest</span></span>
         </button>
         <button type="button" class="mode-btn" data-mode="panic" aria-pressed="false">
-          <span class="mode-icon" aria-hidden="true"></span>
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/></svg></span>
           <span class="mode-copy"><span class="mode-name">Reset</span><span class="mode-sub">Overwhelmed</span></span>
         </button>
       </div>
@@ -215,6 +278,277 @@
   </nav>
     <!-- guides:end -->
   </footer>
+  <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title">
+    <div class="help-panel">
+      <div class="help-head">
+        <h2 id="help-title">Need help now?</h2>
+        <button type="button" class="help-close" id="help-close" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+      <p class="help-lead">If you are in crisis or thinking about hurting yourself, use a line for your country. Nervio is not an emergency service and cannot contact anyone for you.</p>
+      <label class="help-pick">
+        <span>Country</span>
+        <select id="help-country" name="country">
+          <option value="">All countries</option>
+          <option value="CA">Canada</option>
+            <option value="US">United States</option>
+            <option value="MX">Mexico</option>
+            <option value="CO">Colombia</option>
+            <option value="PE">Peru</option>
+            <option value="AR">Argentina</option>
+            <option value="CL">Chile</option>
+            <option value="UY">Uruguay</option>
+            <option value="EC">Ecuador</option>
+            <option value="CR">Costa Rica</option>
+            <option value="DO">Dominican Republic</option>
+            <option value="BR">Brazil</option>
+            <option value="PT">Portugal</option>
+            <option value="ES">Spain</option>
+            <option value="FR">France</option>
+            <option value="BE">Belgium</option>
+            <option value="CH">Switzerland</option>
+            <option value="GB">United Kingdom</option>
+            <option value="IE">Ireland</option>
+            <option value="DE">Germany</option>
+            <option value="AT">Austria</option>
+            <option value="IT">Italy</option>
+            <option value="NL">Netherlands</option>
+            <option value="NO">Norway</option>
+            <option value="FI">Finland</option>
+            <option value="DK">Denmark</option>
+            <option value="TR">Turkey</option>
+            <option value="IN">India</option>
+            <option value="PH">Philippines</option>
+            <option value="ID">Indonesia</option>
+            <option value="JP">Japan</option>
+            <option value="KR">South Korea</option>
+            <option value="MY">Malaysia</option>
+            <option value="TH">Thailand</option>
+            <option value="IL">Israel</option>
+            <option value="AE">United Arab Emirates</option>
+            <option value="AU">Australia</option>
+            <option value="NZ">New Zealand</option>
+            <option value="ZA">South Africa</option>
+            <option value="NG">Nigeria</option>
+            <option value="MA">Morocco</option>
+            <option value="CI">Côte d’Ivoire</option>
+        </select>
+      </label>
+      <div class="help-list" id="help-list">
+        <section class="help-country" data-iso="CA">
+        <h3>Canada</h3>
+        <ul><li>9-8-8 Suicide Crisis Helpline: <a href="tel:988">988</a> or <a href="sms:988">text 988</a>. Call or text, any time. (<a href="https://988.ca/" rel="noopener noreferrer">9-8-8 Suicide Crisis Helpline</a>).</li><li>Ligne québécoise de prévention du suicide: <a href="tel:+18662773553">1 866 277-3553</a> or <a href="sms:535353">535353</a>. 1 866 APPELLE. Free, any time. You can also text 535353. (<a href="https://www.quebec.ca/sante/sante-mentale/s-informer-sur-sante-mentale-et-troubles-mentaux/reconnaitre-signes-detresse-et-prevenir-suicide" rel="noopener noreferrer">Gouvernement du Québec</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://988.ca/" rel="noopener noreferrer">988.ca</a>)</p>
+      </section>
+        <section class="help-country" data-iso="US">
+        <h3>United States</h3>
+        <ul><li>988 Suicide &amp; Crisis Lifeline: <a href="tel:988">988</a> or <a href="sms:988">text 988</a>. Call or text, 24 hours. In Spanish, press 2 or text AYUDA. (<a href="https://988lifeline.org/" rel="noopener noreferrer">988 Suicide &amp; Crisis Lifeline</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://www.911.gov/" rel="noopener noreferrer">911.gov</a>)</p>
+      </section>
+        <section class="help-country" data-iso="MX">
+        <h3>Mexico</h3>
+        <ul><li>Línea de la Vida: <a href="tel:8009112000">800 911 2000</a>. Free, 24 hours, every day. (<a href="https://salud.michoacan.gob.mx/llama-a-la-linea-de-la-vida-y-recibe-atencion-gratuita-en-salud-mental-y-adicciones/" rel="noopener noreferrer">salud.michoacan.gob.mx</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://www.sonora.gob.mx/servicios-y-tramites/753-9-1-1" rel="noopener noreferrer">sonora.gob.mx</a>)</p>
+      </section>
+        <section class="help-country" data-iso="CO">
+        <h3>Colombia</h3>
+        <ul><li>Línea 106: <a href="tel:106">106</a>. Free, 24 hours. (<a href="https://www.minsalud.gov.co/salud/publica/salud-mental/Paginas/linea-106.aspx" rel="noopener noreferrer">Ministerio de Salud</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:123">123</a> (<a href="https://www.policia.gov.co/inicio" rel="noopener noreferrer">policia.gov.co</a>)</p>
+      </section>
+        <section class="help-country" data-iso="PE">
+        <h3>Peru</h3>
+        <ul><li>Línea 113: <a href="tel:113">113</a>. Then option 5. Free, 24 hours. (<a href="https://www.gob.pe/20715" rel="noopener noreferrer">Ministerio de Salud del Perú</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:106">106</a> (<a href="https://www.gob.pe/1013" rel="noopener noreferrer">gob.pe</a>) or <a href="tel:105">105</a> (<a href="https://www.gob.pe/institucion/pnp/contacto-y-numeros-de-emergencias" rel="noopener noreferrer">Policía Nacional</a>)</p>
+      </section>
+        <section class="help-country" data-iso="AR">
+        <h3>Argentina</h3>
+        <ul><li>Línea 0800 Salud Mental: <a href="tel:08009990091">0800-999-0091</a>. National line. Free, 24 hours, every day. (<a href="https://www.argentina.gob.ar/salud/hospitalbonaparte/hospital-en-red/dispositivo-0800" rel="noopener noreferrer">argentina.gob.ar</a>).</li><li>Centro de Asistencia al Suicida: <a href="tel:135">135</a>, <a href="tel:08003451435">0800 345 1435</a> and <a href="tel:+541152751135">(011) 5275-1135</a>. 135 is free only from CABA and Greater Buenos Aires. The other numbers reach the rest of the country. 24 hours. (<a href="https://www.asistenciaalsuicida.org.ar/" rel="noopener noreferrer">asistenciaalsuicida.org.ar</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://www.argentina.gob.ar/seguridad/911emergencias" rel="noopener noreferrer">argentina.gob.ar</a>) or <a href="tel:107">107</a> (<a href="https://www.argentina.gob.ar/salud/primerosauxilios" rel="noopener noreferrer">argentina.gob.ar</a>)</p>
+      </section>
+        <section class="help-country" data-iso="CL">
+        <h3>Chile</h3>
+        <ul><li>Línea *4141: <a href="tel:*4141">*4141</a>. Free from a mobile phone, any carrier, 24 hours every day. (<a href="https://www.minsal.cl/linea-de-atencion-4141-no-estas-solo-no-estas-sola/" rel="noopener noreferrer">MINSAL</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:131">131</a> (<a href="https://www.gob.cl/noticias/estas-fiestas-patrias-no-olvides-numeros-emergencia/" rel="noopener noreferrer">gob.cl</a>) or <a href="tel:133">133</a> (<a href="https://www.gob.cl/noticias/estas-fiestas-patrias-no-olvides-numeros-emergencia/" rel="noopener noreferrer">gob.cl</a>)</p>
+      </section>
+        <section class="help-country" data-iso="UY">
+        <h3>Uruguay</h3>
+        <ul><li>Línea Vida: <a href="tel:08000767">0800 0767</a> or <a href="tel:*0767">*0767</a>. Free, 24 hours. (<a href="https://www.gub.uy/ministerio-salud-publica/salud-mental" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://www.gub.uy/ministerio-interior/tramites-y-servicios/servicios/emergencia-9-1-1" rel="noopener noreferrer">gub.uy</a>)</p>
+      </section>
+        <section class="help-country" data-iso="EC">
+        <h3>Ecuador</h3>
+        <ul><li>Línea 171: <a href="tel:171">171</a>. Option 6. Free, every day from 07:00 to 20:00. Not a 24-hour line. (<a href="https://www.salud.gob.ec/a-traves-de-la-linea-171-msp-ofrece-atencion-en-salud-mental/" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://www.gob.ec/ecu-911" rel="noopener noreferrer">gob.ec</a>)</p>
+      </section>
+        <section class="help-country" data-iso="CR">
+        <h3>Costa Rica</h3>
+        <ul><li>Aquí Estoy: <a href="tel:8002737869">800 273 7869</a>. Free. Monday to Friday, 14:00 to 22:00, and Saturday, 09:00 to 16:00. Closed Sunday. (<a href="https://aquiestoy.cr/" rel="noopener noreferrer">aquiestoy.cr</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://aquiestoy.cr/" rel="noopener noreferrer">aquiestoy.cr</a>)</p>
+      </section>
+        <section class="help-country" data-iso="DO">
+        <h3>Dominican Republic</h3>
+        <ul><li>Cuida tu Salud Mental: <a href="tel:711">711</a>. Free and confidential, every day from 08:00 to midnight. Not a 24-hour line. (<a href="https://msp.gob.do/web/?p=21208" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://911.gob.do/" rel="noopener noreferrer">911.gob.do</a>)</p>
+      </section>
+        <section class="help-country" data-iso="BR">
+        <h3>Brazil</h3>
+        <ul><li>CVV — Centro de Valorização da Vida: <a href="tel:188">188</a>. Free, 24 hours. (<a href="https://www.cvv.org.br/" rel="noopener noreferrer">Centro de Valorização da Vida</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:192">192</a> (<a href="https://www.gov.br/saude/pt-br/composicao/saes/samu-192" rel="noopener noreferrer">gov.br</a>)</p>
+      </section>
+        <section class="help-country" data-iso="PT">
+        <h3>Portugal</h3>
+        <ul><li>Linha 1411: <a href="tel:1411">1411</a>. National suicide prevention line, launched in September 2025. Free, 24 hours, every day. (<a href="https://www.spms.min-saude.pt/2025/09/lancamento-da-linha-nacional-de-prevencao-do-suicidio-e-apoio-psicologico-1411/" rel="noopener noreferrer">SPMS</a>).</li><li>SNS 24: <a href="tel:808242424">808 24 24 24, then option 4</a>. Psychological counselling through SNS 24. Not confirmed from a live page on this check (<a href="https://www.sns24.gov.pt/servico/aconselhamento-psicologico-no-sns-24/" rel="noopener noreferrer">SNS 24</a>). <span class="help-flag">Not confirmed</span></li><li>SOS Voz Amiga: <a href="tel:+351213544545">213 544 545</a>, <a href="tel:+351912802669">912 802 669</a>, <a href="tel:+351963524660">963 524 660</a> and <a href="tel:+351930712500">930 712 500</a>. Emotional support and suicide prevention, every day from 15:30 to 00:30. Not a 24-hour line. (<a href="https://www.sosvozamiga.org/contactos" rel="noopener noreferrer">SOS Voz Amiga</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.gov.pt/guias/contactos-de-emergencia-em-portugal" rel="noopener noreferrer">gov.pt</a>)</p>
+      </section>
+        <section class="help-country" data-iso="ES">
+        <h3>Spain</h3>
+        <ul><li>Línea 024: <a href="tel:024">024</a>. 24 hours, every day. (<a href="https://www.sanidad.gob.es/linea024/" rel="noopener noreferrer">Línea de atención a la conducta suicida</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://administracion.gob.es/tu-espacio-europeo/derechos-obligaciones/ciudadanos/asistencia-sanitaria/numeros-urgencia" rel="noopener noreferrer">administracion.gob.es</a>)</p>
+      </section>
+        <section class="help-country" data-iso="FR">
+        <h3>France</h3>
+        <ul><li>3114: <a href="tel:3114">3114</a>. National suicide prevention number, 24 hours. (<a href="https://3114.fr/" rel="noopener noreferrer">3114.fr</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F33954" rel="noopener noreferrer">service-public.fr</a>) or <a href="tel:15">15</a> (<a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F33954" rel="noopener noreferrer">service-public.fr</a>)</p>
+      </section>
+        <section class="help-country" data-iso="BE">
+        <h3>Belgium</h3>
+        <ul><li>Centre de Prévention du Suicide: <a href="tel:080032123">0800 32 123</a>. French-speaking Belgium. Anonymous and free, 24 hours. (<a href="https://www.preventionsuicide.be/la-ligne-decoute-0800-32-123" rel="noopener noreferrer">Centre de prévention du suicide</a>).</li><li>Zelfmoordlijn 1813: <a href="tel:1813">1813</a>. Dutch-speaking Belgium. The phone line is free, 24 hours. Chat is daily from 17:00 to midnight, and Wednesday from 12:00 to midnight. (<a href="https://www.zelfmoord1813.be/" rel="noopener noreferrer">Zelfmoordlijn 1813</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://112.be/fr/how-call/comment-appeler-le-112" rel="noopener noreferrer">112.be</a>)</p>
+      </section>
+        <section class="help-country" data-iso="CH">
+        <h3>Switzerland</h3>
+        <ul><li>La Main Tendue: <a href="tel:143">143</a>. 24 hours. (<a href="https://www.143.ch/fr/" rel="noopener noreferrer">143.ch</a>).</li><li>147: <a href="tel:147">147</a>. For children and young people. 24 hours. (<a href="https://www.147.ch/" rel="noopener noreferrer">147.ch</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:144">144</a> (<a href="https://www.bakom.admin.ch/de/weitere-nummern-kostenpflichtig-oder-gratis" rel="noopener noreferrer">bakom.admin.ch</a>) or <a href="tel:112">112</a> (<a href="https://www.bakom.admin.ch/de/weitere-nummern-kostenpflichtig-oder-gratis" rel="noopener noreferrer">bakom.admin.ch</a>)</p>
+      </section>
+        <section class="help-country" data-iso="GB">
+        <h3>United Kingdom</h3>
+        <ul><li>Samaritans: <a href="tel:116123">116 123</a>. Free, any time. (<a href="https://www.samaritans.org/how-we-can-help/contact-samaritan/talk-us-phone/" rel="noopener noreferrer">Samaritans</a>).</li><li>Shout: <a href="sms:85258?body=SHOUT">text SHOUT to 85258</a>. Text only. Free, 24 hours. (<a href="https://giveusashout.org/" rel="noopener noreferrer">Shout</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:999">999</a> (<a href="https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers" rel="noopener noreferrer">gov.uk</a>) or <a href="tel:112">112</a> (<a href="https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers" rel="noopener noreferrer">gov.uk</a>)</p>
+      </section>
+        <section class="help-country" data-iso="IE">
+        <h3>Ireland</h3>
+        <ul><li>Samaritans: <a href="tel:116123">116 123</a>. Free, any time. (<a href="https://www.samaritans.org/ireland/" rel="noopener noreferrer">Samaritans Ireland</a>).</li><li>Pieta: <a href="tel:1800247247">1800 247 247</a> or <a href="sms:51444?body=HELP">text HELP to 51444</a>. Free, 24 hours. (<a href="https://www.pieta.ie/how-we-can-help/helpline/" rel="noopener noreferrer">Pieta</a>).</li><li>Text About It: <a href="sms:50808?body=TALK">text TALK to 50808</a>. Text only. Free, 24 hours. (<a href="https://www.textaboutit.ie/" rel="noopener noreferrer">Text About It</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.gov.ie/en/department-of-the-taoiseach/services/how-to-contact-emergency-services-in-ireland/" rel="noopener noreferrer">gov.ie</a>) or <a href="tel:999">999</a> (<a href="https://www.gov.ie/en/department-of-the-taoiseach/services/how-to-contact-emergency-services-in-ireland/" rel="noopener noreferrer">gov.ie</a>)</p>
+      </section>
+        <section class="help-country" data-iso="DE">
+        <h3>Germany</h3>
+        <ul><li>TelefonSeelsorge: <a href="tel:08001110111">0800 111 0 111</a>, <a href="tel:08001110222">0800 111 0 222</a> and <a href="tel:116123">116 123</a>. Free, day and night. (<a href="https://www.telefonseelsorge.de/" rel="noopener noreferrer">TelefonSeelsorge</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://gesund.bund.de/notfallnummern" rel="noopener noreferrer">gesund.bund.de</a>)</p>
+      </section>
+        <section class="help-country" data-iso="AT">
+        <h3>Austria</h3>
+        <ul><li>TelefonSeelsorge: <a href="tel:142">142</a>. Free, 24 hours, every day. (<a href="https://www.telefonseelsorge.at/" rel="noopener noreferrer">TelefonSeelsorge Österreich</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.oesterreich.gv.at/de/themen/notfaelle_unfaelle_und_kriminalitaet/notrufnummern" rel="noopener noreferrer">oesterreich.gv.at</a>) or <a href="tel:144">144</a> (<a href="https://www.oesterreich.gv.at/de/themen/notfaelle_unfaelle_und_kriminalitaet/notrufnummern" rel="noopener noreferrer">oesterreich.gv.at</a>)</p>
+      </section>
+        <section class="help-country" data-iso="IT">
+        <h3>Italy</h3>
+        <ul><li>Telefono Amico Italia: <a href="tel:+390223272327">02 2327 2327</a> or <a href="https://wa.me/393240117252" rel="noopener noreferrer">WhatsApp 324 011 7252</a>. The phone line answers every day, 24 hours, at normal call rates. It is not a free number. WhatsApp is daily from 18:00 to 21:00 only. (<a href="https://www.telefonoamico.it/" rel="noopener noreferrer">Telefono Amico</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.affarieuropei.gov.it/it/comunicazione/notizie/112-un-numero-salvavita/" rel="noopener noreferrer">affarieuropei.gov.it</a>)</p>
+      </section>
+        <section class="help-country" data-iso="NL">
+        <h3>Netherlands</h3>
+        <ul><li>113 Zelfmoordpreventie: <a href="tel:113">113</a> or <a href="tel:08000113">0800-0113</a>. 0800-0113 is free. 24 hours. Chat is on 113.nl. (<a href="https://www.113.nl/" rel="noopener noreferrer">113</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.government.nl/themes/justice-security-and-defence/emergency-number-112" rel="noopener noreferrer">government.nl</a>)</p>
+      </section>
+        <section class="help-country" data-iso="NO">
+        <h3>Norway</h3>
+        <ul><li>Mental Helse Hjelpetelefonen: <a href="tel:116123">116 123</a>. Open 24 hours, all year. (<a href="https://mentalhelse.no/fa-hjelp/hjelpetelefonen/" rel="noopener noreferrer">Mental Helse</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:113">113</a> (<a href="https://www.politiet.no/kontakt-politiet/nod-sms" rel="noopener noreferrer">politiet.no</a>) or <a href="tel:112">112</a> (<a href="https://www.politiet.no/english/contact-the-police" rel="noopener noreferrer">politiet.no</a>)</p>
+      </section>
+        <section class="help-country" data-iso="FI">
+        <h3>Finland</h3>
+        <ul><li>MIELI Kriisipuhelin: <a href="tel:+358925250111">09 2525 0111</a>. 24 hours, every day. (<a href="https://mieli.fi/tukea-ja-apua/kriisipuhelin/" rel="noopener noreferrer">MIELI</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.suomi.fi/services/112-emergency-number-in-finland-emergency-response-centre-agency-finland/01a571b5-3eb9-4b49-a27e-ec8427737c5b" rel="noopener noreferrer">suomi.fi</a>)</p>
+      </section>
+        <section class="help-country" data-iso="DK">
+        <h3>Denmark</h3>
+        <ul><li>Livslinien: <a href="tel:70201201">70 201 201</a>. Every day from 09:00 to 05:00. Not a 24-hour line. Chat is open on limited days. (<a href="https://www.livslinien.dk/" rel="noopener noreferrer">Livslinien</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.brs.dk/da/borger/var-klar-nar-krisen-rammer/1-1-2-og-andre-vigtige-telefonnumre/" rel="noopener noreferrer">brs.dk</a>)</p>
+      </section>
+        <section class="help-country" data-iso="TR">
+        <h3>Turkey</h3>
+        <p>No dedicated crisis line is listed here.</p>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.saglik.gov.tr/TR-12230/724--hayat-kurtariyoruz.html" rel="noopener noreferrer">saglik.gov.tr</a>)</p>
+      </section>
+        <section class="help-country" data-iso="IN">
+        <h3>India</h3>
+        <ul><li>Tele MANAS: <a href="tel:14416">14416</a> or <a href="tel:18008914416">1-800-891-4416</a>. Toll-free, 24 hours, in many Indian languages. (<a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2022057&amp;lang=2&amp;reg=3" rel="noopener noreferrer">Press Information Bureau</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://www.mha.gov.in/en/commoncontent/emergency-response-support-system-erss" rel="noopener noreferrer">mha.gov.in</a>)</p>
+      </section>
+        <section class="help-country" data-iso="PH">
+        <h3>Philippines</h3>
+        <ul><li>NCMH Crisis Hotline: <a href="tel:1553">1553</a> or <a href="tel:09190571553">0919 057 1553</a>. 24 hours. A July 2026 advisory lists these two numbers. (<a href="https://www.facebook.com/ncmhcrisishotline/posts/1446226184192317/" rel="noopener noreferrer">NCMH</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:911">911</a> (<a href="https://e911.gov.ph/emergency-hotline-numbers/" rel="noopener noreferrer">e911.gov.ph</a>)</p>
+      </section>
+        <section class="help-country" data-iso="ID">
+        <h3>Indonesia</h3>
+        <ul><li>Healing119: <a href="tel:119">119</a>. Then extension 8. The service page does not state the hours. It says to call for a suicidal emergency. (<a href="https://www.healing119.id/" rel="noopener noreferrer">Healing119</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://layanan112.kominfo.go.id/" rel="noopener noreferrer">layanan112.kominfo.go.id</a>) or <a href="tel:119">119</a> (<a href="https://www.kemkes.go.id/id/kejadian-gawat-darurat-medik-laporkan-ke-119" rel="noopener noreferrer">kemkes.go.id</a>)</p>
+      </section>
+        <section class="help-country" data-iso="JP">
+        <h3>Japan</h3>
+        <ul><li>Inochi SOS: <a href="tel:0120061338">0120-061-338</a>. Free, 24 hours, every day. (<a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer">Ministry of Health, Labour and Welfare</a>).</li><li>Yorisoi Hotline: <a href="tel:0120279338">0120-279-338</a> or <a href="tel:0120279226">0120-279-226</a>. Free, 24 hours. From Fukushima, use 0120-279-226. (<a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer">Ministry of Health, Labour and Welfare</a>).</li><li>TELL Lifeline: <a href="tel:08003008355">0800-300-8355</a>. English. Hours are limited. Check the site for the current times. Not a 24-hour line. (<a href="https://telljp.com/lifeline/" rel="noopener noreferrer">TELL</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:119">119</a> (<a href="https://www.fdma.go.jp/mission/enrichment/kyukyumusen_kinkyutuhou/119.html" rel="noopener noreferrer">fdma.go.jp</a>) or <a href="tel:110">110</a> (<a href="https://www.npa.go.jp/hakusyo/r07/honbun/html/bb2232000.html" rel="noopener noreferrer">npa.go.jp</a>)</p>
+      </section>
+        <section class="help-country" data-iso="KR">
+        <h3>South Korea</h3>
+        <ul><li>109: <a href="tel:109">109</a>. Suicide prevention counselling, 24 hours. (<a href="https://www.129.go.kr/109" rel="noopener noreferrer">129.go.kr</a>).</li><li>Lifeline Korea: <a href="tel:15889191">1588-9191</a>. 24 hours. (<a href="https://www.129.go.kr/109" rel="noopener noreferrer">129.go.kr</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:119">119</a> (<a href="https://www.mois.go.kr/eng/sub/a03/bestPractices3/screen.do" rel="noopener noreferrer">mois.go.kr</a>) or <a href="tel:112">112</a> (<a href="https://www.mois.go.kr/eng/sub/a03/bestPractices3/screen.do" rel="noopener noreferrer">mois.go.kr</a>)</p>
+      </section>
+        <section class="help-country" data-iso="MY">
+        <h3>Malaysia</h3>
+        <ul><li>Befrienders Kuala Lumpur: <a href="tel:+60376272929">03-7627 2929</a>. 24 hours. (<a href="https://befrienders.org.my/" rel="noopener noreferrer">Befrienders</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:999">999</a> (<a href="https://999.gov.my/" rel="noopener noreferrer">999.gov.my</a>)</p>
+      </section>
+        <section class="help-country" data-iso="TH">
+        <h3>Thailand</h3>
+        <ul><li>Department of Mental Health: <a href="tel:1323">1323</a>. Free, 24 hours. (<a href="https://dmh.go.th/" rel="noopener noreferrer">Department of Mental Health</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:1669">1669</a> (<a href="https://www2.niems.go.th/contact/electronic" rel="noopener noreferrer">niems.go.th</a>) or <a href="tel:191">191</a> (<a href="https://logistics.police.go.th/feq-administrative/" rel="noopener noreferrer">police.go.th</a>)</p>
+      </section>
+        <section class="help-country" data-iso="IL">
+        <h3>Israel</h3>
+        <ul><li>ERAN: <a href="tel:1201">1201</a>. Hours were not stated on the page read for this update, so this list does not call it a 24-hour line. (<a href="https://www.eran.org.il/" rel="noopener noreferrer">ERAN</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:101">101</a> (<a href="https://www.mdais.org/en/101" rel="noopener noreferrer">mdais.org</a>)</p>
+      </section>
+        <section class="help-country" data-iso="AE">
+        <h3>United Arab Emirates</h3>
+        <ul><li>800 HOPE: <a href="tel:8004673">800 4673</a>. Every day from 08:00 to 20:00. Not a 24-hour line. WhatsApp uses the same number. (<a href="https://u.ae/en/information-and-services/health-and-fitness/FAQs-and-resources/handling-the-covid-19-outbreak/maintaining-mental-health-in-times-of-covid19" rel="noopener noreferrer">u.ae</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:999">999</a> (<a href="https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies" rel="noopener noreferrer">u.ae</a>) or <a href="tel:998">998</a> (<a href="https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies" rel="noopener noreferrer">u.ae</a>)</p>
+      </section>
+        <section class="help-country" data-iso="AU">
+        <h3>Australia</h3>
+        <ul><li>Lifeline: <a href="tel:131114">13 11 14</a>. 24 hours. (<a href="https://www.lifeline.org.au/131114" rel="noopener noreferrer">Lifeline</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:000">000</a> (<a href="https://www.infrastructure.gov.au/media-communications/phone/triple-zero/how-call-triple-zero-000" rel="noopener noreferrer">infrastructure.gov.au</a>)</p>
+      </section>
+        <section class="help-country" data-iso="NZ">
+        <h3>New Zealand</h3>
+        <ul><li>1737, Need to talk?: <a href="tel:1737">1737</a>, <a href="tel:080017371737">0800 1737 1737</a> and <a href="sms:1737">text 1737</a>. Call or text, free, any time. (<a href="https://1737.org.nz/" rel="noopener noreferrer">1737, Need to talk?</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:111">111</a> (<a href="https://www.police.govt.nz/call-111" rel="noopener noreferrer">police.govt.nz</a>)</p>
+      </section>
+        <section class="help-country" data-iso="ZA">
+        <h3>South Africa</h3>
+        <ul><li>SADAG: <a href="tel:0800567567">0800 567 567</a>. Suicide crisis line. Toll-free, 24 hours. (<a href="https://www.sadag.org/" rel="noopener noreferrer">SADAG</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:10111">10111</a> (<a href="https://www.saps.gov.za/services/cc_10111.php" rel="noopener noreferrer">saps.gov.za</a>), <a href="tel:10177">10177</a> (<a href="https://www.westerncape.gov.za/service/accessing-health-services" rel="noopener noreferrer">westerncape.gov.za</a>) and <a href="tel:112">112</a> (<a href="https://www.westerncape.gov.za/know-who-you-can-call-emergency" rel="noopener noreferrer">westerncape.gov.za</a>)</p>
+      </section>
+        <section class="help-country" data-iso="NG">
+        <h3>Nigeria</h3>
+        <ul><li>SURPIN: <a href="tel:08000787746">0800 078 7746</a>, <a href="tel:09080217555">0908 021 7555</a>, <a href="tel:09034400009">0903 440 0009</a> and <a href="tel:08142241007">0814 224 1007</a>. The 0800 number is toll-free. 24 hours. This is an NGO line. (<a href="https://www.surpinng.com/" rel="noopener noreferrer">SURPIN</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:112">112</a> (<a href="https://ncc.gov.ng/about/servicom-charter/departmental-charters/special-duties-department-service-charter" rel="noopener noreferrer">ncc.gov.ng</a>)</p>
+      </section>
+        <section class="help-country" data-iso="MA">
+        <h3>Morocco</h3>
+        <p>No dedicated crisis line is listed here.</p>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:141">141</a> (<a href="https://sehati.gov.ma/numeros_utiles" rel="noopener noreferrer">sehati.gov.ma</a>), <a href="tel:15">15</a> <span class="help-flag">Not confirmed</span>, <a href="tel:19">19</a> <span class="help-flag">Not confirmed</span> and <a href="tel:112">112</a> <span class="help-flag">Not confirmed</span></p>
+      </section>
+        <section class="help-country" data-iso="CI">
+        <h3>Côte d’Ivoire</h3>
+        <ul><li>Programme national de santé mentale: <a href="tel:143">143</a>. Free. Monday to Friday, 08:00 to 17:00. Not a 24-hour line. (<a href="https://www.pnsantementale.ci/projets/dispositif-143-assistance-psychologique" rel="noopener noreferrer">Programme national de santé mentale</a>).</li></ul>
+        <p class="help-emergency"><span class="help-kicker">Emergency</span> <a href="tel:185">185</a> (<a href="https://www.gouv.ci/uploads/publications/17507230128.pdf" rel="noopener noreferrer">gouv.ci</a>) or <a href="tel:110">110</a> (<a href="https://www.gouv.ci/uploads/publications/17507230128.pdf" rel="noopener noreferrer">gouv.ci</a>)</p>
+      </section>
+      </div>
+      <p class="help-else">Somewhere else: call your local emergency number first, or <a href="https://findahelpline.com/" rel="noopener noreferrer">Find a Helpline</a> lists local lines.</p>
+    </div>
+  </dialog>
+  <script type="module" src="/help.js"></script>
   <script type="module" src="/app.js"></script>
 </body>
 </html>

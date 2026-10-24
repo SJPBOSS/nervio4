@@ -11,7 +11,7 @@ export const frTopics = [
     cta: 'Commencer Recentrage dans Nervio',
     paragraphs: [
       'Pendant une crise de panique, la respiration devient souvent rapide et courte. Vous n’avez pas à la ramener de force à la normale. Un petit rythme, avec une expiration un peu plus longue que l’inspiration, vous donne quelque chose de simple à suivre pendant que la vague passe.',
-      'Vous pouvez le faire seul, ou [commencer Recentrage dans Nervio](/?lang=fr&mode=reset). Ce mode n’a pas de minuterie. Vous appuyez sur Terminer quand vous êtes prêt. À l’écran, c’est écrit clairement : c’est correct si votre souffle est court.',
+      'Vous pouvez le faire seul, ou [commencer Recentrage dans Nervio](/fr/?mode=reset). Ce mode n’a pas de minuterie. Vous appuyez sur Terminer quand vous êtes prêt. À l’écran, c’est écrit clairement : c’est correct si votre souffle est court.',
     ],
     sections: [
       {
@@ -63,7 +63,7 @@ export const frTopics = [
     cta: 'Commencer la respiration carrée',
     paragraphs: [
       'La respiration carrée (parfois appelée box breathing) est un décompte à quatre côtés égaux : vous inspirez, vous retenez, vous expirez, vous retenez. Le décompte le plus courant est de 4 secondes de chaque côté. Les gens s’en servent quand ils veulent un rythme stable, plutôt qu’une longue expiration qui endort.',
-      'Dans Nervio, elle se trouve dans le mode Concentration, qui commence à 4-4-4-4. [Ce lien ouvre une séance de 2 minutes](/?lang=fr&mode=focus&dur=2m). À l’accueil, vous pouvez aussi choisir Rapide (environ 30 secondes) ou 1 minute.',
+      'Dans Nervio, elle se trouve dans le mode Concentration, qui commence à 4-4-4-4. [Ce lien ouvre une séance de 2 minutes](/fr/?mode=focus&dur=2m). À l’accueil, vous pouvez aussi choisir Rapide (environ 30 secondes) ou 1 minute.',
     ],
     sections: [
       {
@@ -113,7 +113,7 @@ export const frTopics = [
     cta: 'Commencer le 4-7-8 dans Nervio',
     paragraphs: [
       'La respiration 4-7-8 est un décompte lent que les gens utilisent avant de dormir : inspirez pendant 4, retenez pendant 7, expirez pendant 8. L’idée principale, c’est la longue expiration. La rétention n’est utile que si elle est confortable.',
-      'Le mode Sommeil de Nervio commence avec ce décompte. [Ce lien ouvre une séance Sommeil de 2 minutes](/?lang=fr&mode=sleep&dur=2m). Ce sont quelques minutes tranquilles, pas une promesse de vous endormir.',
+      'Le mode Sommeil de Nervio commence avec ce décompte. [Ce lien ouvre une séance Sommeil de 2 minutes](/fr/?mode=sleep&dur=2m). Ce sont quelques minutes tranquilles, pas une promesse de vous endormir.',
     ],
     sections: [
       {
@@ -163,7 +163,7 @@ export const frTopics = [
     cta: 'Commencer Calme dans Nervio',
     paragraphs: [
       'Rapidement, ici, veut dire que l’exercice lui-même est court. Ça ne veut pas dire que l’anxiété disparaît selon un horaire. Le rythme est une expiration plus longue que l’inspiration, sans rétention : 4 secondes pour entrer, 6 pour sortir. Quelques minutes, et c’est tout.',
-      'Le [mode Calme de Nervio](/?lang=fr&mode=calm&dur=2m) commence avec ce décompte. Vous pouvez choisir 30 secondes, 1 minute ou 2 minutes. Garder les yeux ouverts, c’est correct. Suivre le guide de loin, c’est correct aussi.',
+      'Le [mode Calme de Nervio](/fr/?mode=calm&dur=2m) commence avec ce décompte. Vous pouvez choisir 30 secondes, 1 minute ou 2 minutes. Garder les yeux ouverts, c’est correct. Suivre le guide de loin, c’est correct aussi.',
     ],
     sections: [
       {
@@ -213,7 +213,7 @@ export const frTopics = [
     cta: 'Commencer une séance Concentration',
     paragraphs: [
       'Ici, la concentration veut dire un rythme de respiration court et égal avant une tâche. Ce n’est pas un truc qui fait la tâche à votre place. Le mode Concentration de Nervio utilise la respiration carrée : quatre parties égales, 4 secondes chacune. Une ou deux minutes suffisent pour marquer un début.',
-      '[Ce lien ouvre Concentration pour 2 minutes](/?lang=fr&mode=focus&dur=2m). Les étapes du rythme sont sur la page [respiration carrée](/fr/respiration-carree/). Ce qui suit, c’est comment utiliser cette minute.',
+      '[Ce lien ouvre Concentration pour 2 minutes](/fr/?mode=focus&dur=2m). Les étapes du rythme sont sur la page [respiration carrée](/fr/respiration-carree/). Ce qui suit, c’est comment utiliser cette minute.',
     ],
     sections: [
       {
