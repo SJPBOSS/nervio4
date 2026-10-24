@@ -271,7 +271,7 @@ function syncDocumentMeta(copy) {
   document.querySelector('meta[property="og:locale"]')?.setAttribute('content', LANG_META[settings.lang]?.og || 'en_US');
   document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', copy.title);
   document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', copy.description);
-  const theme = { calm: '#0a0f0d', focus: '#100e0b', sleep: '#0b0c14', panic: '#120e0d' }[settings.mode];
+  const theme = { calm: '#07110e', focus: '#110c07', sleep: '#070814', panic: '#140c0b' }[settings.mode];
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme);
 }
 
@@ -293,9 +293,12 @@ function paintMotion() {
   } else {
     const scale = scaleFor(phase, easeVisual(progress));
     target.style.transform = `translateZ(0) scale(${scale})`;
+    if (els.glow) {
+      const lift = Math.min(1, Math.max(0, (scale - 1) / 0.62));
+      els.glow.style.opacity = String(0.62 + lift * 0.38);
+    }
     if (!els.breath && els.glow) {
       els.glow.style.transform = `translateZ(0) scale(${scale})`;
-      els.glow.style.opacity = String(0.45 + (scale - 1) * 0.62);
     }
   }
   if (active && settings.mode !== 'panic') {
