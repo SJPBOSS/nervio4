@@ -25,6 +25,7 @@
  * Portugal SNS 24 is unverified and is shown flagged. The English reading is
  * exactly: 808 24 24 24, then option 4.
  */
+import { HELP_UI_EXTRA, applyHelplineLocales } from './helpline-locales.js';
 
 const t = (en, fr, es, pt) => ({ en, fr, es, pt });
 const phone = (href, label) => ({ href, label });
@@ -121,6 +122,17 @@ export const HELP_UI = {
     find: 'lista linhas locais.',
     noLine: 'Nenhuma linha de crise dedicada está listada aqui.',
   },
+};
+
+Object.assign(HELP_UI, HELP_UI_EXTRA);
+
+export const HELP_GROUPS = {
+  de: ['DE', 'AT', 'CH'],
+  it: ['IT'],
+  nl: ['NL', 'BE'],
+  ja: ['JP'],
+  ko: ['KR'],
+  hi: ['IN'],
 };
 
 function line(name, contacts, detail, source, sourceLabel, extra = {}) {
@@ -927,6 +939,8 @@ export const COUNTRIES = [
   },
 ];
 
+applyHelplineLocales(COUNTRIES);
+
 const ZONE_PREFIXES = [
   ['America/Argentina', 'AR'],
   ['America/Buenos_Aires', 'AR'],
@@ -1085,12 +1099,24 @@ function link(href, label) {
   return `<a href="${esc(href)}"${external ? ' rel="noopener noreferrer"' : ''}>${esc(label)}</a>`;
 }
 
+function textOf(pack, lang) {
+  if (!pack) return '';
+  const value = pack[lang];
+  if (value != null && value !== '') return value;
+  return pack.en ?? '';
+}
+
+function uiOf(lang) {
+  return HELP_UI[lang] || HELP_UI.en;
+}
+
 function joinLinks(lang, contacts) {
-  const or = { en: 'or', fr: 'ou', es: 'o', pt: 'ou' }[lang];
-  const and = { en: 'and', fr: 'et', es: 'y', pt: 'e' }[lang];
-  const word = contacts.length >= 3 ? and : or;
   const body = contacts.map((item) => link(item.href, item.label));
   if (body.length === 1) return body[0];
+  if (lang === 'ja') return body.join('、');
+  const or = { en: 'or', fr: 'ou', es: 'o', pt: 'ou', de: 'oder', it: 'o', nl: 'of', ko: '또는', hi: 'या' }[lang] || 'or';
+  const and = { en: 'and', fr: 'et', es: 'y', pt: 'e', de: 'und', it: 'e', nl: 'en', ko: '그리고', hi: 'और' }[lang] || 'and';
+  const word = contacts.length >= 3 ? and : or;
   const last = body.pop();
   return `${body.join(', ')} ${word} ${last}`;
 }
@@ -1100,12 +1126,12 @@ function segments(parts) {
 }
 
 function serviceHtml(lang, service) {
-  const ui = HELP_UI[lang];
+  const ui = uiOf(lang);
   let body;
-  if (service.parts) body = segments(service.parts[lang]);
+  if (service.parts) body = segments(service.parts[lang] || service.parts.en);
   else {
     const source = link(service.source, service.sourceLabel);
-    body = `${esc(service.name)}: ${joinLinks(lang, service.contacts)}. ${esc(service.detail[lang])} (${source}).`;
+    body = `${esc(service.name)}: ${joinLinks(lang, service.contacts)}. ${esc(textOf(service.detail, lang))} (${source}).`;
   }
   if (service.verified === false) body += ` <span class="help-flag">${esc(ui.unverified)}</span>`;
   return body;
@@ -1116,30 +1142,34 @@ function emergencyHtml(lang, country) {
 }
 
 function countrySection(lang, country) {
-  const ui = HELP_UI[lang];
+  const ui = uiOf(lang);
   const lines = country.emergencyOnly
-    ? `<p>${esc(country.detail[lang])}</p>`
+    ? `<p>${esc(textOf(country.detail, lang))}</p>`
     : `<ul>${country.services.map((service) => `<li>${serviceHtml(lang, service)}</li>`).join('')}</ul>`;
   return `<section class="help-country" data-iso="${esc(country.iso)}">
-        <h3>${esc(country.name[lang])}</h3>
+        <h3>${esc(textOf(country.name, lang))}</h3>
         ${lines}
         <p class="help-emergency"><span>${esc(ui.emergency)}</span> ${emergencyHtml(lang, country)}</p>
       </section>`;
 }
 
 function countryInline(lang, country) {
-  const ui = HELP_UI[lang];
+  const ui = uiOf(lang);
   const body = country.emergencyOnly
-    ? esc(country.detail[lang])
+    ? esc(textOf(country.detail, lang))
     : country.services.map((service) => serviceHtml(lang, service)).join(' ');
-  return `<strong>${esc(country.name[lang])}.</strong> ${body} ${esc(ui.emergency)}: ${emergencyHtml(lang, country)}.`;
+  return `<strong>${esc(textOf(country.name, lang))}.</strong> ${body} ${esc(ui.emergency)}: ${emergencyHtml(lang, country)}.`;
 }
 
 export function helpDialogHtml(lang) {
-  const ui = HELP_UI[lang];
-  const options = COUNTRIES.map((country) => `<option value="${esc(country.iso)}">${esc(country.name[lang])}</option>`).join('\n            ');
+  const ui = uiOf(lang);
+  const group = HELP_GROUPS[lang] || null;
+  const emptyLabel = group ? (ui.suggested || ui.choose) : ui.choose;
+  const allOption = group ? `\n            <option value="*">${esc(ui.all || ui.choose)}</option>` : '';
+  const defaults = group ? ` data-help-default="${esc(group.join(' '))}"` : '';
+  const options = COUNTRIES.map((country) => `<option value="${esc(country.iso)}">${esc(textOf(country.name, lang))}</option>`).join('\n            ');
   const sections = COUNTRIES.map((country) => countrySection(lang, country)).join('\n        ');
-  return `<dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title">
+  return `<dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title"${defaults}>
     <div class="help-panel">
       <div class="help-head">
         <h2 id="help-title">${esc(ui.title)}</h2>
@@ -1149,7 +1179,7 @@ export function helpDialogHtml(lang) {
       <label class="help-pick">
         <span>${esc(ui.country)}</span>
         <select id="help-country" name="country">
-          <option value="">${esc(ui.choose)}</option>
+          <option value="">${esc(emptyLabel)}</option>${allOption}
           ${options}
         </select>
       </label>
@@ -1162,7 +1192,7 @@ export function helpDialogHtml(lang) {
 }
 
 export function helpButtonHtml(lang) {
-  const ui = HELP_UI[lang];
+  const ui = uiOf(lang);
   return `<button type="button" class="help-open" id="help-open" aria-haspopup="dialog" aria-controls="help-dialog" aria-label="${esc(ui.open)}">
         <span class="help-open-long">${esc(ui.open)}</span>
         <span class="help-open-short" aria-hidden="true">${esc(ui.short)}</span>
@@ -1170,7 +1200,7 @@ export function helpButtonHtml(lang) {
 }
 
 export function othersListHtml(lang) {
-  const ui = HELP_UI[lang];
+  const ui = uiOf(lang);
   const items = COUNTRIES.map((country) => `<li>${countryInline(lang, country)}</li>`).join('\n          ');
   return `<details class="other-countries">
       <summary>${esc(ui.others)}</summary>

@@ -2,6 +2,7 @@ import { enTopics } from './topics-en.js';
 import { frTopics } from './topics-fr.js';
 import { esTopics } from './topics-es.js';
 import { ptTopics } from './topics-pt.js';
+import { DISCLAIMERS_EXTRA } from './disclaimers-more.js';
 
 export const SITE = 'https://www.panicpause.com';
 export const PUBLISHED = '2026-10-22';
@@ -187,6 +188,7 @@ export const DISCLAIMERS = {
       ],
     ],
   },
+  ...DISCLAIMERS_EXTRA,
 };
 
 export function pagePath(topic, lang) {

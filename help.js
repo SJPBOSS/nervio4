@@ -7,24 +7,40 @@ const closeButton = document.getElementById('help-close');
 
 if (openButton && dialog && select) {
   const known = COUNTRIES.map((country) => country.iso);
-
-  function apply(iso) {
-    const chosen = known.includes(iso) ? iso : '';
-    for (const section of dialog.querySelectorAll('.help-country')) {
-      section.hidden = Boolean(chosen) && section.dataset.iso !== chosen;
+  const defaults = (dialog.dataset.helpDefault || '').split(/\s+/).filter((iso) => known.includes(iso));
+  const list = document.getElementById('help-list');
+  if (defaults.length && list) {
+    for (const iso of [...defaults].reverse()) {
+      const section = list.querySelector(`.help-country[data-iso="${iso}"]`);
+      if (section) list.prepend(section);
     }
-    select.value = chosen;
   }
 
-  let detected = '';
-  try {
-    const languages = navigator.languages?.length ? navigator.languages : [navigator.language || ''];
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    detected = suggestCountry(languages, timeZone, known);
-  } catch {
-    detected = '';
+  function apply(value) {
+    const showAll = value === '*' || (value === '' && defaults.length === 0);
+    const chosen = known.includes(value) ? value : '';
+    for (const section of dialog.querySelectorAll('.help-country')) {
+      if (showAll) section.hidden = false;
+      else if (chosen) section.hidden = section.dataset.iso !== chosen;
+      else section.hidden = !defaults.includes(section.dataset.iso);
+    }
+    if (showAll && defaults.length) select.value = '*';
+    else select.value = chosen;
   }
-  apply(detected);
+
+  if (defaults.length) {
+    apply('');
+  } else {
+    let detected = '';
+    try {
+      const languages = navigator.languages?.length ? navigator.languages : [navigator.language || ''];
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      detected = suggestCountry(languages, timeZone, known);
+    } catch {
+      detected = '';
+    }
+    apply(detected);
+  }
 
   openButton.addEventListener('click', () => {
     if (typeof dialog.showModal === 'function') dialog.showModal();

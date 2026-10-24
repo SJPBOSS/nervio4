@@ -1,4 +1,5 @@
 import { SHORT, LINK_LABELS } from './scripts/legal.js';
+import { MORE_TRANSLATIONS } from './i18n-more.js';
 
 export const TRANSLATIONS = {
   en: {
@@ -205,6 +206,7 @@ export const TRANSLATIONS = {
       'Uma respiração de cada vez.',
     ],
   },
+  ...MORE_TRANSLATIONS,
 };
 
 export const MODE_ORDER = [

@@ -1,13 +1,25 @@
-export const LANGS = ['en', 'fr', 'es', 'pt'];
+export const LANGS = ['en', 'fr', 'es', 'pt', 'de', 'it', 'nl', 'ja', 'ko', 'hi'];
 export const MODE_IDS = ['calm', 'focus', 'sleep', 'panic'];
 export const DURATIONS = ['30s', '1m', '2m'];
 
+export const LANG_META = {
+  en: { htmlLang: 'en', og: 'en_US', code: 'EN', name: 'English', breadcrumb: 'Breadcrumb' },
+  fr: { htmlLang: 'fr-CA', og: 'fr_CA', code: 'FR', name: 'Français', breadcrumb: 'Fil d’Ariane' },
+  es: { htmlLang: 'es', og: 'es_ES', code: 'ES', name: 'Español', breadcrumb: 'Miga de pan' },
+  pt: { htmlLang: 'pt-BR', og: 'pt_BR', code: 'PT', name: 'Português', breadcrumb: 'Caminho' },
+  de: { htmlLang: 'de', og: 'de_DE', code: 'DE', name: 'Deutsch', breadcrumb: 'Pfad' },
+  it: { htmlLang: 'it', og: 'it_IT', code: 'IT', name: 'Italiano', breadcrumb: 'Percorso' },
+  nl: { htmlLang: 'nl', og: 'nl_NL', code: 'NL', name: 'Nederlands', breadcrumb: 'Pad' },
+  ja: { htmlLang: 'ja', og: 'ja_JP', code: 'JA', name: '日本語', breadcrumb: 'パンくず' },
+  ko: { htmlLang: 'ko', og: 'ko_KR', code: 'KO', name: '한국어', breadcrumb: '경로' },
+  hi: { htmlLang: 'hi', og: 'hi_IN', code: 'HI', name: 'हिन्दी', breadcrumb: 'पथ' },
+};
+
 export function normalizeLang(value) {
-  const v = String(value || '').toLowerCase();
-  if (v === 'en' || v.startsWith('en-')) return 'en';
-  if (v === 'fr' || v.startsWith('fr')) return 'fr';
-  if (v === 'es' || v.startsWith('es')) return 'es';
-  if (v === 'pt' || v.startsWith('pt')) return 'pt';
+  const v = String(value || '').toLowerCase().replaceAll('_', '-');
+  for (const code of LANGS) {
+    if (v === code || v.startsWith(`${code}-`)) return code;
+  }
   return null;
 }
 
@@ -59,7 +71,8 @@ export function homeLang(pathname) {
   path = path.replace(/\/index\.html$/, '');
   if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
   if (path === '' || path === '/') return 'en';
-  if (path === '/fr' || path === '/es' || path === '/pt') return path.slice(1);
+  const code = path.slice(1);
+  if (LANGS.includes(code) && code !== 'en') return code;
   return null;
 }
 

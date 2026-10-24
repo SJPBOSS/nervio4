@@ -6,7 +6,7 @@ import { DURATION_SECONDS, TECHNIQUES, durationOf, nextPhase, scaleFor, stepSess
 import { TRANSLATIONS } from '../i18n.js';
 import { homePath, languageTarget, publicMode, resolveSettings } from '../settings.js';
 import { LANGS, TOPICS, pagePath } from '../scripts/content.js';
-import { COUNTRIES, HELP_UI, othersListHtml, suggestCountry } from '../scripts/helplines.js';
+import { COUNTRIES, HELP_GROUPS, HELP_UI, helpDialogHtml, othersListHtml, suggestCountry } from '../scripts/helplines.js';
 import { CHECKED, legalPath } from '../scripts/legal.js';
 
 const root = path.resolve(import.meta.dirname, '..');
@@ -96,6 +96,18 @@ test('language homes are the crawlable addresses and old lang queries still redi
   assert.equal(homePath('en'), '/');
   assert.equal(homePath('fr'), '/fr/');
   assert.equal(homePath('pt-BR'), '/pt/');
+  assert.equal(homePath('de'), '/de/');
+  assert.equal(homePath('ja'), '/ja/');
+  assert.deepEqual(languageTarget({ pathname: '/', search: '?lang=de' }), {
+    url: '/de/',
+    method: 'replace',
+  });
+  assert.equal(languageTarget({ pathname: '/ja/', search: '?mode=sleep' }), null);
+  assert.equal(languageTarget({ pathname: '/de/hinweis/', search: '?lang=it' }), null);
+  assert.deepEqual(languageTarget({ pathname: '/', search: '', stored: { lang: 'hi' }, languages: ['en'] }), {
+    url: '/hi/',
+    method: 'replace',
+  });
   assert.deepEqual(languageTarget({ pathname: '/', search: '?lang=fr&mode=sleep&dur=1m' }), {
     url: '/fr/?mode=sleep&dur=1m',
     method: 'replace',
@@ -175,7 +187,7 @@ test('every language has the same strings', () => {
     return [prefix];
   }
   const english = leaves(TRANSLATIONS.en).sort();
-  for (const lang of ['fr', 'es', 'pt']) {
+  for (const lang of ['fr', 'es', 'pt', 'de', 'it', 'nl', 'ja', 'ko', 'hi']) {
     assert.deepEqual(leaves(TRANSLATIONS[lang]).sort(), english);
     for (const key of english) {
       const read = (obj) => key.split('.').reduce((acc, part) => {
@@ -209,6 +221,19 @@ test('every language has the same strings', () => {
   assert.match(TRANSLATIONS.fr.liability, /vous/i);
   assert.match(TRANSLATIONS.es.liability, /estás/);
   assert.match(TRANSLATIONS.pt.liabilityStop, /você/);
+  for (const lang of ['de', 'it', 'nl', 'ja', 'ko', 'hi']) {
+    assert.notEqual(TRANSLATIONS[lang].modes.calm.name, 'Calm');
+    assert.notEqual(TRANSLATIONS[lang].modes.sleep.name, 'Sleep');
+    assert.notEqual(TRANSLATIONS[lang].modes.panic.name, 'Reset');
+    assert.notEqual(TRANSLATIONS[lang].breathe, 'Breathe');
+    assert.equal(TRANSLATIONS[lang].reassurances.length, 4);
+  }
+  assert.equal(TRANSLATIONS.de.modes.calm.name, 'Ruhe');
+  assert.equal(TRANSLATIONS.it.modes.panic.name, 'Rientro');
+  assert.equal(TRANSLATIONS.nl.modes.sleep.name, 'Slaap');
+  assert.equal(TRANSLATIONS.ja.modes.focus.name, '集中');
+  assert.equal(TRANSLATIONS.ko.modes.calm.name, '고요');
+  assert.equal(TRANSLATIONS.hi.modes.panic.name, 'संभलना');
 });
 
 test('each language home is crawlable on its own path', () => {
@@ -217,6 +242,12 @@ test('each language home is crawlable on its own path', () => {
     fr: ['fr/index.html', 'https://www.panicpause.com/fr/', 'lang="fr-CA"', 'Apaisez le bruit.'],
     es: ['es/index.html', 'https://www.panicpause.com/es/', 'lang="es"', 'Silencia el ruido.'],
     pt: ['pt/index.html', 'https://www.panicpause.com/pt/', 'lang="pt-BR"', 'Acalme o ruído.'],
+    de: ['de/index.html', 'https://www.panicpause.com/de/', 'lang="de"', 'Lass den Lärm leiser werden.'],
+    it: ['it/index.html', 'https://www.panicpause.com/it/', 'lang="it"', 'Abbassa il rumore.'],
+    nl: ['nl/index.html', 'https://www.panicpause.com/nl/', 'lang="nl"', 'Maak het stiller.'],
+    ja: ['ja/index.html', 'https://www.panicpause.com/ja/', 'lang="ja"', 'ざわつきを、静かに。'],
+    ko: ['ko/index.html', 'https://www.panicpause.com/ko/', 'lang="ko"', '소란을 내려놓아요.'],
+    hi: ['hi/index.html', 'https://www.panicpause.com/hi/', 'lang="hi"', 'शोर को धीमा करें।'],
   };
   const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
   assert.match(sitemap, /xmlns:xhtml="http:\/\/www\.w3\.org\/1999\/xhtml"/);
@@ -232,7 +263,15 @@ test('each language home is crawlable on its own path', () => {
     assert.match(html, /hreflang="es" href="https:\/\/www\.panicpause\.com\/es\/"/);
     assert.match(html, /hreflang="pt-BR" href="https:\/\/www\.panicpause\.com\/pt\/"/);
     assert.match(html, /hreflang="pt" href="https:\/\/www\.panicpause\.com\/pt\/"/);
+    assert.match(html, /hreflang="de" href="https:\/\/www\.panicpause\.com\/de\/"/);
+    assert.match(html, /hreflang="it" href="https:\/\/www\.panicpause\.com\/it\/"/);
+    assert.match(html, /hreflang="nl" href="https:\/\/www\.panicpause\.com\/nl\/"/);
+    assert.match(html, /hreflang="ja" href="https:\/\/www\.panicpause\.com\/ja\/"/);
+    assert.match(html, /hreflang="ko" href="https:\/\/www\.panicpause\.com\/ko\/"/);
+    assert.match(html, /hreflang="hi" href="https:\/\/www\.panicpause\.com\/hi\/"/);
     assert.match(html, /hreflang="x-default" href="https:\/\/www\.panicpause\.com\/"/);
+    assert.match(html, /class="lang-menu"/);
+    assert.match(html, /property="og:locale"/);
     assert.doesNotMatch(html, /hreflang="[^"]+" href="https:\/\/www\.panicpause\.com\/\?lang=/);
     assert.match(html, /id="breath"/);
     assert.match(sitemap, new RegExp(`<loc>${canonical.replaceAll('/', '\\/')}<\\/loc>`));
@@ -249,6 +288,20 @@ test('each language home is crawlable on its own path', () => {
   assert.match(fr, /Respirer/);
   assert.match(fr, /Vous sentir plus calme/);
   assert.doesNotMatch(fr, /Help you feel calmer/);
+  assert.doesNotMatch(fr, /data-help-default/);
+  const defaults = {
+    de: 'DE AT CH',
+    it: 'IT',
+    nl: 'NL BE',
+    ja: 'JP',
+    ko: 'KR',
+    hi: 'IN',
+  };
+  for (const [lang, group] of Object.entries(defaults)) {
+    const html = fs.readFileSync(path.join(root, lang, 'index.html'), 'utf8');
+    assert.match(html, new RegExp(`data-help-default="${group}"`));
+    assert.match(html, new RegExp(`og:locale" content="${{ de: 'de_DE', it: 'it_IT', nl: 'nl_NL', ja: 'ja_JP', ko: 'ko_KR', hi: 'hi_IN' }[lang]}"`));
+  }
 });
 
 test('the static site keeps its domain and does not lock zoom', () => {
@@ -436,6 +489,24 @@ test('terms and privacy pages describe the real storage and the crisis check dat
     assert.match(privacy, /dur/);
     assert.doesNotMatch(privacy, /gtag|analytics\.js|facebook|doubleclick/i);
   }
+  const extraStorage = {
+    de: /lokalen Speicher/,
+    it: /memoria locale/,
+    nl: /lokale opslag/,
+    ja: /ローカルストレージ/,
+    ko: /로컬 저장소/,
+    hi: /लोकल स्टोरेज/,
+  };
+  for (const [lang, storagePattern] of Object.entries(extraStorage)) {
+    const privacy = fs.readFileSync(path.join(root, legalPath('privacy', lang).slice(1), 'index.html'), 'utf8');
+    const terms = fs.readFileSync(path.join(root, legalPath('terms', lang).slice(1), 'index.html'), 'utf8');
+    assert.match(privacy, storagePattern);
+    assert.match(privacy, /nervio/);
+    assert.match(terms, /class="checked"/);
+    assert.match(terms, /hreflang="x-default"/);
+    assert.match(terms, /hreflang="de"/);
+    assert.match(sitemap, new RegExp(legalPath('terms', lang).replaceAll('/', '\\/')));
+  }
   const enPrivacy = fs.readFileSync(path.join(root, 'en/privacy/index.html'), 'utf8');
   assert.match(enPrivacy, /do not run analytics/);
   assert.match(enPrivacy, /do not set cookies/);
@@ -472,4 +543,59 @@ test('the helpline directory follows the checked list', () => {
   assert.match(src, /Australia 000/);
   assert.match(src, /Costa Rica/);
   assert.match(src, /New Zealand 111/);
+  assert.deepEqual(HELP_GROUPS, {
+    de: ['DE', 'AT', 'CH'],
+    it: ['IT'],
+    nl: ['NL', 'BE'],
+    ja: ['JP'],
+    ko: ['KR'],
+    hi: ['IN'],
+  });
+  const added = ['de', 'it', 'nl', 'ja', 'ko', 'hi'];
+  for (const country of COUNTRIES) {
+    for (const lang of added) {
+      assert.equal(typeof country.name[lang], 'string', `${country.iso} ${lang}`);
+      if (country.detail) assert.equal(typeof country.detail[lang], 'string', `${country.iso} detail ${lang}`);
+      for (const service of country.services || []) {
+        if (service.detail) assert.equal(typeof service.detail[lang], 'string', `${country.iso}|${service.name} ${lang}`);
+        if (service.parts) assert.ok(Array.isArray(service.parts[lang]), `${country.iso} parts ${lang}`);
+      }
+    }
+  }
+  const deDialog = helpDialogHtml('de');
+  assert.match(deDialog, /data-help-default="DE AT CH"/);
+  assert.match(deDialog, /Deutschland/);
+  assert.match(deDialog, /Brauchst du jetzt Hilfe/);
+  assert.match(deDialog, /808 24 24 24, dann Option 4/);
+  assert.doesNotMatch(helpDialogHtml('en'), /data-help-default/);
+  assert.match(helpDialogHtml('en'), /808 24 24 24, then option 4/);
+  assert.match(helpDialogHtml('it'), /data-help-default="IT"/);
+  assert.match(helpDialogHtml('nl'), /data-help-default="NL BE"/);
+  assert.match(helpDialogHtml('ja'), /data-help-default="JP"/);
+  assert.match(helpDialogHtml('ko'), /data-help-default="KR"/);
+  assert.match(helpDialogHtml('hi'), /data-help-default="IN"/);
+  assert.match(helpDialogHtml('hi'), /भारत/);
+  assert.doesNotMatch(deDialog, />undefined</);
+});
+
+test('japanese, korean, and hindi pages use bundled fonts', () => {
+  const css = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
+  const faces = [
+    ['ja', 'noto-sans-jp-400.woff2', 'Hiragino Sans'],
+    ['ko', 'noto-sans-kr-400.woff2', 'Malgun Gothic'],
+    ['hi', 'noto-sans-deva-400.woff2', 'Nirmala UI'],
+  ];
+  for (const [lang, file, system] of faces) {
+    assert.match(css, new RegExp(file.replaceAll('.', '\\.')));
+    assert.match(css, new RegExp(system));
+    assert.ok(fs.existsSync(path.join(root, 'fonts', file)), file);
+    const html = fs.readFileSync(path.join(root, lang, 'index.html'), 'utf8');
+    assert.match(html, new RegExp(file.replaceAll('.', '\\.')));
+  }
+  assert.match(css, /names-jp\.woff2/);
+  assert.match(css, /names-kr\.woff2/);
+  assert.match(css, /names-deva\.woff2/);
+  for (const file of ['names-jp.woff2', 'names-kr.woff2', 'names-deva.woff2', 'noto-sans-jp-500.woff2', 'noto-sans-kr-500.woff2', 'noto-sans-deva-500.woff2']) {
+    assert.ok(fs.existsSync(path.join(root, 'fonts', file)), file);
+  }
 });

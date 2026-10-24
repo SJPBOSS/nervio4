@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+(function () {
+  function code(value) {
+    var v = String(value || '').toLowerCase().replace(/_/g, '-');
+    if (v === 'fr' || v.indexOf('fr-') === 0) return 'fr';
+    if (v === 'es' || v.indexOf('es-') === 0) return 'es';
+    if (v === 'pt' || v.indexOf('pt-') === 0) return 'pt';
+    if (v === 'de' || v.indexOf('de-') === 0) return 'de';
+    if (v === 'it' || v.indexOf('it-') === 0) return 'it';
+    if (v === 'nl' || v.indexOf('nl-') === 0) return 'nl';
+    if (v === 'ja' || v.indexOf('ja-') === 0) return 'ja';
+    if (v === 'ko' || v.indexOf('ko-') === 0) return 'ko';
+    if (v === 'hi' || v.indexOf('hi-') === 0) return 'hi';
+    if (v === 'en' || v.indexOf('en-') === 0) return 'en';
+    return '';
+  }
+  function home(lang) { return lang === 'en' ? '/' : '/' + lang + '/'; }
+  var path = location.pathname.replace(/\/index\.html$/, '');
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  var onHome = path === '' || path === '/' || path === '/fr' || path === '/es' || path === '/pt' || path === '/de' || path === '/it' || path === '/nl' || path === '/ja' || path === '/ko' || path === '/hi';
+  if (!onHome) return;
+  var params = new URLSearchParams(location.search);
+  var queryLang = code(params.get('lang'));
+  if (queryLang) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('nervio') || '{}') || {};
+      if (!saved || typeof saved !== 'object') saved = {};
+      saved.v = 1;
+      saved.lang = queryLang;
+      localStorage.setItem('nervio', JSON.stringify(saved));
+    } catch (err) {}
+    params.delete('lang');
+    var qs = params.toString();
+    var dest = home(queryLang) + (qs ? '?' + qs : '') + location.hash;
+    var here = (path === '' || path === '/') ? '/' : path + '/';
+    if (here !== home(queryLang)) location.replace(dest);
+    else history.replaceState(null, '', dest);
+    return;
+  }
+  if (path !== '' && path !== '/') return;
+  var preferred = '';
+  try {
+    var note = JSON.parse(localStorage.getItem('nervio') || 'null');
+    preferred = code(note && note.lang);
+  } catch (err) {}
+  if (!preferred) {
+    var list = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < list.length; i += 1) {
+      preferred = code(list[i]);
+      if (preferred) break;
+    }
+  }
+  if (!preferred || preferred === 'en') return;
+  params.delete('lang');
+  var rest = params.toString();
+  location.replace(home(preferred) + (rest ? '?' + rest : '') + location.hash);
+})();
+</script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#090c0b" />
+  <link rel="preload" href="/fonts/fraunces-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/noto-sans-jp-400.woff2" as="font" type="font/woff2" crossorigin />
+  <title>Nervio — 落ち着き、集中、眠り、立て直しのための無料の呼吸</title>
+  <meta name="description" content="Nervioは、落ち着き・集中・眠り・立て直しのモードがある無料の呼吸アプリです。日本語を含む複数の言語。アカウントは要りません。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.panicpause.com/ja/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nervio" />
+  <meta property="og:title" content="Nervio — 落ち着き、集中、眠り、立て直しのための無料の呼吸" />
+  <meta property="og:description" content="Nervioは、落ち着き・集中・眠り・立て直しのモードがある無料の呼吸アプリです。日本語を含む複数の言語。アカウントは要りません。" />
+  <meta property="og:url" content="https://www.panicpause.com/ja/" />
+  <meta property="og:image" content="https://www.panicpause.com/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nervio, a free breathing app on a black background" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:locale:alternate" content="fr_CA" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:locale:alternate" content="pt_BR" />
+  <meta property="og:locale:alternate" content="de_DE" />
+  <meta property="og:locale:alternate" content="it_IT" />
+  <meta property="og:locale:alternate" content="nl_NL" />
+  <meta property="og:locale:alternate" content="ko_KR" />
+  <meta property="og:locale:alternate" content="hi_IN" />
+  <link rel="alternate" hreflang="en" href="https://www.panicpause.com/" />
+  <link rel="alternate" hreflang="fr-CA" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="fr" href="https://www.panicpause.com/fr/" />
+  <link rel="alternate" hreflang="es" href="https://www.panicpause.com/es/" />
+  <link rel="alternate" hreflang="pt-BR" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="pt" href="https://www.panicpause.com/pt/" />
+  <link rel="alternate" hreflang="de" href="https://www.panicpause.com/de/" />
+  <link rel="alternate" hreflang="it" href="https://www.panicpause.com/it/" />
+  <link rel="alternate" hreflang="nl" href="https://www.panicpause.com/nl/" />
+  <link rel="alternate" hreflang="ja" href="https://www.panicpause.com/ja/" />
+  <link rel="alternate" hreflang="ko" href="https://www.panicpause.com/ko/" />
+  <link rel="alternate" hreflang="hi" href="https://www.panicpause.com/hi/" />
+  <link rel="alternate" hreflang="x-default" href="https://www.panicpause.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nervio — 落ち着き、集中、眠り、立て直しのための無料の呼吸" />
+  <meta name="twitter:description" content="Nervioは、落ち着き・集中・眠り・立て直しのモードがある無料の呼吸アプリです。日本語を含む複数の言語。アカウントは要りません。" />
+  <meta name="twitter:image" content="https://www.panicpause.com/og.png" />
+  
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Nervio","url":"https://www.panicpause.com/ja/","inLanguage":["en","fr-CA","es","pt-BR","de","it","nl","ja","ko","hi"],"description":"Nervioは、落ち着き・集中・眠り・立て直しのモードがある無料の呼吸アプリです。日本語を含む複数の言語。アカウントは要りません。"},{"@type":"WebApplication","name":"Nervio","url":"https://www.panicpause.com/ja/","applicationCategory":"LifestyleApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"inLanguage":["en","fr-CA","es","pt-BR","de","it","nl","ja","ko","hi"],"offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Nervioは、落ち着き・集中・眠り・立て直しのモードがある無料の呼吸アプリです。日本語を含む複数の言語。アカウントは要りません。"}]}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main" id="skip">内容へ進む</a>
+  <div class="app is-idle" id="app" data-mode="calm">
+    <div class="progress" id="progress" hidden>
+      <div class="progress-fill" id="progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="セッションの進み具合"></div>
+    </div>
+    <header class="nav">
+      <a class="brand" href="/ja/" id="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Nervio</span>
+      </a>
+      <button type="button" class="help-open" id="help-open" aria-haspopup="dialog" aria-controls="help-dialog" aria-label="いま、助けが要りますか？">
+        <span class="help-open-long">いま、助けが要りますか？</span>
+        <span class="help-open-short" aria-hidden="true">助け</span>
+      </button>
+      <div class="nav-actions">
+        <details class="lang-menu" id="langs">
+          <summary aria-label="言語">JA</summary>
+          <div class="lang-panel">
+            <a href="/" data-set-lang="en" lang="en" hreflang="en">English</a>
+            <a href="/fr/" data-set-lang="fr" lang="fr-CA" hreflang="fr-CA">Français</a>
+            <a href="/es/" data-set-lang="es" lang="es" hreflang="es">Español</a>
+            <a href="/pt/" data-set-lang="pt" lang="pt-BR" hreflang="pt-BR">Português</a>
+            <a href="/de/" data-set-lang="de" lang="de" hreflang="de">Deutsch</a>
+            <a href="/it/" data-set-lang="it" lang="it" hreflang="it">Italiano</a>
+            <a href="/nl/" data-set-lang="nl" lang="nl" hreflang="nl">Nederlands</a>
+            <a href="/ja/" data-set-lang="ja" lang="ja" hreflang="ja" aria-current="page">日本語</a>
+            <a href="/ko/" data-set-lang="ko" lang="ko" hreflang="ko">한국어</a>
+            <a href="/hi/" data-set-lang="hi" lang="hi" hreflang="hi">हिन्दी</a>
+          </div>
+        </details>
+        <button type="button" class="icon-btn" id="cancel" hidden aria-label="セッションをやめる"><span aria-hidden="true">✕</span></button>
+        <button type="button" class="icon-btn" id="mute" aria-pressed="false" aria-label="音を消す">
+          <svg class="icon-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm12.5 3a3.5 3.5 0 0 0-1.8-3.06v6.12A3.5 3.5 0 0 0 16.5 12z"/></svg>
+          <svg class="icon-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm13.1 3 2.4-2.4-1.4-1.4L15.7 10.6 13.3 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>
+        </button>
+      </div>
+    </header>
+    <main id="main" class="stage-wrap">
+      <div class="hero" id="hero">
+        <h1 id="hero-title">ざわつきを、静かに。</h1>
+        <p class="hero-sub" id="hero-sub">ただ、息を。</p>
+      </div>
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="breath" id="breath">
+          <div class="glow"></div>
+          <div class="orb" id="orb"></div>
+          <div class="ring"></div>
+        </div>
+      </div>
+      <p class="phase" id="phase" aria-live="polite"></p>
+      <p class="hint" id="hint"></p>
+    </main>
+    <section class="controls" id="controls" aria-label="呼吸のセッション">
+      <p class="pattern" id="pattern">吸って 4秒 · 吐いて 6秒 · 2分</p>
+      <div class="checkin" id="checkin" hidden>
+        <h2 id="how-feel" tabindex="-1">いま、どんな感じですか？</h2>
+        <div class="checkin-grid">
+          <button type="button" data-feedback="better"><span id="label-better">楽になった</span></button>
+          <button type="button" data-feedback="same"><span id="label-same">変わらない</span></button>
+          <button type="button" data-feedback="worse"><span id="label-worse">つらい</span></button>
+        </div>
+      </div>
+      <div class="modes" id="modes" role="group" aria-label="モード">
+        <button type="button" class="mode-btn" data-mode="calm" aria-pressed="true">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 14c2.2-3.6 3.8-3.6 6 0s3.8 3.6 6 0 3.8-3.6 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">落ち着き</span><span class="mode-sub">呼吸をゆるめる</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="focus" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">集中</span><span class="mode-sub">頭をすっきり</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="sleep" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15.2 5.2a6.8 6.8 0 1 0 5.2 11.2A7.2 7.2 0 0 1 15.2 5.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">眠り</span><span class="mode-sub">休む準備</span></span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="panic" aria-pressed="false">
+          <span class="mode-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/></svg></span>
+          <span class="mode-copy"><span class="mode-name">立て直し</span><span class="mode-sub">いっぱいいっぱいのとき</span></span>
+        </button>
+      </div>
+      <div class="durations" id="durations" role="group" aria-label="時間">
+        <button type="button" data-dur="30s" aria-pressed="false">短く</button>
+        <button type="button" data-dur="1m" aria-pressed="false">1分</button>
+        <button type="button" data-dur="2m" aria-pressed="true">2分</button>
+      </div>
+      <button type="button" class="go" id="go" aria-describedby="pattern">呼吸する</button>
+      <a class="guides-jump" id="guides-jump" href="#guides">ガイド</a>
+      <p class="liability" id="liability">
+        <span id="liability-line">Nervioは、一般的なウェルビーイングのための呼吸タイマーです。医療の助言でも、診断でも、治療でもなく、緊急時のためのものでもありません。危機にあるときは、地域の緊急番号か危機ラインに連絡してください。</span>
+        <span id="liability-stop">めまいがしたり、頭がふわっとしたりしたら止めてください。心臓、肺、その他の疾患がある場合、または妊娠中は、先に医師に相談してください。</span>
+        <a id="liability-terms" href="/ja/terms/">注意事項</a>
+      </p>
+    </section>
+  </div>
+  <noscript class="noscript">
+    <p>The guided exercise needs JavaScript. The written guides below work without it.</p>
+    <p lang="fr-CA">L’exercice guidé a besoin de JavaScript. Les guides écrits plus bas fonctionnent sans.</p>
+    <p lang="es">El ejercicio guiado necesita JavaScript. Las guías escritas de abajo funcionan sin él.</p>
+    <p lang="pt-BR">O exercício guiado precisa de JavaScript. Os guias escritos abaixo funcionam sem ele.</p>
+  </noscript>
+  <footer class="site-footer" id="guides">
+    <!-- guides:start -->
+    <h2>Guides</h2>
+  <div class="guide-columns">
+    <section aria-labelledby="guides-en">
+      <h3 id="guides-en" lang="en">English</h3>
+      <ul class="guide-list">
+        <li><a href="/en/breathing-exercise-for-panic-attack/" lang="en">A breathing exercise for a panic attack</a></li>
+        <li><a href="/en/box-breathing/" lang="en">Box breathing</a></li>
+        <li><a href="/en/4-7-8-breathing-for-sleep/" lang="en">4-7-8 breathing for sleep</a></li>
+        <li><a href="/en/breathing-to-calm-anxiety/" lang="en">Breathing to calm anxiety fast</a></li>
+        <li><a href="/en/breathing-for-focus/" lang="en">Breathing for focus</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-fr">
+      <h3 id="guides-fr" lang="fr-CA">Français</h3>
+      <ul class="guide-list">
+        <li><a href="/fr/exercice-respiration-crise-panique/" lang="fr-CA">Exercice de respiration pour une crise de panique</a></li>
+        <li><a href="/fr/respiration-carree/" lang="fr-CA">Respiration carrée</a></li>
+        <li><a href="/fr/respiration-4-7-8-pour-dormir/" lang="fr-CA">Respiration 4-7-8 pour dormir</a></li>
+        <li><a href="/fr/respiration-pour-calmer-anxiete/" lang="fr-CA">Respiration pour calmer l’anxiété rapidement</a></li>
+        <li><a href="/fr/respiration-pour-la-concentration/" lang="fr-CA">Respiration pour la concentration</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-es">
+      <h3 id="guides-es" lang="es">Español</h3>
+      <ul class="guide-list">
+        <li><a href="/es/ejercicio-respiracion-ataque-panico/" lang="es">Ejercicio de respiración para un ataque de pánico</a></li>
+        <li><a href="/es/respiracion-cuadrada/" lang="es">Respiración cuadrada</a></li>
+        <li><a href="/es/respiracion-4-7-8-para-dormir/" lang="es">Respiración 4-7-8 para dormir</a></li>
+        <li><a href="/es/respiracion-para-calmar-la-ansiedad/" lang="es">Respiración para calmar la ansiedad rápido</a></li>
+        <li><a href="/es/respiracion-para-concentrarse/" lang="es">Respiración para concentrarse</a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="guides-pt">
+      <h3 id="guides-pt" lang="pt-BR">Português</h3>
+      <ul class="guide-list">
+        <li><a href="/pt/exercicio-respiracao-ataque-panico/" lang="pt-BR">Exercício de respiração para um ataque de pânico</a></li>
+        <li><a href="/pt/respiracao-quadrada/" lang="pt-BR">Respiração quadrada</a></li>
+        <li><a href="/pt/respiracao-4-7-8-para-dormir/" lang="pt-BR">Respiração 4-7-8 para dormir</a></li>
+        <li><a href="/pt/respiracao-para-acalmar-ansiedade/" lang="pt-BR">Respiração para acalmar a ansiedade</a></li>
+        <li><a href="/pt/respiracao-para-focar/" lang="pt-BR">Respiração para focar</a></li>
+      </ul>
+    </section>
+  </div>
+  <div class="footer-blurbs">
+    <p lang="en">Nervio is a free breathing app for calm, focus, sleep, and moments of panic. No account. These guides are general wellness information, not medical advice.</p>
+    <p lang="fr-CA">Nervio est une application gratuite de respiration pour le calme, la concentration, le sommeil et les crises de panique. Sans compte. Ces guides sont de l’information générale sur le bien-être, pas un avis médical.</p>
+    <p lang="es">Nervio es una aplicación gratuita de respiración para la calma, el enfoque, el sueño y los ataques de pánico. Sin cuenta. Estas guías son información general de bienestar, no consejo médico.</p>
+    <p lang="pt-BR">O Nervio é um aplicativo grátis de respiração para calma, foco, sono e momentos de pânico. Sem conta. Estes guias são informação geral de bem-estar, não orientação médica.</p>
+  </div>
+  <nav class="legal-links" aria-label="Legal">
+    <p lang="en"><a href="/en/terms/" hreflang="en">Terms and disclaimer</a> · <a href="/en/privacy/" hreflang="en">Privacy</a></p>
+    <p lang="fr-CA"><a href="/fr/conditions/" hreflang="fr-CA">Conditions et avis</a> · <a href="/fr/confidentialite/" hreflang="fr-CA">Confidentialité</a></p>
+    <p lang="es"><a href="/es/aviso/" hreflang="es">Términos y aviso</a> · <a href="/es/privacidad/" hreflang="es">Privacidad</a></p>
+    <p lang="pt-BR"><a href="/pt/aviso/" hreflang="pt-BR">Termos e aviso</a> · <a href="/pt/privacidade/" hreflang="pt-BR">Privacidade</a></p>
+  </nav>
+    <!-- guides:end -->
+  </footer>
+  <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title" data-help-default="JP">
+    <div class="help-panel">
+      <div class="help-head">
+        <h2 id="help-title">いま、助けが要りますか？</h2>
+        <button type="button" class="help-close" id="help-close" aria-label="閉じる"><span aria-hidden="true">×</span></button>
+      </div>
+      <p class="help-lead">危機にあるとき、自分を傷つけようと思っているときは、その国の相談窓口を使ってください。Nervioは緊急サービスではなく、誰かに連絡することもできません。</p>
+      <label class="help-pick">
+        <span>国</span>
+        <select id="help-country" name="country">
+          <option value="">日本の窓口</option>
+            <option value="*">すべての国</option>
+          <option value="CA">カナダ</option>
+            <option value="US">アメリカ</option>
+            <option value="MX">メキシコ</option>
+            <option value="CO">コロンビア</option>
+            <option value="PE">ペルー</option>
+            <option value="AR">アルゼンチン</option>
+            <option value="CL">チリ</option>
+            <option value="UY">ウルグアイ</option>
+            <option value="EC">エクアドル</option>
+            <option value="CR">コスタリカ</option>
+            <option value="DO">ドミニカ共和国</option>
+            <option value="BR">ブラジル</option>
+            <option value="PT">ポルトガル</option>
+            <option value="ES">スペイン</option>
+            <option value="FR">フランス</option>
+            <option value="BE">ベルギー</option>
+            <option value="CH">スイス</option>
+            <option value="GB">イギリス</option>
+            <option value="IE">アイルランド</option>
+            <option value="DE">ドイツ</option>
+            <option value="AT">オーストリア</option>
+            <option value="IT">イタリア</option>
+            <option value="NL">オランダ</option>
+            <option value="NO">ノルウェー</option>
+            <option value="FI">フィンランド</option>
+            <option value="DK">デンマーク</option>
+            <option value="TR">トルコ</option>
+            <option value="IN">インド</option>
+            <option value="PH">フィリピン</option>
+            <option value="ID">インドネシア</option>
+            <option value="JP">日本</option>
+            <option value="KR">韓国</option>
+            <option value="MY">マレーシア</option>
+            <option value="TH">タイ</option>
+            <option value="IL">イスラエル</option>
+            <option value="AE">アラブ首長国連邦</option>
+            <option value="AU">オーストラリア</option>
+            <option value="NZ">ニュージーランド</option>
+            <option value="ZA">南アフリカ</option>
+            <option value="NG">ナイジェリア</option>
+            <option value="MA">モロッコ</option>
+            <option value="CI">コートジボワール</option>
+        </select>
+      </label>
+      <div class="help-list" id="help-list">
+        <section class="help-country" data-iso="CA">
+        <h3>カナダ</h3>
+        <ul><li>9-8-8 Suicide Crisis Helpline: <a href="tel:988">988</a>、<a href="sms:988">text 988</a>. 電話でもテキストでも、いつでも。 (<a href="https://988.ca/" rel="noopener noreferrer">9-8-8 Suicide Crisis Helpline</a>).</li><li>Ligne québécoise de prévention du suicide: <a href="tel:+18662773553">1 866 277-3553</a>、<a href="sms:535353">535353</a>. 1 866 APPELLE。無料で、いつでも。535353 へテキストもできます。 (<a href="https://www.quebec.ca/sante/sante-mentale/s-informer-sur-sante-mentale-et-troubles-mentaux/reconnaitre-signes-detresse-et-prevenir-suicide" rel="noopener noreferrer">Gouvernement du Québec</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="US">
+        <h3>アメリカ</h3>
+        <ul><li>988 Suicide &amp; Crisis Lifeline: <a href="tel:988">988</a>、<a href="sms:988">text 988</a>. 電話でもテキストでも、24時間。スペイン語は 2 を押すか、AYUDA と送ります。 (<a href="https://988lifeline.org/" rel="noopener noreferrer">988 Suicide &amp; Crisis Lifeline</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="MX">
+        <h3>メキシコ</h3>
+        <ul><li>Línea de la Vida: <a href="tel:8009112000">800 911 2000</a>. 無料で、毎日24時間。 (<a href="https://www.gob.mx/lineadelavida" rel="noopener noreferrer">gob.mx/lineadelavida</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="CO">
+        <h3>コロンビア</h3>
+        <ul><li>Línea 106: <a href="tel:106">106</a>. 無料で、24時間。 (<a href="https://www.minsalud.gov.co/salud/publica/salud-mental/Paginas/linea-106.aspx" rel="noopener noreferrer">Ministerio de Salud</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:123">123</a></p>
+      </section>
+        <section class="help-country" data-iso="PE">
+        <h3>ペルー</h3>
+        <ul><li>Línea 113: <a href="tel:113">113</a>. そのあと 5 番。無料で、24時間。 (<a href="https://www.gob.pe/20715" rel="noopener noreferrer">Ministerio de Salud del Perú</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:106">106</a>、<a href="tel:105">105</a></p>
+      </section>
+        <section class="help-country" data-iso="AR">
+        <h3>アルゼンチン</h3>
+        <ul><li>Línea 0800 Salud Mental: <a href="tel:08009990091">0800-999-0091</a>. 全国の回線。無料で、毎日24時間。 (<a href="https://www.argentina.gob.ar/salud/hospitalbonaparte/hospital-en-red/dispositivo-0800" rel="noopener noreferrer">argentina.gob.ar</a>).</li><li>Centro de Asistencia al Suicida: <a href="tel:135">135</a>、<a href="tel:08003451435">0800 345 1435</a>、<a href="tel:+541152751135">(011) 5275-1135</a>. 135 が無料なのは CABA とブエノスアイレス都市圏からだけです。ほかの番号は国のほかの地域につながります。24時間。 (<a href="https://www.asistenciaalsuicida.org.ar/" rel="noopener noreferrer">asistenciaalsuicida.org.ar</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a>、<a href="tel:107">107</a></p>
+      </section>
+        <section class="help-country" data-iso="CL">
+        <h3>チリ</h3>
+        <ul><li>Línea *4141: <a href="tel:*4141">*4141</a>. 携帯から、どの会社でも無料。毎日24時間。 (<a href="https://www.minsal.cl/linea-de-atencion-4141-no-estas-solo-no-estas-sola/" rel="noopener noreferrer">MINSAL</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:131">131</a>、<a href="tel:133">133</a></p>
+      </section>
+        <section class="help-country" data-iso="UY">
+        <h3>ウルグアイ</h3>
+        <ul><li>Línea Vida: <a href="tel:08000767">0800 0767</a>、<a href="tel:*0767">*0767</a>. 無料で、24時間。 (<a href="https://www.gub.uy/ministerio-salud-publica/salud-mental" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="EC">
+        <h3>エクアドル</h3>
+        <ul><li>Línea 171: <a href="tel:171">171</a>. 6 番。無料。毎日 7:00 から 20:00。24時間ではありません。 (<a href="https://www.salud.gob.ec/a-traves-de-la-linea-171-msp-ofrece-atencion-en-salud-mental/" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="CR">
+        <h3>コスタリカ</h3>
+        <ul><li>Aquí Estoy: <a href="tel:8002737869">800 273 7869</a>. 無料。月–金 14:00–22:00、土曜 9:00–16:00。日曜は休み。 (<a href="https://aquiestoy.cr/" rel="noopener noreferrer">aquiestoy.cr</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="DO">
+        <h3>ドミニカ共和国</h3>
+        <ul><li>Cuida tu Salud Mental: <a href="tel:711">711</a>. 無料で秘密は守られます。毎日 8:00 から深夜まで。24時間ではありません。 (<a href="https://msp.gob.do/web/?p=21208" rel="noopener noreferrer">Ministerio de Salud Pública</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="BR">
+        <h3>ブラジル</h3>
+        <ul><li>CVV — Centro de Valorização da Vida: <a href="tel:188">188</a>. 無料で、24時間。 (<a href="https://www.cvv.org.br/" rel="noopener noreferrer">Centro de Valorização da Vida</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:192">192</a></p>
+      </section>
+        <section class="help-country" data-iso="PT">
+        <h3>ポルトガル</h3>
+        <ul><li>Linha 1411: <a href="tel:1411">1411</a>. 2025年9月に始まった、国の自殺予防の回線。無料で、毎日24時間。 (<a href="https://www.spms.min-saude.pt/2025/09/lancamento-da-linha-nacional-de-prevencao-do-suicidio-e-apoio-psicologico-1411/" rel="noopener noreferrer">SPMS</a>).</li><li>SNS 24: <a href="tel:808242424">808 24 24 24、そのあと4番</a>。SNS 24 の心理相談。今回の確認では、表示されたページからは確かめられませんでした（<a href="https://www.sns24.gov.pt/servico/aconselhamento-psicologico-no-sns-24/" rel="noopener noreferrer">SNS 24</a>). <span class="help-flag">未確認</span></li><li>SOS Voz Amiga: <a href="tel:+351213544545">213 544 545</a>、<a href="tel:+351912802669">912 802 669</a>、<a href="tel:+351963524660">963 524 660</a>、<a href="tel:+351930712500">930 712 500</a>. 感情的な支えと自殺予防。毎日 15:30 から 0:30。24時間ではありません。 (<a href="https://www.sosvozamiga.org/contactos" rel="noopener noreferrer">SOS Voz Amiga</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="ES">
+        <h3>スペイン</h3>
+        <ul><li>Línea 024: <a href="tel:024">024</a>. 毎日24時間。 (<a href="https://www.sanidad.gob.es/linea024/" rel="noopener noreferrer">Línea de atención a la conducta suicida</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="FR">
+        <h3>フランス</h3>
+        <ul><li>3114: <a href="tel:3114">3114</a>. 国の自殺予防の番号。24時間。 (<a href="https://3114.fr/" rel="noopener noreferrer">3114.fr</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a>、<a href="tel:15">15</a></p>
+      </section>
+        <section class="help-country" data-iso="BE">
+        <h3>ベルギー</h3>
+        <ul><li>Centre de Prévention du Suicide: <a href="tel:080032123">0800 32 123</a>. フランス語圏のベルギー。匿名で無料、24時間。 (<a href="https://www.preventionsuicide.be/la-ligne-decoute-0800-32-123" rel="noopener noreferrer">Centre de prévention du suicide</a>).</li><li>Zelfmoordlijn 1813: <a href="tel:1813">1813</a>. オランダ語圏のベルギー。電話は無料で24時間。チャットは毎日 17:00 から深夜、水曜は 12:00 から。 (<a href="https://www.zelfmoord1813.be/" rel="noopener noreferrer">Zelfmoordlijn 1813</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="CH">
+        <h3>スイス</h3>
+        <ul><li>La Main Tendue: <a href="tel:143">143</a>. 24時間。 (<a href="https://www.143.ch/fr/" rel="noopener noreferrer">143.ch</a>).</li><li>147: <a href="tel:147">147</a>. 子どもと若者のため。24時間。 (<a href="https://www.147.ch/" rel="noopener noreferrer">147.ch</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:144">144</a>、<a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="GB">
+        <h3>イギリス</h3>
+        <ul><li>Samaritans: <a href="tel:116123">116 123</a>. 無料で、いつでも。 (<a href="https://www.samaritans.org/how-we-can-help/contact-samaritan/talk-us-phone/" rel="noopener noreferrer">Samaritans</a>).</li><li>Shout: <a href="sms:85258?body=SHOUT">text SHOUT to 85258</a>. テキストのみ。無料で、24時間。 (<a href="https://giveusashout.org/" rel="noopener noreferrer">Shout</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:999">999</a>、<a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="IE">
+        <h3>アイルランド</h3>
+        <ul><li>Samaritans: <a href="tel:116123">116 123</a>. 無料で、いつでも。 (<a href="https://www.samaritans.org/ireland/" rel="noopener noreferrer">Samaritans Ireland</a>).</li><li>Pieta: <a href="tel:1800247247">1800 247 247</a>、<a href="sms:51444?body=HELP">text HELP to 51444</a>. 無料で、24時間。 (<a href="https://www.pieta.ie/how-we-can-help/helpline/" rel="noopener noreferrer">Pieta</a>).</li><li>Text About It: <a href="sms:50808?body=TALK">text TALK to 50808</a>. テキストのみ。無料で、24時間。 (<a href="https://www.textaboutit.ie/" rel="noopener noreferrer">Text About It</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a>、<a href="tel:999">999</a></p>
+      </section>
+        <section class="help-country" data-iso="DE">
+        <h3>ドイツ</h3>
+        <ul><li>TelefonSeelsorge: <a href="tel:08001110111">0800 111 0 111</a>、<a href="tel:08001110222">0800 111 0 222</a>、<a href="tel:116123">116 123</a>. 無料で、昼も夜も。 (<a href="https://www.telefonseelsorge.de/" rel="noopener noreferrer">TelefonSeelsorge</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="AT">
+        <h3>オーストリア</h3>
+        <ul><li>TelefonSeelsorge: <a href="tel:142">142</a>. 無料で、毎日24時間。 (<a href="https://www.telefonseelsorge.at/" rel="noopener noreferrer">TelefonSeelsorge Österreich</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a>、<a href="tel:144">144</a></p>
+      </section>
+        <section class="help-country" data-iso="IT">
+        <h3>イタリア</h3>
+        <ul><li>Telefono Amico Italia: <a href="tel:+390223272327">02 2327 2327</a>、<a href="https://wa.me/393240117252" rel="noopener noreferrer">WhatsApp 324 011 7252</a>. 電話は毎日24時間、通常の通話料です。無料番号ではありません。WhatsApp は毎日 18:00–21:00 だけ。 (<a href="https://www.telefonoamico.it/" rel="noopener noreferrer">Telefono Amico</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="NL">
+        <h3>オランダ</h3>
+        <ul><li>113 Zelfmoordpreventie: <a href="tel:113">113</a>、<a href="tel:08000113">0800-0113</a>. 0800-0113 は無料。24時間。チャットは 113.nl。 (<a href="https://www.113.nl/" rel="noopener noreferrer">113</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="NO">
+        <h3>ノルウェー</h3>
+        <ul><li>Mental Helse Hjelpetelefonen: <a href="tel:116123">116 123</a>. 一年中、24時間。 (<a href="https://mentalhelse.no/fa-hjelp/hjelpetelefonen/" rel="noopener noreferrer">Mental Helse</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:113">113</a>、<a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="FI">
+        <h3>フィンランド</h3>
+        <ul><li>MIELI Kriisipuhelin: <a href="tel:+358925250111">09 2525 0111</a>. 24時間。 (<a href="https://mieli.fi/tukea-ja-apua/kriisipuhelin/" rel="noopener noreferrer">MIELI</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="DK">
+        <h3>デンマーク</h3>
+        <ul><li>Livslinien: <a href="tel:70201201">70 201 201</a>. 毎日 9:00 から 5:00。24時間ではありません。チャットはもっと短い時間です。 (<a href="https://www.livslinien.dk/" rel="noopener noreferrer">Livslinien</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="TR">
+        <h3>トルコ</h3>
+        <p>ここには専用の危機ラインを載せていません。</p>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="IN">
+        <h3>インド</h3>
+        <ul><li>Tele MANAS: <a href="tel:14416">14416</a>、<a href="tel:18008914416">1-800-891-4416</a>. 通話料無料、24時間。インドの多くの言語で。 (<a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2022057&amp;lang=2&amp;reg=3" rel="noopener noreferrer">Press Information Bureau</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="PH">
+        <h3>フィリピン</h3>
+        <ul><li>NCMH Crisis Hotline: <a href="tel:1553">1553</a>、<a href="tel:09190571553">0919 057 1553</a>. 24時間。2026年7月の案内がこの二つの番号を挙げています。 (<a href="https://www.facebook.com/ncmhcrisishotline/posts/1446226184192317/" rel="noopener noreferrer">NCMH</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:911">911</a></p>
+      </section>
+        <section class="help-country" data-iso="ID">
+        <h3>インドネシア</h3>
+        <ul><li>Healing119: <a href="tel:119">119</a>. そのあと内線 8。ページに時間の記載はありません。自殺の緊急時にかけるよう書いてあります。 (<a href="https://www.healing119.id/" rel="noopener noreferrer">Healing119</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a>、<a href="tel:119">119</a></p>
+      </section>
+        <section class="help-country" data-iso="JP">
+        <h3>日本</h3>
+        <ul><li>Inochi SOS: <a href="tel:0120061338">0120-061-338</a>. 無料で、毎日24時間。 (<a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer">Ministry of Health, Labour and Welfare</a>).</li><li>Yorisoi Hotline: <a href="tel:0120279338">0120-279-338</a>、<a href="tel:0120279226">0120-279-226</a>. 無料で24時間。福島からは 0120-279-226。 (<a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer">Ministry of Health, Labour and Welfare</a>).</li><li>TELL Lifeline: <a href="tel:08003008355">0800-300-8355</a>. 英語。時間は限られています。いまの時間はサイトで確認してください。24時間ではありません。 (<a href="https://telljp.com/lifeline/" rel="noopener noreferrer">TELL</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:119">119</a>、<a href="tel:110">110</a></p>
+      </section>
+        <section class="help-country" data-iso="KR">
+        <h3>韓国</h3>
+        <ul><li>109: <a href="tel:109">109</a>. 自殺予防の相談。24時間。 (<a href="https://www.129.go.kr/109" rel="noopener noreferrer">129.go.kr</a>).</li><li>Lifeline Korea: <a href="tel:15889191">1588-9191</a>. 24時間。 (<a href="https://www.129.go.kr/109" rel="noopener noreferrer">129.go.kr</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:119">119</a>、<a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="MY">
+        <h3>マレーシア</h3>
+        <ul><li>Befrienders Kuala Lumpur: <a href="tel:+60376272929">03-7627 2929</a>. 24時間。 (<a href="https://befrienders.org.my/" rel="noopener noreferrer">Befrienders</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:999">999</a></p>
+      </section>
+        <section class="help-country" data-iso="TH">
+        <h3>タイ</h3>
+        <ul><li>Department of Mental Health: <a href="tel:1323">1323</a>. 無料で、24時間。 (<a href="https://dmh.go.th/" rel="noopener noreferrer">Department of Mental Health</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:1669">1669</a>、<a href="tel:191">191</a></p>
+      </section>
+        <section class="help-country" data-iso="IL">
+        <h3>イスラエル</h3>
+        <ul><li>ERAN: <a href="tel:1201">1201</a>. 読んだページに時間がなかったので、この一覧では24時間とは書いていません。 (<a href="https://www.eran.org.il/" rel="noopener noreferrer">ERAN</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:101">101</a></p>
+      </section>
+        <section class="help-country" data-iso="AE">
+        <h3>アラブ首長国連邦</h3>
+        <ul><li>800 HOPE: <a href="tel:8004673">800 4673</a>. 毎日 8:00–20:00。24時間ではありません。WhatsApp も同じ番号。 (<a href="https://u.ae/en/information-and-services/health-and-fitness/FAQs-and-resources/handling-the-covid-19-outbreak/maintaining-mental-health-in-times-of-covid19" rel="noopener noreferrer">u.ae</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:999">999</a>、<a href="tel:998">998</a></p>
+      </section>
+        <section class="help-country" data-iso="AU">
+        <h3>オーストラリア</h3>
+        <ul><li>Lifeline: <a href="tel:131114">13 11 14</a>. 24時間。 (<a href="https://www.lifeline.org.au/131114" rel="noopener noreferrer">Lifeline</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:000">000</a></p>
+      </section>
+        <section class="help-country" data-iso="NZ">
+        <h3>ニュージーランド</h3>
+        <ul><li>1737, Need to talk?: <a href="tel:080017371737">0800 1737 1737</a>、<a href="sms:1737">text 1737</a>. 電話でもテキストでも、無料、いつでも。 (<a href="https://1737.org.nz/" rel="noopener noreferrer">1737, Need to talk?</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:111">111</a></p>
+      </section>
+        <section class="help-country" data-iso="ZA">
+        <h3>南アフリカ</h3>
+        <ul><li>SADAG: <a href="tel:0800567567">0800 567 567</a>. 自殺の危機の回線。通話料無料、24時間。 (<a href="https://www.sadag.org/" rel="noopener noreferrer">SADAG</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:10111">10111</a>、<a href="tel:10177">10177</a>、<a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="NG">
+        <h3>ナイジェリア</h3>
+        <ul><li>SURPIN: <a href="tel:08000787746">0800 078 7746</a>、<a href="tel:09080217555">0908 021 7555</a>、<a href="tel:09034400009">0903 440 0009</a>、<a href="tel:08142241007">0814 224 1007</a>. 0800 の番号は通話料無料。24時間。NGO の回線です。 (<a href="https://www.surpinng.com/" rel="noopener noreferrer">SURPIN</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="MA">
+        <h3>モロッコ</h3>
+        <p>ここには専用の危機ラインを載せていません。</p>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:141">141</a>、<a href="tel:15">15</a>、<a href="tel:19">19</a>、<a href="tel:112">112</a></p>
+      </section>
+        <section class="help-country" data-iso="CI">
+        <h3>コートジボワール</h3>
+        <ul><li>Programme national de santé mentale: <a href="tel:143">143</a>. 無料。月–金 8:00–17:00。24時間ではありません。 (<a href="https://www.pnsantementale.ci/projets/dispositif-143-assistance-psychologique" rel="noopener noreferrer">Programme national de santé mentale</a>).</li></ul>
+        <p class="help-emergency"><span>緊急</span> <a href="tel:185">185</a>、<a href="tel:110">110</a></p>
+      </section>
+      </div>
+      <p class="help-else">ほかの場所： <a href="https://findahelpline.com/" rel="noopener noreferrer">Find a Helpline</a> が地元の窓口をまとめています。</p>
+    </div>
+  </dialog>
+  <script type="module" src="/help.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 import { TECHNIQUES, DURATION_SECONDS, withDifficulty, stepSession, scaleFor } from './breathing.js';
 import { TRANSLATIONS, MODE_ORDER, DUR_ORDER } from './i18n.js';
 import { legalPath } from './scripts/legal.js';
-import { resolveSettings, publicMode, homePath, languageTarget, normalizeLang } from './settings.js';
+import { resolveSettings, publicMode, homePath, homeLang, languageTarget, normalizeLang, LANG_META } from './settings.js';
 
 const STORAGE_KEY = 'nervio';
 
@@ -268,7 +268,7 @@ function syncDocumentMeta(copy) {
   document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonicalHref);
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', copy.title);
   document.querySelector('meta[property="og:description"]')?.setAttribute('content', copy.description);
-  document.querySelector('meta[property="og:locale"]')?.setAttribute('content', { en: 'en_US', fr: 'fr_CA', es: 'es_ES', pt: 'pt_BR' }[settings.lang]);
+  document.querySelector('meta[property="og:locale"]')?.setAttribute('content', LANG_META[settings.lang]?.og || 'en_US');
   document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', copy.title);
   document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', copy.description);
   const theme = { calm: '#0a0f0d', focus: '#100e0b', sleep: '#0b0c14', panic: '#120e0d' }[settings.mode];
@@ -466,9 +466,31 @@ function resetToIdle() {
 }
 
 function setLang(lang) {
-  settings.lang = lang;
-  persist();
-  render();
+  const next = normalizeLang(lang) || 'en';
+  settings.lang = next;
+  const stored = peekStored() || {};
+  stored.v = 1;
+  stored.lang = next;
+  stored.mode = settings.mode;
+  stored.duration = settings.duration;
+  stored.muted = settings.muted;
+  stored.difficulty = settings.difficulty;
+  stored.sessions = settings.sessions;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+  } catch {
+    /* private mode should not block a language change */
+  }
+  const params = new URLSearchParams();
+  params.set('mode', publicMode(settings.mode));
+  params.set('dur', settings.duration);
+  const dest = `${homePath(next)}?${params.toString()}`;
+  if (homeLang(location.pathname) === next) {
+    history.replaceState({ nervio: 1 }, '', dest);
+    render();
+    return;
+  }
+  location.assign(dest);
 }
 
 function setMode(mode) {

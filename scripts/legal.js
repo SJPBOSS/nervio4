@@ -1,3 +1,11 @@
+import {
+  CHECKED_EXTRA,
+  LEGAL_PAGES_EXTRA,
+  LEGAL_SLUGS_EXTRA,
+  LINK_LABELS_EXTRA,
+  SHORT_EXTRA,
+} from './legal-more.js';
+
 export const CHECKED_DATE = '2026-10';
 
 export const CHECKED = {
@@ -5,6 +13,7 @@ export const CHECKED = {
   fr: 'Dernière vérification : octobre 2026',
   es: 'Última revisión: octubre de 2026',
   pt: 'Última verificação: outubro de 2026',
+  ...CHECKED_EXTRA,
 };
 
 export const SHORT = {
@@ -24,6 +33,7 @@ export const SHORT = {
     line: 'O Nervio é um cronômetro de respiração para o bem-estar em geral. Não é orientação médica, nem diagnóstico, nem tratamento, e não é para emergências. Se você está em crise, ligue para o número de emergência local ou para uma linha de crise.',
     stop: 'Pare se sentir tontura ou a cabeça leve. Se você tem um problema no coração, nos pulmões ou outra condição de saúde, ou se está grávida, fale com um médico antes.',
   },
+  ...SHORT_EXTRA,
 };
 
 export const LINK_LABELS = {
@@ -31,11 +41,12 @@ export const LINK_LABELS = {
   fr: { terms: 'Conditions et avis', privacy: 'Confidentialité', legal: 'Mentions' },
   es: { terms: 'Términos y aviso', privacy: 'Privacidad', legal: 'Aviso legal' },
   pt: { terms: 'Termos e aviso', privacy: 'Privacidade', legal: 'Avisos' },
+  ...LINK_LABELS_EXTRA,
 };
 
 export const LEGAL_SLUGS = {
-  terms: { en: 'terms', fr: 'conditions', es: 'aviso', pt: 'aviso' },
-  privacy: { en: 'privacy', fr: 'confidentialite', es: 'privacidad', pt: 'privacidade' },
+  terms: { en: 'terms', fr: 'conditions', es: 'aviso', pt: 'aviso', ...LEGAL_SLUGS_EXTRA.terms },
+  privacy: { en: 'privacy', fr: 'confidentialite', es: 'privacidad', pt: 'privacidade', ...LEGAL_SLUGS_EXTRA.privacy },
 };
 
 export function legalPath(kind, lang) {
@@ -433,4 +444,5 @@ export const LEGAL_PAGES = {
       ],
     },
   },
+  ...LEGAL_PAGES_EXTRA,
 };

@@ -1,10 +1,56 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { SITE, PUBLISHED, LANGS, TOPICS, CHROME, DISCLAIMERS, BLURBS, pagePath } from './content.js';
+import { SITE, PUBLISHED, LANGS as GUIDE_LANGS, TOPICS, CHROME, DISCLAIMERS, BLURBS, pagePath } from './content.js';
 import { helpButtonHtml, helpDialogHtml, othersListHtml } from './helplines.js';
 import { CHECKED, CHECKED_DATE, SHORT, LINK_LABELS, LEGAL_PAGES, legalPath } from './legal.js';
 import { TRANSLATIONS } from '../i18n.js';
-import { homePath } from '../settings.js';
+import { LANGS as APP_LANGS, LANG_META, homePath } from '../settings.js';
+
+const OPEN_APP = {
+  de: 'Zur App',
+  it: 'Apri l’app',
+  nl: 'Open de app',
+  ja: 'アプリを開く',
+  ko: '앱 열기',
+  hi: 'ऐप खोलें',
+};
+
+function chromeFor(lang) {
+  if (CHROME[lang]) return CHROME[lang];
+  const meta = LANG_META[lang];
+  const copy = TRANSLATIONS[lang];
+  return {
+    htmlLang: meta.htmlLang,
+    ogLocale: meta.og,
+    skip: copy.skip,
+    language: copy.language,
+    guides: copy.guides,
+    breadcrumb: meta.breadcrumb,
+    other: copy.guides,
+    column: meta.name,
+    openApp: OPEN_APP[lang] || copy.breathe,
+  };
+}
+
+function blurbFor(lang) {
+  return BLURBS[lang] || TRANSLATIONS[lang].description;
+}
+
+function langMenuHtml(langs, hrefFor, currentLang) {
+  const label = chromeFor(currentLang).language;
+  const current = LANG_META[currentLang];
+  const links = langs.map((code) => {
+    const meta = LANG_META[code];
+    const on = code === currentLang ? ' aria-current="page"' : '';
+    return `<a href="${esc(hrefFor(code))}" data-set-lang="${code}" lang="${esc(meta.htmlLang)}" hreflang="${esc(meta.htmlLang)}"${on}>${esc(meta.name)}</a>`;
+  }).join('\n            ');
+  return `<details class="lang-menu" id="langs">
+          <summary aria-label="${esc(label)}">${esc(current.code)}</summary>
+          <div class="lang-panel">
+            ${links}
+          </div>
+        </details>`;
+}
 
 const root = path.resolve(import.meta.dirname, '..');
 
@@ -61,7 +107,7 @@ function iconLinks() {
 }
 
 function guideColumns() {
-  return LANGS.map((lang) => {
+  return GUIDE_LANGS.map((lang) => {
     const chrome = CHROME[lang];
     const items = TOPICS.map((topic) => {
       const copy = topic[lang];
@@ -77,10 +123,10 @@ function guideColumns() {
 }
 
 function legalLinksHtml(onlyLang) {
-  const langs = onlyLang ? [onlyLang] : LANGS;
+  const langs = onlyLang ? [onlyLang] : GUIDE_LANGS;
   const rows = langs.map((lang) => {
     const labels = LINK_LABELS[lang];
-    const htmlLang = CHROME[lang].htmlLang;
+    const htmlLang = chromeFor(lang).htmlLang;
     return `<p lang="${esc(htmlLang)}"><a href="${esc(legalPath('terms', lang))}" hreflang="${esc(htmlLang)}">${esc(labels.terms)}</a> · <a href="${esc(legalPath('privacy', lang))}" hreflang="${esc(htmlLang)}">${esc(labels.privacy)}</a></p>`;
   }).join('\n    ');
   const label = LINK_LABELS[onlyLang || 'en'].legal;
@@ -90,7 +136,7 @@ function legalLinksHtml(onlyLang) {
 }
 
 function footerHtml() {
-  const blurbs = LANGS.map((lang) => `<p lang="${esc(CHROME[lang].htmlLang)}">${esc(BLURBS[lang])}</p>`).join('\n    ');
+  const blurbs = GUIDE_LANGS.map((lang) => `<p lang="${esc(CHROME[lang].htmlLang)}">${esc(BLURBS[lang])}</p>`).join('\n    ');
   return `<h2>Guides</h2>
   <div class="guide-columns">
     ${guideColumns()}
@@ -126,7 +172,7 @@ function renderArticle(topic, lang) {
   const chrome = CHROME[lang];
   const canonicalPath = pagePath(topic, lang);
   const canonical = `${SITE}${canonicalPath}`;
-  const alternates = LANGS.map((code) => {
+  const alternates = GUIDE_LANGS.map((code) => {
     const href = `${SITE}${pagePath(topic, code)}`;
     const hreflang = CHROME[code].htmlLang;
     return `  <link rel="alternate" hreflang="${hreflang}" href="${href}" />`;
@@ -135,7 +181,7 @@ function renderArticle(topic, lang) {
   alternates.push(`  <link rel="alternate" hreflang="pt" href="${SITE}${pagePath(topic, 'pt')}" />`);
   alternates.push(`  <link rel="alternate" hreflang="x-default" href="${SITE}${pagePath(topic, 'en')}" />`);
 
-  const locales = LANGS.filter((code) => code !== lang)
+  const locales = GUIDE_LANGS.filter((code) => code !== lang)
     .map((code) => `  <meta property="og:locale:alternate" content="${CHROME[code].ogLocale}" />`)
     .join('\n');
 
@@ -161,7 +207,7 @@ function renderArticle(topic, lang) {
     `<li><a href="${esc(pagePath(item, lang))}">${esc(item[lang].h1)}</a></li>`
   )).join('\n        ');
 
-  const langLinks = LANGS.map((code) => {
+  const langLinks = GUIDE_LANGS.map((code) => {
     const href = pagePath(topic, code);
     const current = code === lang ? ' aria-current="page"' : '';
     return `<a href="${href}" lang="${CHROME[code].htmlLang}" hreflang="${CHROME[code].htmlLang}"${current}>${code.toUpperCase()}</a>`;
@@ -275,7 +321,7 @@ ${locales}
 }
 
 function render404() {
-  const blocks = LANGS.map((lang, index) => {
+  const blocks = GUIDE_LANGS.map((lang, index) => {
     const chrome = CHROME[lang];
     const tag = index === 0 ? 'h1' : 'h2';
     return `<${tag} lang="${chrome.htmlLang}">${esc(chrome.notFoundH1)}</${tag}>
@@ -331,24 +377,20 @@ function legalSectionHtml(section, lang) {
 
 function renderLegal(kind, lang) {
   const page = LEGAL_PAGES[lang][kind];
-  const chrome = CHROME[lang];
+  const chrome = chromeFor(lang);
   const canonicalPath = legalPath(kind, lang);
   const canonical = `${SITE}${canonicalPath}`;
-  const alternates = LANGS.map((code) => {
+  const alternates = APP_LANGS.map((code) => {
     const href = `${SITE}${legalPath(kind, code)}`;
-    return `  <link rel="alternate" hreflang="${CHROME[code].htmlLang}" href="${href}" />`;
+    return `  <link rel="alternate" hreflang="${LANG_META[code].htmlLang}" href="${href}" />`;
   });
   alternates.push(`  <link rel="alternate" hreflang="fr" href="${SITE}${legalPath(kind, 'fr')}" />`);
   alternates.push(`  <link rel="alternate" hreflang="pt" href="${SITE}${legalPath(kind, 'pt')}" />`);
   alternates.push(`  <link rel="alternate" hreflang="x-default" href="${SITE}${legalPath(kind, 'en')}" />`);
-  const locales = LANGS.filter((code) => code !== lang)
-    .map((code) => `  <meta property="og:locale:alternate" content="${CHROME[code].ogLocale}" />`)
+  const locales = APP_LANGS.filter((code) => code !== lang)
+    .map((code) => `  <meta property="og:locale:alternate" content="${LANG_META[code].og}" />`)
     .join('\n');
-  const langLinks = LANGS.map((code) => {
-    const href = legalPath(kind, code);
-    const current = code === lang ? ' aria-current="page"' : '';
-    return `<a href="${href}" lang="${CHROME[code].htmlLang}" hreflang="${CHROME[code].htmlLang}"${current}>${code.toUpperCase()}</a>`;
-  }).join('\n          ');
+  const langLinks = langMenuHtml(APP_LANGS, (code) => legalPath(kind, code), lang);
   const sections = page.sections.map((section) => legalSectionHtml(section, lang)).join('\n      ');
   const jsonLd = JSON.stringify({
     '@context': 'https://schema.org',
@@ -401,9 +443,7 @@ ${locales}
       <span class="brand-name">Nervio</span>
     </a>
     <div class="nav-actions">
-      <nav class="langs" aria-label="${esc(chrome.language)}">
-          ${langLinks}
-      </nav>
+      ${langLinks}
     </div>
   </header>
   <main id="main" class="article">
@@ -419,7 +459,7 @@ ${locales}
     </article>
   </main>
   <footer class="site-footer">
-    <p lang="${esc(chrome.htmlLang)}">${esc(BLURBS[lang])}</p>
+    <p lang="${esc(chrome.htmlLang)}">${esc(blurbFor(lang))}</p>
     ${legalLinksHtml(lang)}
     <p><a href="${homePath(lang)}">${esc(chrome.openApp)}</a></p>
   </footer>
@@ -442,6 +482,12 @@ const HOME_HREFLANG = [
   ['es', `${SITE}/es/`],
   ['pt-BR', `${SITE}/pt/`],
   ['pt', `${SITE}/pt/`],
+  ['de', `${SITE}/de/`],
+  ['it', `${SITE}/it/`],
+  ['nl', `${SITE}/nl/`],
+  ['ja', `${SITE}/ja/`],
+  ['ko', `${SITE}/ko/`],
+  ['hi', `${SITE}/hi/`],
   ['x-default', `${SITE}/`],
 ];
 
@@ -452,20 +498,20 @@ function homeHreflangLinks() {
 }
 
 function langBootScript() {
+  const codes = APP_LANGS.filter((code) => code !== 'en').concat('en');
+  const checks = codes.map((code) => `    if (v === '${code}' || v.indexOf('${code}-') === 0) return '${code}';`).join('\n');
+  const homes = APP_LANGS.filter((code) => code !== 'en').map((code) => `path === '/${code}'`).join(' || ');
   return `<script>
 (function () {
   function code(value) {
-    var v = String(value || '').toLowerCase();
-    if (v.indexOf('fr') === 0) return 'fr';
-    if (v.indexOf('es') === 0) return 'es';
-    if (v.indexOf('pt') === 0) return 'pt';
-    if (v.indexOf('en') === 0) return 'en';
+    var v = String(value || '').toLowerCase().replace(/_/g, '-');
+${checks}
     return '';
   }
   function home(lang) { return lang === 'en' ? '/' : '/' + lang + '/'; }
   var path = location.pathname.replace(/\\/index\\.html$/, '');
   if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
-  var onHome = path === '' || path === '/' || path === '/fr' || path === '/es' || path === '/pt';
+  var onHome = path === '' || path === '/' || ${homes};
   if (!onHome) return;
   var params = new URLSearchParams(location.search);
   var queryLang = code(params.get('lang'));
@@ -506,17 +552,23 @@ function langBootScript() {
 </script>`;
 }
 
+const HOME_FONT_PRELOAD = {
+  ja: '/fonts/noto-sans-jp-400.woff2',
+  ko: '/fonts/noto-sans-kr-400.woff2',
+  hi: '/fonts/noto-sans-deva-400.woff2',
+};
+
 function renderHome(lang) {
   const copy = TRANSLATIONS[lang];
-  const chrome = CHROME[lang];
+  const chrome = chromeFor(lang);
   const canonical = `${SITE}${homePath(lang)}`;
-  const locales = LANGS.filter((code) => code !== lang)
-    .map((code) => `  <meta property="og:locale:alternate" content="${CHROME[code].ogLocale}" />`)
+  const locales = APP_LANGS.filter((code) => code !== lang)
+    .map((code) => `  <meta property="og:locale:alternate" content="${LANG_META[code].og}" />`)
     .join('\n');
-  const langLinks = LANGS.map((code) => {
-    const current = code === lang ? ' aria-current="page"' : '';
-    return `<a href="${homePath(code)}" data-set-lang="${code}" lang="${CHROME[code].htmlLang}" hreflang="${CHROME[code].htmlLang}"${current}>${code.toUpperCase()}</a>`;
-  }).join('\n          ');
+  const langLinks = langMenuHtml(APP_LANGS, (code) => homePath(code), lang);
+  const fontPreload = HOME_FONT_PRELOAD[lang]
+    ? `\n  <link rel="preload" href="${HOME_FONT_PRELOAD[lang]}" as="font" type="font/woff2" crossorigin />`
+    : '';
   const modes = ['calm', 'focus', 'sleep', 'panic'].map((id) => `        <button type="button" class="mode-btn" data-mode="${id}" aria-pressed="${id === 'calm' ? 'true' : 'false'}">
           <span class="mode-icon" aria-hidden="true">${MODE_ICONS[id]}</span>
           <span class="mode-copy"><span class="mode-name">${esc(copy.modes[id].name)}</span><span class="mode-sub">${esc(copy.modes[id].sub)}</span></span>
@@ -534,7 +586,7 @@ function renderHome(lang) {
         '@type': 'WebSite',
         name: 'Nervio',
         url: canonical,
-        inLanguage: ['en', 'fr-CA', 'es', 'pt-BR'],
+        inLanguage: APP_LANGS.map((code) => LANG_META[code].htmlLang),
         description: copy.description,
       },
       {
@@ -545,7 +597,7 @@ function renderHome(lang) {
         operatingSystem: 'Any',
         browserRequirements: 'Requires JavaScript',
         isAccessibleForFree: true,
-        inLanguage: ['en', 'fr-CA', 'es', 'pt-BR'],
+        inLanguage: APP_LANGS.map((code) => LANG_META[code].htmlLang),
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
         description: copy.description,
       },
@@ -561,7 +613,7 @@ function renderHome(lang) {
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#090c0b" />
   <link rel="preload" href="/fonts/fraunces-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />${fontPreload}
   <title>${esc(copy.title)}</title>
   <meta name="description" content="${esc(copy.description)}" />
   <meta name="robots" content="index, follow" />
@@ -600,9 +652,7 @@ ${homeHreflangLinks()}
       </a>
       ${helpButtonHtml(lang)}
       <div class="nav-actions">
-        <nav class="langs" id="langs" aria-label="${esc(copy.language)}">
-          ${langLinks}
-        </nav>
+        ${langLinks}
         <button type="button" class="icon-btn" id="cancel" hidden aria-label="${esc(copy.cancel)}"><span aria-hidden="true">✕</span></button>
         <button type="button" class="icon-btn" id="mute" aria-pressed="false" aria-label="${esc(copy.mute)}">
           <svg class="icon-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4V9zm12.5 3a3.5 3.5 0 0 0-1.8-3.06v6.12A3.5 3.5 0 0 0 16.5 12z"/></svg>
@@ -677,10 +727,10 @@ function homeAlternatesXml() {
 
 function sitemap() {
   const homeLastmod = '2026-10-24';
-  const homes = LANGS.map((lang) => `  <url>\n    <loc>${SITE}${homePath(lang)}</loc>\n    <lastmod>${homeLastmod}</lastmod>\n${homeAlternatesXml()}\n  </url>`);
+  const homes = APP_LANGS.map((lang) => `  <url>\n    <loc>${SITE}${homePath(lang)}</loc>\n    <lastmod>${homeLastmod}</lastmod>\n${homeAlternatesXml()}\n  </url>`);
   const rest = [
-    ...LANGS.flatMap((lang) => ['terms', 'privacy'].map((kind) => `${SITE}${legalPath(kind, lang)}`)),
-    ...TOPICS.flatMap((topic) => LANGS.map((lang) => `${SITE}${pagePath(topic, lang)}`)),
+    ...APP_LANGS.flatMap((lang) => ['terms', 'privacy'].map((kind) => `${SITE}${legalPath(kind, lang)}`)),
+    ...TOPICS.flatMap((topic) => GUIDE_LANGS.map((lang) => `${SITE}${pagePath(topic, lang)}`)),
   ].map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${PUBLISHED}</lastmod>\n  </url>`);
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${homes.concat(rest).join('\n')}\n</urlset>\n`;
 }
@@ -692,14 +742,14 @@ function write(file, contents) {
 }
 
 for (const topic of TOPICS) {
-  for (const lang of LANGS) {
+  for (const lang of GUIDE_LANGS) {
     if (!topic[lang]) throw new Error(`Missing ${lang} copy for ${topic.id}`);
     write(path.join(lang, topic[lang].slug, 'index.html'), renderArticle(topic, lang));
   }
 }
 
 for (const kind of ['terms', 'privacy']) {
-  for (const lang of LANGS) {
+  for (const lang of APP_LANGS) {
     const rel = legalPath(kind, lang).replace(/^\/|\/$/g, '');
     write(path.join(rel, 'index.html'), renderLegal(kind, lang));
   }
@@ -707,8 +757,8 @@ for (const kind of ['terms', 'privacy']) {
 
 write('404.html', render404());
 write('sitemap.xml', sitemap());
-for (const lang of LANGS) {
+for (const lang of APP_LANGS) {
   write(lang === 'en' ? 'index.html' : path.join(lang, 'index.html'), renderHome(lang));
 }
 
-console.log(`Wrote ${TOPICS.length * LANGS.length} guides, ${LANGS.length * 2} legal pages, 4 language homes, 404.html, and sitemap.xml.`);
+console.log(`Wrote ${TOPICS.length * GUIDE_LANGS.length} guides, ${APP_LANGS.length * 2} legal pages, ${APP_LANGS.length} language homes, 404.html, and sitemap.xml.`);
